@@ -4,181 +4,374 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>QuizBux - Earn Real Money</title>
-  <style id="dynamic-styles">body{background:#111;color:#fff;font-family:system-ui;text-align:center;padding:50px;}</style>
+
+  <!-- Your beautiful CSS will be injected from Styles sheet -->
+  <style id="dynamic-styles">
+    body { margin:0; font-family:system-ui,sans-serif; background:#0f0f1a; color:white; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+    .hidden { display:none !important; }
+    #loadingScreen { text-align:center; }
+    #loadingScreen h2 { font-size:32px; background:linear-gradient(90deg,#4dccff,#ff6b6b); -webkit-background-clip:text; color:transparent; }
+    
+    /* New styles for iframe offerwalls */
+    .offerwall-iframe { 
+      width: 100%; 
+      height: 600px; 
+      border: none; 
+      border-radius: 12px; 
+      background: white; 
+    }
+    .offerwall-item { 
+      margin: 20px 0; 
+      padding: 20px; 
+      background: rgba(255,255,255,0.08); 
+      border-radius: 16px; 
+      text-align: center; 
+    }
+    .offerwall-buttons { 
+      margin-top: 15px; 
+      display: flex; 
+      gap: 10px; 
+      justify-content: center; 
+      flex-wrap: wrap; 
+    }
+    .offerwall-buttons button { 
+      padding: 10px 20px; 
+      border: none; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      font-weight: bold; 
+    }
+    .iframe-container {
+      position: relative;
+      margin: 20px 0;
+    }
+    .close-iframe {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+  </style>
 </head>
 <body>
-  <div id="loadingScreen"><h2>Loading QuizBux...</h2></div>
+
+  <!-- Loading -->
+  <div id="loadingScreen">
+    <h2>Loading QuizBux...</h2>
+    <p>Please wait</p>
+  </div>
+
+  <!-- Main App -->
   <div id="app" class="hidden">
 
+    <!-- Header -->
     <header id="header">
-      <img id="logo-img" src="" alt="Logo" style="height:50px;">
+      <img id="logo-img" src="" alt="Logo" style="height:50px; border-radius:8px;">
       <div>
-        <button onclick="showMsg('Help')">Help</button>
+        <button onclick="showAlert('Support coming soon')">Help</button>
         <button onclick="logout()">Logout</button>
       </div>
     </header>
 
+    <!-- Login Screen -->
     <section id="loginScreen">
       <div class="card">
-        <h1 id="loginTitle">Welcome Back</h1>
-        <p id="loginSubtitle">Sign in to earn money</p>
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
+        <h1>Welcome Back</h1>
+        <p>Sign in to start earning</p>
+        <input type="text" id="username" placeholder="Username" autocomplete="off">
+        <input type="password" id="password" placeholder="Password" autocomplete="off">
         <button id="loginBtn" onclick="login()">Login</button>
       </div>
     </section>
 
+    <!-- Dashboard -->
     <section id="dashboard" class="hidden">
       <div class="profile">
         <div class="avatar" id="userAvatar">U</div>
         <div>
           <h2 id="displayUsername">User</h2>
-          <strong id="balanceValue">0</strong> Points • <strong id="usdBalanceValue">$0.00</strong>
+          <div>
+            <strong id="balanceValue">0</strong> Points • 
+            <strong id="usdBalanceValue">$0.0000</strong>
+          </div>
         </div>
       </div>
 
-      <div class="stats">
-        <div><strong id="balanceValue2">0</strong><br>Points</div>
-        <div><strong id="usdBalanceValue2">$0.00</strong><br>USD Balance</div>
-      </div>
-
-      <div class="nav">
+      <nav class="nav">
         <button onclick="showPage('work')">Work</button>
         <button onclick="showPage('offerwalls')">Offerwalls</button>
         <button onclick="showPage('cashout')">Cashout</button>
         <button onclick="showPage('terms')">Terms</button>
-      </div>
+      </nav>
 
       <div id="pages">
+
+        <!-- Work Page -->
         <div id="work" class="page">
-          <h3>Submit Work</h3>
-          <textarea id="workInput" placeholder="Describe your work..."></textarea>
-          <button onclick="submitWork()">Submit</button>
+          <h3>Submit Your Work</h3>
+          <textarea id="workInput" placeholder="Describe what you did today... (e.g. completed surveys, watched videos, etc.)"></textarea>
+          <button onclick="submitWork()">Submit Work</button>
+          <p style="margin-top:10px;font-size:14px;color:#aaa;">
+            Approved work = 50 Points + $0.001 USD
+          </p>
         </div>
 
+        <!-- Offerwalls Page -->
         <div id="offerwalls" class="page hidden">
           <h3>Earn More with Offerwalls</h3>
-          <div id="offerwallList">Loading offerwalls...</div>
+          <div id="offerwallList">
+            <p>Loading offerwalls...</p>
+          </div>
+          <!-- Iframe container for displaying offerwalls -->
+          <div id="iframeContainer" class="iframe-container hidden">
+            <button class="close-iframe" onclick="closeIframe()">×</button>
+            <iframe id="offerwallFrame" class="offerwall-iframe" src="about:blank"></iframe>
+          </div>
         </div>
 
+        <!-- Cashout Page -->
         <div id="cashout" class="page hidden">
           <h3>Request Cashout</h3>
-          <select id="rewardSelect"><option>Select reward...</option></select>
-          <button onclick="submitCashout()" id="cashoutBtn" disabled>Request</button>
+          <select id="rewardSelect">
+            <option value="">Choose reward...</option>
+          </select>
+          <button id="cashoutBtn" onclick="submitCashout()" disabled>Request Cashout</button>
+          <p style="margin-top:15px;font-size:14px;">
+            1 USD = 50,000 Points<br>
+            You need both Points & USD balance
+          </p>
         </div>
 
+        <!-- Terms Page -->
         <div id="terms" class="page hidden">
-          <div id="termsContent"></div>
+          <div id="termsContent" style="text-align:left;padding:20px;"></div>
         </div>
+
       </div>
     </section>
   </div>
 
+  <!-- Alert Modal -->
   <div id="alertModal" class="hidden">
-    <div class="modal"><p id="alertMessage"></p><button onclick="closeAlert()">OK</button></div>
+    <div class="modal">
+      <p id="alertMessage">Message</p>
+      <button onclick="closeAlert()">OK</button>
+    </div>
   </div>
 
+  <!-- MAIN SCRIPT -->
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEp9gDxpguJpVVaRAXzHCkOOwu40rH3gRhAet39nbLEXiprHzYzUcPseXUZD2aHGPscw/exec"; // ← REPLACE AFTER DEPLOY
-    let user = null;
+    // CHANGE THIS TO YOUR WEB APP URL AFTER DEPLOYING
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEp9gDxpguJpVVaRAXzHCkOOwu40rH3gRhAet39nbLEXiprHzYzUcPseXUZD2aHGPscw/exec";
+
+    let currentUser = null;
 
     async function init() {
-      const res = await fetch(SCRIPT_URL + "?action=getConfig");
-      const c = await res.json();
-      if (c.status === "success") {
-        document.getElementById("dynamic-styles").textContent = c.styles;
-        if (c.scripts) eval(c.scripts);
-        Object.keys(c.texts).forEach(id => { const el = document.getElementById(id); if(el) el.textContent = c.texts[id]; });
-        if (c.logo) document.getElementById("logo-img").src = c.logo;
-        if (c.terms) document.getElementById("termsContent").innerHTML = c.terms;
+      try {
+        const res = await fetch(SCRIPT_URL + "?action=getConfig");
+        const config = await res.json();
 
-        const sel = document.getElementById("rewardSelect");
-        c.offers.forEach(o => {
-          const opt = document.createElement("option");
-          opt.value = o.amount;
-          opt.textContent = `${o.name} ($${o.amount})`;
-          sel.appendChild(opt);
-        });
-        sel.onchange = () => document.getElementById("cashoutBtn").disabled = !sel.value;
+        if (config.status === "success") {
+          // Inject CSS
+          document.getElementById("dynamic-styles").textContent = config.styles || "body{background:#111;color:white;}";
 
-        document.getElementById("loadingScreen").classList.add("hidden");
-        document.getElementById("app").classList.remove("hidden");
+          // Inject JS
+          if (config.scripts) {
+            const s = document.createElement("script");
+            s.textContent = config.scripts;
+            document.body.appendChild(s);
+          }
 
-        const saved = localStorage.getItem("quizbux_user");
-        if (saved) restoreSession(JSON.parse(saved).username);
+          // Texts
+          Object.keys(config.texts || {}).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = config.texts[id];
+          });
+
+          // Logo
+          if (config.logo) document.getElementById("logo-img").src = config.logo;
+
+          // Offers
+          const select = document.getElementById("rewardSelect");
+          config.offers.forEach(o => {
+            const opt = document.createElement("option");
+            opt.value = o.amount;
+            opt.textContent = `${o.name} ($${o.amount.toFixed(2)})`;
+            select.appendChild(opt);
+          });
+          select.onchange = () => document.getElementById("cashoutBtn").disabled = !select.value;
+
+          // Terms
+          if (config.terms) document.getElementById("termsContent").innerHTML = config.terms;
+
+          // Done loading
+          document.getElementById("loadingScreen").classList.add("hidden");
+          document.getElementById("app").classList.remove("hidden");
+
+          // Auto login
+          const saved = localStorage.getItem("quizbux_user");
+          if (saved) restoreSession(JSON.parse(saved).username);
+        }
+      } catch (e) {
+        showAlert("Failed to load. Check your internet or Web App URL.");
       }
     }
 
     async function login() {
       const u = document.getElementById("username").value.trim();
       const p = document.getElementById("password").value;
-      if (!u || !p) return showAlert("Fill all fields");
-      const res = await fetch(SCRIPT_URL, {method:"POST",body:new URLSearchParams({action:'login',username:u,password:p})});
-      const d = await res.json();
-      if (d.status === "success") { user = d.user; localStorage.setItem("quizbux_user", JSON.stringify({username:u})); showDashboard(); loadOfferwalls(); }
-      else showAlert(d.message);
+      if (!u || !p) return showAlert("Please fill all fields");
+
+      const fd = new FormData();
+      fd.append("action", "login");
+      fd.append("username", u);
+      fd.append("password", p);
+
+      const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
+      const data = await res.json();
+
+      if (data.status === "success") {
+        currentUser = data.user;
+        localStorage.setItem("quizbux_user", JSON.stringify({ username: u }));
+        showDashboard();
+        loadOfferwalls();
+      } else {
+        showAlert(data.message || "Login failed");
+      }
     }
 
-    async function restoreSession(u) {
-      const res = await fetch(SCRIPT_URL + "?action=getUserData&username=" + u);
-      const d = await res.json();
-      if (d.status === "success") { user = d.user; showDashboard(); loadOfferwalls(); }
+    async function restoreSession(username) {
+      const res = await fetch(SCRIPT_URL + "?action=getUserData&username=" + encodeURIComponent(username));
+      const data = await res.json();
+      if (data.status === "success") {
+        currentUser = data.user;
+        showDashboard();
+        loadOfferwalls();
+      }
     }
 
     function showDashboard() {
       document.getElementById("loginScreen").classList.add("hidden");
       document.getElementById("dashboard").classList.remove("hidden");
-      document.getElementById("displayUsername").textContent = user.username;
-      document.getElementById("userAvatar").textContent = user.username[0].toUpperCase();
-      ["balanceValue","balanceValue2"].forEach(id => document.getElementById(id).textContent = user.balance);
-      ["usdBalanceValue","usdBalanceValue2"].forEach(id => document.getElementById(id).textContent = "$" + user.balanceUSD.toFixed(4));
-      showPage('work');
+
+      document.getElementById("displayUsername").textContent = currentUser.username;
+      document.getElementById("userAvatar").textContent = currentUser.username[0].toUpperCase();
+      document.getElementById("balanceValue").textContent = Number(currentUser.balance).toLocaleString();
+      document.getElementById("usdBalanceValue").textContent = "$" + Number(currentUser.balanceUSD).toFixed(4);
+
+      showPage("work");
     }
 
     function showPage(id) {
       document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
       document.getElementById(id).classList.remove("hidden");
+      if (id === "offerwalls") loadOfferwalls();
     }
 
     async function loadOfferwalls() {
-      const res = await fetch(SCRIPT_URL + "?action=getOfferwalls&username=" + user.username);
-      const d = await res.json();
+      if (!currentUser) return;
+      const res = await fetch(SCRIPT_URL + "?action=getOfferwalls&username=" + currentUser.username);
+      const data = await res.json();
       const container = document.getElementById("offerwallList");
-      if (d.offerwalls.length === 0) container.innerHTML = "<p>No active offerwalls</p>";
-      else {
-        container.innerHTML = d.offerwalls.map(w => 
-          `<div style="margin:20px;padding:20px;background:rgba(255,255,255,0.1);border-radius:12px;">
-            <h4>${w.name}</h4>
-            <button onclick="window.open('${w.url}','_blank')" style="padding:12px 24px;background:#4dccff;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">
-              Start Earning
-            </button>
-          </div>`).join('');
+      
+      if (!data.offerwalls || data.offerwalls.length === 0) {
+        container.innerHTML = "<p>No active offerwalls right now</p>";
+        return;
       }
+      
+      container.innerHTML = data.offerwalls.map(w => `
+        <div class="offerwall-item">
+          <h4 style="margin-bottom:15px;">${w.name}</h4>
+          <p style="color:#aaa;margin-bottom:15px;">${w.description || 'Complete offers to earn rewards'}</p>
+          <div class="offerwall-buttons">
+            <button onclick="openOfferwallInIframe('${w.id}', '${w.url}')" 
+              style="background:#4dccff;color:black;">
+              Open in App
+            </button>
+            <button onclick="window.open('${w.url}', '_blank')" 
+              style="background:#ff6b6b;color:white;">
+              Open in New Tab
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function openOfferwallInIframe(offerwallId, url) {
+      const iframe = document.getElementById('offerwallFrame');
+      const iframeContainer = document.getElementById('iframeContainer');
+      const offerwallList = document.getElementById('offerwallList');
+      
+      // Show iframe and hide list
+      iframe.src = url;
+      iframeContainer.classList.remove('hidden');
+      offerwallList.classList.add('hidden');
+    }
+
+    function closeIframe() {
+      const iframeContainer = document.getElementById('iframeContainer');
+      const offerwallList = document.getElementById('offerwallList');
+      const iframe = document.getElementById('offerwallFrame');
+      
+      // Hide iframe and show list
+      iframeContainer.classList.add('hidden');
+      offerwallList.classList.remove('hidden');
+      iframe.src = 'about:blank';
     }
 
     async function submitWork() {
       const text = document.getElementById("workInput").value.trim();
-      if (!text) return showAlert("Write something");
-      const res = await fetch(SCRIPT_URL, {method:"POST",body:new URLSearchParams({action:'submitWork',username:user.username,submission:text})});
-      const d = await res.json();
-      showAlert(d.message);
+      if (!text) return showAlert("Please write something");
+
+      const fd = new FormData();
+      fd.append("action", "submitWork");
+      fd.append("username", currentUser.username);
+      fd.append("submission", text);
+
+      const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
+      const data = await res.json();
+      showAlert(data.message);
       document.getElementById("workInput").value = "";
     }
 
     async function submitCashout() {
       const amount = document.getElementById("rewardSelect").value;
-      if (!amount) return showAlert("Select reward");
-      const res = await fetch(SCRIPT_URL, {method:"POST",body:new URLSearchParams({action:'submitCashout',username:user.username,reward:document.getElementById("rewardSelect").selectedOptions[0].text,amount}))});
-      const d = await res.json();
-      showAlert(d.message);
+      if (!amount) return showAlert("Please select a reward");
+
+      const fd = new FormData();
+      fd.append("action", "submitCashout");
+      fd.append("username", currentUser.username);
+      fd.append("reward", document.getElementById("rewardSelect").selectedOptions[0].text);
+      fd.append("amount", amount);
+
+      const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
+      const data = await res.json();
+      showAlert(data.message);
+
       document.getElementById("rewardSelect").value = "";
       document.getElementById("cashoutBtn").disabled = true;
     }
 
-    function logout() { localStorage.removeItem("quizbux_user"); location.reload(); }
-    function showAlert(msg) { document.getElementById("alertMessage").textContent = msg; document.getElementById("alertModal").classList.remove("hidden"); }
-    function closeAlert() { document.getElementById("alertModal").classList.add("hidden"); }
-    function showMsg(t) { showAlert(t + " - Coming soon!"); }
+    function logout() {
+      localStorage.removeItem("quizbux_user");
+      location.reload();
+    }
+
+    function showAlert(msg) {
+      document.getElementById("alertMessage").textContent = msg;
+      document.getElementById("alertModal").classList.remove("hidden");
+    }
+
+    function closeAlert() {
+      document.getElementById("alertModal").classList.add("hidden");
+    }
 
     window.onload = init;
   </script>
