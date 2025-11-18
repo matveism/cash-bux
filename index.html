@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QuizBux - Earn Real Money</title>
+  <style id="dynamic-styles">body{background:#111;color:#fff;font-family:system-ui;text-align:center;padding:50px;}</style>
+</head>
+<body>
+  <div id="loadingScreen"><h2>Loading QuizBux...</h2></div>
+  <div id="app" class="hidden">
+
+    <header id="header">
+      <img id="logo-img" src="" alt="Logo" style="height:50px;">
+      <div>
+        <button onclick="showMsg('Help')">Help</button>
+        <button onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <section id="loginScreen">
+      <div class="card">
+        <h1 id="loginTitle">Welcome Back</h1>
+        <p id="loginSubtitle">Sign in to earn money</p>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button id="loginBtn" onclick="login()">Login</button>
+      </div>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="profile">
+        <div class="avatar" id="userAvatar">U</div>
+        <div>
+          <h2 id="displayUsername">User</h2>
+          <strong id="balanceValue">0</strong> Points • <strong id="usdBalanceValue">$0.00</strong>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div><strong id="balanceValue2">0</strong><br>Points</div>
+        <div><strong id="usdBalanceValue2">$0.00</strong><br>USD Balance</div>
+      </div>
+
+      <div class="nav">
+        <button onclick="showPage('work')">Work</button>
+        <button onclick="showPage('offerwalls')">Offerwalls</button>
+        <button onclick="showPage('cashout')">Cashout</button>
+        <button onclick="showPage('terms')">Terms</button>
+      </div>
+
+      <div id="pages">
+        <div id="work" class="page">
+          <h3>Submit Work</h3>
+          <textarea id="workInput" placeholder="Describe your work..."></textarea>
+          <button onclick="submitWork()">Submit</button>
+        </div>
+
+        <div id="offerwalls" class="page hidden">
+          <h3>Earn More with Offerwalls</h3>
+          <div id="offerwallList">Loading offerwalls...</div>
+        </div>
+
+        <div id="cashout" class="page hidden">
+          <h3>Request Cashout</h3>
+          <select id="rewardSelect"><option>Select reward...</option></select>
+          <button onclick="submitCashout()" id="cashoutBtn" disabled>Request</button>
+        </div>
+
+        <div id="terms" class="page hidden">
+          <div id="termsContent"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="alertModal" class="hidden">
+    <div class="modal"><p id="alertMessage"></p><button onclick="closeAlert()">OK</button></div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEp9gDxpguJpVVaRAXzHCkOOwu40rH3gRhAet39nbLEXiprHzYzUcPseXUZD2aHGPscw/exec"; // ← REPLACE AFTER DEPLOY
+    let user = null;
+
+    async function init() {
+      const res = await fetch(SCRIPT_URL + "?action=getConfig");
+      const c = await res.json();
+      if (c.status === "success") {
+        document.getElementById("dynamic-styles").textContent = c.styles;
+        if (c.scripts) eval(c.scripts);
+        Object.keys(c.texts).forEach(id => { const el = document.getElementById(id); if(el) el.textContent = c.texts[id]; });
+        if (c.logo) document.getElementById("logo-img").src = c.logo;
+        if (c.terms) document.getElementById("termsContent").innerHTML = c.terms;
+
+        const sel = document.getElementById("rewardSelect");
+        c.offers.forEach(o => {
+          const opt = document.createElement("option");
+          opt.value = o.amount;
+          opt.textContent = `${o.name} ($${o.amount})`;
+          sel.appendChild(opt);
+        });
+        sel.onchange = () => document.getElementById("cashoutBtn").disabled = !sel.value;
+
+        document.getElementById("loadingScreen").classList.add("hidden");
+        document.getElementById("app").classList.remove("hidden");
+
+        const saved = localStorage.getItem("quizbux_user");
+        if (saved) restoreSession(JSON.parse(saved).username);
+      }
+    }
+
+    async function login() {
+      const u = document.getElementById("username").value.trim();
+      const p = document.getElementById("password").value;
+      if (!u || !p) return showAlert("Fill all fields");
+      const res = await fetch(SCRIPT_URL, {method:"POST",body:new URLSearchParams({action:'login',username:u,password:p})});
+      const d = await res.json();
+      if (d.status === "success") { user = d.user; localStorage.setItem("quizbux_user", JSON.stringify({username:u})); showDashboard(); loadOfferwalls(); }
+      else showAlert(d.message);
+    }
+
+    async function restoreSession(u) {
+      const res = await fetch(SCRIPT_URL + "?action=getUserData&username=" + u);
+      const d = await res.json();
+      if (d.status === "success") { user = d.user; showDashboard(); loadOfferwalls(); }
+    }
+
+    function showDashboard() {
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("dashboard").classList.remove("hidden");
+      document.getElementById("displayUsername").textContent = user.username;
+      document.getElementById("userAvatar").textContent = user.username[0].toUpperCase();
+      ["balanceValue","balanceValue2"].forEach(id => document.getElementById(id).textContent = user.balance);
+      ["usdBalanceValue","usdBalanceValue2"].forEach(id => document.getElementById(id).textContent = "$" + user.balanceUSD.toFixed(4));
+      showPage('work');
+    }
+
+    function showPage(id) {
+      document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+      document.getElementById(id).classList.remove("hidden");
+    }
+
+    async function loadOfferwalls() {
+      const res = await fetch(SCRIPT_URL + "?action=getOfferwalls&username=" + user.username);
+      const d = await res.json();
+      const container = document.getElementById("offerwallList");
+      if (d.offerwalls.length === 0) container.innerHTML = "<p>No active offerwalls</p>";
+      else {
+        container.innerHTML = d.offerwalls.map(w => 
+          `<div style="margin:20px;padding:20px;background:rgba(255,255,255,0.1);border-radius:12px;">
+            <h4>${w.name}</h4>
+            <button onclick="window.open('${w.url}','_blank')" style="padding:12px 24px;background:#4dccff;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;">
+              Start Earning
+            </button>
+          </div>`).join('');
+      }
+    }
+
+    async function submitWork() {
+      const text = document.getElementById("workInput").value.trim();
+      if (!text) return showAlert("Write something");
+      const res = await fetch(SCRIPT_URL, {method:"POST",body:new URLSearchParams({action:'submitWork',username:user.username,submission:text})});
+      const d = await res.json();
+      showAlert(d.message);
+      document.getElementById("workInput").value = "";
+    }
+
+    async function submitCashout() {
+      const amount = document.getElementById("rewardSelect").value;
+      if (!amount) return showAlert("Select reward");
+      const res = await fetch(SCRIPT_URL, {method:"POST",body:new URLSearchParams({action:'submitCashout',username:user.username,reward:document.getElementById("rewardSelect").selectedOptions[0].text,amount}))});
+      const d = await res.json();
+      showAlert(d.message);
+      document.getElementById("rewardSelect").value = "";
+      document.getElementById("cashoutBtn").disabled = true;
+    }
+
+    function logout() { localStorage.removeItem("quizbux_user"); location.reload(); }
+    function showAlert(msg) { document.getElementById("alertMessage").textContent = msg; document.getElementById("alertModal").classList.remove("hidden"); }
+    function closeAlert() { document.getElementById("alertModal").classList.add("hidden"); }
+    function showMsg(t) { showAlert(t + " - Coming soon!"); }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
