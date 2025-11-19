@@ -5,58 +5,453 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>QuizBux - Earn Real Money</title>
 
-  <!-- Your beautiful CSS will be injected from Styles sheet -->
   <style id="dynamic-styles">
-    body { margin:0; font-family:system-ui,sans-serif; background:#0f0f1a; color:white; min-height:100vh; display:flex; align-items:center; justify-content:center; }
-    .hidden { display:none !important; }
-    #loadingScreen { text-align:center; }
-    #loadingScreen h2 { font-size:32px; background:linear-gradient(90deg,#4dccff,#ff6b6b); -webkit-background-clip:text; color:transparent; }
-    
-    /* New styles for iframe offerwalls */
-    .offerwall-iframe { 
-      width: 100%; 
-      height: 600px; 
-      border: none; 
-      border-radius: 12px; 
-      background: white; 
+    :root {
+        --primary: #ff6b35;
+        --primary-dark: #c53d13;
+        --primary-light: #ff8e53;
+        --secondary: #c44569;
+        --accent: #ff9e7d;
+        --success: #4cd964;
+        --warning: #ffd166;
+        --text-light: #ffffff;
+        --text-dim: #e8e8e8;
+        --bg-gradient: linear-gradient(135deg, #2d1b3d 0%, #8b2a3d 50%, #d45a29 100%);
+        --bg-pattern: radial-gradient(circle at 20% 80%, rgba(255, 158, 125, 0.1) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, rgba(197, 61, 19, 0.15) 0%, transparent 50%),
+                      radial-gradient(circle at 40% 40%, rgba(139, 42, 61, 0.1) 0%, transparent 50%);
+        --bg-card: rgba(255, 255, 255, 0.12);
+        --bg-card-hover: rgba(255, 255, 255, 0.18);
+        --shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        --shadow-glow: 0 0 30px rgba(255, 107, 53, 0.3);
+        --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        --border-glow: 1px solid rgba(255, 158, 125, 0.3);
     }
-    .offerwall-item { 
-      margin: 20px 0; 
-      padding: 20px; 
-      background: rgba(255,255,255,0.08); 
-      border-radius: 16px; 
-      text-align: center; 
+
+    * { 
+        margin: 0; 
+        padding: 0; 
+        box-sizing: border-box; 
+        font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; 
     }
-    .offerwall-buttons { 
-      margin-top: 15px; 
-      display: flex; 
-      gap: 10px; 
-      justify-content: center; 
-      flex-wrap: wrap; 
+
+    body { 
+        background: var(--bg-gradient), var(--bg-pattern); 
+        color: var(--text-light); 
+        min-height: 100vh; 
+        overflow-x: hidden;
+        line-height: 1.6;
+        font-weight: 400;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
     }
-    .offerwall-buttons button { 
-      padding: 10px 20px; 
-      border: none; 
-      border-radius: 8px; 
-      cursor: pointer; 
-      font-weight: bold; 
+
+    .hidden { display: none !important; }
+
+    /* Loading Screen */
+    #loadingScreen { 
+        text-align: center; 
+        background: var(--bg-gradient), var(--bg-pattern);
+        padding: 40px;
+        border-radius: 24px;
+        backdrop-filter: blur(20px);
     }
+    #loadingScreen h2 { 
+        font-size: 2.5rem; 
+        background: linear-gradient(135deg, var(--accent), var(--primary));
+        -webkit-background-clip: text; 
+        background-clip: text;
+        color: transparent; 
+        margin-bottom: 1rem;
+    }
+
+    /* Auth Container */
+    .auth-container {
+        display: flex;
+        gap: 2rem;
+        max-width: 1000px;
+        width: 100%;
+    }
+
+    .auth-card {
+        flex: 1;
+        background: var(--bg-card);
+        backdrop-filter: blur(25px) saturate(180%);
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: var(--shadow);
+        border: var(--border-glow);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .auth-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        background-size: 200% 100%;
+        animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+        0%, 100% { background-position: -200% 0; }
+        50% { background-position: 200% 0; }
+    }
+
+    .auth-card h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+
+    .auth-card p {
+        color: var(--text-dim);
+        margin-bottom: 2rem;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+
+    .auth-input {
+        width: 100%;
+        padding: 1.2rem 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        color: var(--text-light);
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        transition: var(--transition);
+        outline: none;
+        backdrop-filter: blur(10px);
+    }
+
+    .auth-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(255, 158, 125, 0.3);
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .auth-btn {
+        width: 100%;
+        padding: 1.3rem;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        border: none;
+        border-radius: 16px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: var(--shadow-glow);
+        margin-bottom: 1rem;
+    }
+
+    .auth-btn:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 15px 30px rgba(255, 107, 53, 0.5);
+    }
+
+    .auth-switch {
+        text-align: center;
+        color: var(--text-dim);
+        margin-top: 1.5rem;
+    }
+
+    .auth-switch a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .auth-switch a:hover {
+        text-decoration: underline;
+    }
+
+    /* Verification Code */
+    .verification-code {
+        display: flex;
+        gap: 0.8rem;
+        justify-content: center;
+        margin: 2rem 0;
+    }
+
+    .code-input {
+        width: 60px;
+        height: 70px;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: var(--text-light);
+        transition: var(--transition);
+    }
+
+    .code-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(255, 158, 125, 0.3);
+        transform: scale(1.05);
+    }
+
+    /* Header */
+    #header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        background: var(--bg-card);
+        backdrop-filter: blur(20px) saturate(180%);
+        border-radius: 24px;
+        margin: 1.5rem;
+        box-shadow: var(--shadow);
+        border: var(--border-glow);
+    }
+
+    #logo-img {
+        height: 50px;
+        border-radius: 12px;
+    }
+
+    #header button {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--text-light);
+        padding: 0.75rem 1.5rem;
+        border-radius: 14px;
+        cursor: pointer;
+        transition: var(--transition);
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+
+    #header button:hover {
+        background: var(--primary);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-glow);
+    }
+
+    /* Dashboard */
+    .profile {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        background: var(--bg-card);
+        backdrop-filter: blur(20px);
+        padding: 2rem;
+        border-radius: 24px;
+        margin: 1.5rem;
+        box-shadow: var(--shadow);
+        border: var(--border-glow);
+    }
+
+    .avatar {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 700;
+        box-shadow: var(--shadow-glow);
+    }
+
+    .nav {
+        display: flex;
+        background: var(--bg-card);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        overflow: hidden;
+        margin: 1.5rem;
+        box-shadow: var(--shadow);
+        border: var(--border-glow);
+    }
+
+    .nav button {
+        flex: 1;
+        padding: 1.2rem;
+        background: transparent;
+        border: none;
+        color: var(--text-dim);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .nav button:hover {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(196, 69, 105, 0.2));
+        color: var(--text-light);
+    }
+
+    .page {
+        background: var(--bg-card);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 2.5rem;
+        margin: 1.5rem;
+        box-shadow: var(--shadow);
+        min-height: 400px;
+        border: var(--border-glow);
+    }
+
+    .page h3 {
+        font-size: 1.8rem;
+        color: var(--accent);
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+    }
+
+    /* Offerwalls */
+    .offerwall-iframe {
+        width: 100%;
+        height: 600px;
+        border: none;
+        border-radius: 16px;
+        background: white;
+    }
+
+    .offerwall-item {
+        background: linear-gradient(135deg, rgba(40, 25, 55, 0.9), rgba(70, 35, 55, 0.9));
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
+        margin: 1rem 0;
+        border: 1px solid rgba(255, 158, 125, 0.15);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        transition: var(--transition);
+    }
+
+    .offerwall-item:hover {
+        transform: translateY(-5px);
+        border-color: rgba(255, 158, 125, 0.3);
+    }
+
+    .offerwall-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+    }
+
+    .offerwall-buttons button {
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .offerwall-buttons button:first-child {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+    }
+
+    .offerwall-buttons button:last-child {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--text-light);
+    }
+
+    .offerwall-buttons button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+    }
+
     .iframe-container {
-      position: relative;
-      margin: 20px 0;
+        position: relative;
+        margin: 2rem 0;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
     }
+
     .close-iframe {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: #ff6b6b;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-      z-index: 1000;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        z-index: 1000;
+        font-size: 1.2rem;
+        font-weight: bold;
+        box-shadow: var(--shadow);
+    }
+
+    /* Alert Modal */
+    #alertModal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(15px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    #alertModal .modal {
+        background: var(--bg-card);
+        backdrop-filter: blur(25px);
+        padding: 3rem;
+        border-radius: 24px;
+        max-width: 450px;
+        text-align: center;
+        box-shadow: var(--shadow);
+        border: var(--border-glow);
+    }
+
+    #alertModal button {
+        margin-top: 1.5rem;
+        padding: 1rem 2.5rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border: none;
+        border-radius: 14px;
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .auth-container {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .auth-card {
+            padding: 2rem;
+        }
+        
+        .verification-code {
+            gap: 0.5rem;
+        }
+        
+        .code-input {
+            width: 50px;
+            height: 60px;
+            font-size: 1.2rem;
+        }
     }
   </style>
 </head>
@@ -73,21 +468,58 @@
 
     <!-- Header -->
     <header id="header">
-      <img id="logo-img" src="" alt="Logo" style="height:50px; border-radius:8px;">
+      <img id="logo-img" src="" alt="Logo">
       <div>
         <button onclick="showAlert('Support coming soon')">Help</button>
         <button onclick="logout()">Logout</button>
       </div>
     </header>
 
-    <!-- Login Screen -->
-    <section id="loginScreen">
-      <div class="card">
-        <h1>Welcome Back</h1>
-        <p>Sign in to start earning</p>
-        <input type="text" id="username" placeholder="Username" autocomplete="off">
-        <input type="password" id="password" placeholder="Password" autocomplete="off">
-        <button id="loginBtn" onclick="login()">Login</button>
+    <!-- Auth Screens -->
+    <section id="authScreens">
+      <div class="auth-container">
+        <!-- Login Card -->
+        <div id="loginCard" class="auth-card">
+          <h1>Welcome Back</h1>
+          <p>Sign in to start earning</p>
+          <input type="text" id="loginUsername" class="auth-input" placeholder="Username" autocomplete="off">
+          <input type="password" id="loginPassword" class="auth-input" placeholder="Password" autocomplete="off">
+          <button class="auth-btn" onclick="login()">Login</button>
+          <div class="auth-switch">
+            Don't have an account? <a onclick="showSignup()">Sign up</a>
+          </div>
+        </div>
+
+        <!-- Signup Card -->
+        <div id="signupCard" class="auth-card hidden">
+          <h1>Create Account</h1>
+          <p>Join now to start earning</p>
+          <input type="text" id="signupUsername" class="auth-input" placeholder="Choose Username" autocomplete="off">
+          <input type="email" id="signupEmail" class="auth-input" placeholder="Email Address" autocomplete="off">
+          <input type="password" id="signupPassword" class="auth-input" placeholder="Create Password" autocomplete="off">
+          <button class="auth-btn" onclick="signup()">Create Account</button>
+          <div class="auth-switch">
+            Already have an account? <a onclick="showLogin()">Login</a>
+          </div>
+        </div>
+
+        <!-- Verification Card -->
+        <div id="verifyCard" class="auth-card hidden">
+          <h1>Verify Email</h1>
+          <p>We sent a 6-digit code to your email</p>
+          <div class="verification-code">
+            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 1)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 2)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 3)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 4)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 5)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 6)">
+          </div>
+          <button class="auth-btn" onclick="verifyEmail()">Verify Code</button>
+          <div class="auth-switch">
+            Didn't receive code? <a onclick="resendCode()">Resend</a>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -112,13 +544,12 @@
       </nav>
 
       <div id="pages">
-
         <!-- Work Page -->
         <div id="work" class="page">
           <h3>Submit Your Work</h3>
-          <textarea id="workInput" placeholder="Describe what you did today... (e.g. completed surveys, watched videos, etc.)"></textarea>
-          <button onclick="submitWork()">Submit Work</button>
-          <p style="margin-top:10px;font-size:14px;color:#aaa;">
+          <textarea id="workInput" class="auth-input" placeholder="Describe what you did today... (e.g. completed surveys, watched videos, etc.)" style="height: 160px;"></textarea>
+          <button class="auth-btn" onclick="submitWork()">Submit Work</button>
+          <p style="margin-top: 1rem; color: var(--text-dim);">
             Approved work = 50 Points + $0.001 USD
           </p>
         </div>
@@ -129,7 +560,6 @@
           <div id="offerwallList">
             <p>Loading offerwalls...</p>
           </div>
-          <!-- Iframe container for displaying offerwalls -->
           <div id="iframeContainer" class="iframe-container hidden">
             <button class="close-iframe" onclick="closeIframe()">×</button>
             <iframe id="offerwallFrame" class="offerwall-iframe" src="about:blank"></iframe>
@@ -139,11 +569,11 @@
         <!-- Cashout Page -->
         <div id="cashout" class="page hidden">
           <h3>Request Cashout</h3>
-          <select id="rewardSelect">
+          <select id="rewardSelect" class="auth-input">
             <option value="">Choose reward...</option>
           </select>
-          <button id="cashoutBtn" onclick="submitCashout()" disabled>Request Cashout</button>
-          <p style="margin-top:15px;font-size:14px;">
+          <button id="cashoutBtn" class="auth-btn" onclick="submitCashout()" disabled>Request Cashout</button>
+          <p style="margin-top: 1rem; color: var(--text-dim);">
             1 USD = 50,000 Points<br>
             You need both Points & USD balance
           </p>
@@ -151,9 +581,8 @@
 
         <!-- Terms Page -->
         <div id="terms" class="page hidden">
-          <div id="termsContent" style="text-align:left;padding:20px;"></div>
+          <div id="termsContent" style="text-align: left;"></div>
         </div>
-
       </div>
     </section>
   </div>
@@ -168,10 +597,10 @@
 
   <!-- MAIN SCRIPT -->
   <script>
-    // CHANGE THIS TO YOUR WEB APP URL AFTER DEPLOYING
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEp9gDxpguJpVVaRAXzHCkOOwu40rH3gRhAet39nbLEXiprHzYzUcPseXUZD2aHGPscw/exec";
 
     let currentUser = null;
+    let pendingUser = null;
 
     async function init() {
       try {
@@ -179,28 +608,22 @@
         const config = await res.json();
 
         if (config.status === "success") {
-          // Inject CSS
-          document.getElementById("dynamic-styles").textContent = config.styles || "body{background:#111;color:white;}";
-
-          // Inject JS
-          if (config.scripts) {
-            const s = document.createElement("script");
-            s.textContent = config.scripts;
-            document.body.appendChild(s);
+          // Inject additional CSS if any
+          if (config.styles) {
+            document.getElementById("dynamic-styles").textContent += config.styles;
           }
 
-          // Texts
+          // Texts and logo
           Object.keys(config.texts || {}).forEach(id => {
             const el = document.getElementById(id);
             if (el) el.textContent = config.texts[id];
           });
 
-          // Logo
           if (config.logo) document.getElementById("logo-img").src = config.logo;
 
           // Offers
           const select = document.getElementById("rewardSelect");
-          config.offers.forEach(o => {
+          (config.offers || []).forEach(o => {
             const opt = document.createElement("option");
             opt.value = o.amount;
             opt.textContent = `${o.name} ($${o.amount.toFixed(2)})`;
@@ -224,26 +647,153 @@
       }
     }
 
+    function showLogin() {
+      document.getElementById("signupCard").classList.add("hidden");
+      document.getElementById("verifyCard").classList.add("hidden");
+      document.getElementById("loginCard").classList.remove("hidden");
+    }
+
+    function showSignup() {
+      document.getElementById("loginCard").classList.add("hidden");
+      document.getElementById("verifyCard").classList.add("hidden");
+      document.getElementById("signupCard").classList.remove("hidden");
+    }
+
+    function showVerification() {
+      document.getElementById("loginCard").classList.add("hidden");
+      document.getElementById("signupCard").classList.add("hidden");
+      document.getElementById("verifyCard").classList.remove("hidden");
+      // Clear and focus first input
+      document.querySelectorAll('.code-input').forEach(input => input.value = '');
+      document.querySelector('.code-input').focus();
+    }
+
+    function moveToNext(input, nextIndex) {
+      if (input.value.length === 1) {
+        const nextInput = document.querySelectorAll('.code-input')[nextIndex];
+        if (nextInput) nextInput.focus();
+      }
+    }
+
+    async function signup() {
+      const username = document.getElementById("signupUsername").value.trim();
+      const email = document.getElementById("signupEmail").value.trim();
+      const password = document.getElementById("signupPassword").value;
+
+      if (!username || !email || !password) {
+        return showAlert("Please fill all fields");
+      }
+
+      if (username.length < 3) {
+        return showAlert("Username must be at least 3 characters");
+      }
+
+      if (password.length < 6) {
+        return showAlert("Password must be at least 6 characters");
+      }
+
+      const fd = new FormData();
+      fd.append("action", "signup");
+      fd.append("username", username);
+      fd.append("email", email);
+      fd.append("password", password);
+
+      try {
+        const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
+        const data = await res.json();
+
+        if (data.status === "success") {
+          pendingUser = { username, email, password };
+          showVerification();
+          showAlert("Verification code sent to your email!");
+        } else {
+          showAlert(data.message || "Signup failed");
+        }
+      } catch (e) {
+        showAlert("Network error. Please try again.");
+      }
+    }
+
+    async function verifyEmail() {
+      const codeInputs = document.querySelectorAll('.code-input');
+      const code = Array.from(codeInputs).map(input => input.value).join('');
+
+      if (code.length !== 6) {
+        return showAlert("Please enter the 6-digit code");
+      }
+
+      const fd = new FormData();
+      fd.append("action", "verifyEmail");
+      fd.append("username", pendingUser.username);
+      fd.append("email", pendingUser.email);
+      fd.append("password", pendingUser.password);
+      fd.append("code", code);
+
+      try {
+        const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
+        const data = await res.json();
+
+        if (data.status === "success") {
+          showAlert("Account verified successfully! You can now login.");
+          showLogin();
+          pendingUser = null;
+        } else {
+          showAlert(data.message || "Verification failed");
+        }
+      } catch (e) {
+        showAlert("Network error. Please try again.");
+      }
+    }
+
+    async function resendCode() {
+      if (!pendingUser) return;
+
+      const fd = new FormData();
+      fd.append("action", "resendCode");
+      fd.append("username", pendingUser.username);
+      fd.append("email", pendingUser.email);
+
+      try {
+        const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
+        const data = await res.json();
+
+        if (data.status === "success") {
+          showAlert("New verification code sent!");
+        } else {
+          showAlert(data.message || "Failed to resend code");
+        }
+      } catch (e) {
+        showAlert("Network error. Please try again.");
+      }
+    }
+
     async function login() {
-      const u = document.getElementById("username").value.trim();
-      const p = document.getElementById("password").value;
-      if (!u || !p) return showAlert("Please fill all fields");
+      const username = document.getElementById("loginUsername").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      if (!username || !password) {
+        return showAlert("Please fill all fields");
+      }
 
       const fd = new FormData();
       fd.append("action", "login");
-      fd.append("username", u);
-      fd.append("password", p);
+      fd.append("username", username);
+      fd.append("password", password);
 
-      const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
-      const data = await res.json();
+      try {
+        const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
+        const data = await res.json();
 
-      if (data.status === "success") {
-        currentUser = data.user;
-        localStorage.setItem("quizbux_user", JSON.stringify({ username: u }));
-        showDashboard();
-        loadOfferwalls();
-      } else {
-        showAlert(data.message || "Login failed");
+        if (data.status === "success") {
+          currentUser = data.user;
+          localStorage.setItem("quizbux_user", JSON.stringify({ username }));
+          showDashboard();
+          loadOfferwalls();
+        } else {
+          showAlert(data.message || "Login failed");
+        }
+      } catch (e) {
+        showAlert("Network error. Please try again.");
       }
     }
 
@@ -258,7 +808,7 @@
     }
 
     function showDashboard() {
-      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("authScreens").classList.add("hidden");
       document.getElementById("dashboard").classList.remove("hidden");
 
       document.getElementById("displayUsername").textContent = currentUser.username;
@@ -288,17 +838,11 @@
       
       container.innerHTML = data.offerwalls.map(w => `
         <div class="offerwall-item">
-          <h4 style="margin-bottom:15px;">${w.name}</h4>
-          <p style="color:#aaa;margin-bottom:15px;">${w.description || 'Complete offers to earn rewards'}</p>
+          <h4>${w.name}</h4>
+          <p>${w.description || 'Complete offers to earn rewards'}</p>
           <div class="offerwall-buttons">
-            <button onclick="openOfferwallInIframe('${w.id}', '${w.url}')" 
-              style="background:#4dccff;color:black;">
-              Open in App
-            </button>
-            <button onclick="window.open('${w.url}', '_blank')" 
-              style="background:#ff6b6b;color:white;">
-              Open in New Tab
-            </button>
+            <button onclick="openOfferwallInIframe('${w.id}', '${w.url}')">Open in App</button>
+            <button onclick="window.open('${w.url}', '_blank')">Open in New Tab</button>
           </div>
         </div>
       `).join("");
@@ -309,7 +853,6 @@
       const iframeContainer = document.getElementById('iframeContainer');
       const offerwallList = document.getElementById('offerwallList');
       
-      // Show iframe and hide list
       iframe.src = url;
       iframeContainer.classList.remove('hidden');
       offerwallList.classList.add('hidden');
@@ -320,7 +863,6 @@
       const offerwallList = document.getElementById('offerwallList');
       const iframe = document.getElementById('offerwallFrame');
       
-      // Hide iframe and show list
       iframeContainer.classList.add('hidden');
       offerwallList.classList.remove('hidden');
       iframe.src = 'about:blank';
