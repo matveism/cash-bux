@@ -14,6 +14,7 @@
         --accent: #ff9e7d;
         --success: #4cd964;
         --warning: #ffd166;
+        --error: #ff4757;
         --text-light: #ffffff;
         --text-dim: #e8e8e8;
         --bg-gradient: linear-gradient(135deg, #2d1b3d 0%, #8b2a3d 50%, #d45a29 100%);
@@ -226,6 +227,11 @@
         border-radius: 12px;
     }
 
+    .header-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
     #header button {
         background: rgba(255, 255, 255, 0.15);
         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -235,7 +241,6 @@
         cursor: pointer;
         transition: var(--transition);
         font-weight: 600;
-        margin-left: 0.5rem;
     }
 
     #header button:hover {
@@ -269,6 +274,25 @@
         font-size: 2rem;
         font-weight: 700;
         box-shadow: var(--shadow-glow);
+    }
+
+    .user-status {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+
+    .status-active {
+        background: var(--success);
+        color: white;
+    }
+
+    .status-suspended {
+        background: var(--error);
+        color: white;
     }
 
     .nav {
@@ -341,6 +365,24 @@
         border-color: rgba(255, 158, 125, 0.3);
     }
 
+    .offerwall-requirements {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.8rem;
+        border-radius: 12px;
+        margin: 1rem 0;
+        text-align: center;
+    }
+
+    .offerwall-requirements.unlocked {
+        background: rgba(76, 217, 100, 0.2);
+        border: 1px solid var(--success);
+    }
+
+    .offerwall-requirements.locked {
+        background: rgba(255, 71, 87, 0.2);
+        border: 1px solid var(--error);
+    }
+
     .offerwall-buttons {
         display: flex;
         gap: 1rem;
@@ -368,7 +410,14 @@
         color: var(--text-light);
     }
 
-    .offerwall-buttons button:hover {
+    .offerwall-buttons button:disabled {
+        background: #555;
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+    .offerwall-buttons button:hover:not(:disabled) {
         transform: translateY(-3px);
         box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
     }
@@ -398,6 +447,167 @@
         box-shadow: var(--shadow);
     }
 
+    /* Cashout History */
+    .cashout-history {
+        margin-top: 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 1.5rem;
+    }
+
+    .cashout-item {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 1.2rem;
+        margin: 0.8rem 0;
+        border-left: 4px solid var(--accent);
+    }
+
+    .cashout-status {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+
+    .status-pending {
+        background: var(--warning);
+        color: black;
+    }
+
+    .status-approved {
+        background: var(--success);
+        color: white;
+    }
+
+    .status-rejected {
+        background: var(--error);
+        color: white;
+    }
+
+    .admin-notes {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.8rem;
+        border-radius: 8px;
+        margin-top: 0.8rem;
+        font-size: 0.9rem;
+        color: var(--text-dim);
+    }
+
+    /* Chat System */
+    #chatToggle {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: var(--shadow-glow);
+        z-index: 1000;
+        transition: var(--transition);
+    }
+
+    #chatToggle:hover {
+        transform: scale(1.1);
+    }
+
+    #chatBox {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        width: 350px;
+        height: 500px;
+        background: var(--bg-card);
+        backdrop-filter: blur(25px);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        border: var(--border-glow);
+        display: flex;
+        flex-direction: column;
+        z-index: 999;
+        transition: var(--transition);
+    }
+
+    .chat-header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        padding: 1.2rem;
+        border-radius: 20px 20px 0 0;
+        font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 1.2rem;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .chat-message {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.8rem 1rem;
+        border-radius: 12px;
+        max-width: 80%;
+        word-wrap: break-word;
+    }
+
+    .chat-message.own {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        align-self: flex-end;
+    }
+
+    .chat-message.other {
+        background: rgba(255, 255, 255, 0.15);
+        align-self: flex-start;
+    }
+
+    .message-sender {
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        color: var(--accent);
+    }
+
+    .chat-input-container {
+        padding: 1.2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .chat-input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: var(--text-light);
+        font-size: 0.9rem;
+        resize: none;
+        outline: none;
+    }
+
+    .chat-input:focus {
+        border-color: var(--accent);
+    }
+
     /* Alert Modal */
     #alertModal {
         position: fixed;
@@ -417,7 +627,7 @@
         border-radius: 24px;
         max-width: 450px;
         text-align: center;
-        box-shadow: var(--shadow);
+        box-shadow: var(--shadow), 0 0 40px rgba(255, 107, 53, 0.2);
         border: var(--border-glow);
     }
 
@@ -452,6 +662,23 @@
             height: 60px;
             font-size: 1.2rem;
         }
+
+        #chatBox {
+            width: 300px;
+            height: 400px;
+            right: 20px;
+            bottom: 80px;
+        }
+
+        .header-buttons {
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        #header button {
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
     }
   </style>
 </head>
@@ -469,8 +696,9 @@
     <!-- Header -->
     <header id="header">
       <img id="logo-img" src="" alt="Logo">
-      <div>
-        <button onclick="showAlert('Support coming soon')">Help</button>
+      <div class="header-buttons">
+        <button onclick="toggleChat()">💬 Chat</button>
+        <button onclick="showAlert('Support: contact@quizbux.com')">Help</button>
         <button onclick="logout()">Logout</button>
       </div>
     </header>
@@ -528,7 +756,7 @@
       <div class="profile">
         <div class="avatar" id="userAvatar">U</div>
         <div>
-          <h2 id="displayUsername">User</h2>
+          <h2 id="displayUsername">User <span id="userStatus" class="user-status status-active">Active</span></h2>
           <div>
             <strong id="balanceValue">0</strong> Points • 
             <strong id="usdBalanceValue">$0.0000</strong>
@@ -577,6 +805,14 @@
             1 USD = 50,000 Points<br>
             You need both Points & USD balance
           </p>
+
+          <!-- Cashout History -->
+          <div class="cashout-history">
+            <h4>Cashout History</h4>
+            <div id="cashoutHistory">
+              <p>Loading history...</p>
+            </div>
+          </div>
         </div>
 
         <!-- Terms Page -->
@@ -585,6 +821,24 @@
         </div>
       </div>
     </section>
+  </div>
+
+  <!-- Chat System -->
+  <button id="chatToggle" class="hidden">💬</button>
+  <div id="chatBox" class="hidden">
+    <div class="chat-header">
+      <span>Support Chat</span>
+      <button class="chat-close" onclick="toggleChat()">×</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-message other">
+        <div class="message-sender">Support</div>
+        Welcome to QuizBux! How can we help you?
+      </div>
+    </div>
+    <div class="chat-input-container">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." onkeypress="handleChatInput(event)">
+    </div>
   </div>
 
   <!-- Alert Modal -->
@@ -601,6 +855,7 @@
 
     let currentUser = null;
     let pendingUser = null;
+    let chatInterval = null;
 
     async function init() {
       try {
@@ -789,6 +1044,8 @@
           localStorage.setItem("quizbux_user", JSON.stringify({ username }));
           showDashboard();
           loadOfferwalls();
+          loadCashoutHistory();
+          startChatPolling();
         } else {
           showAlert(data.message || "Login failed");
         }
@@ -804,17 +1061,25 @@
         currentUser = data.user;
         showDashboard();
         loadOfferwalls();
+        loadCashoutHistory();
+        startChatPolling();
       }
     }
 
     function showDashboard() {
       document.getElementById("authScreens").classList.add("hidden");
       document.getElementById("dashboard").classList.remove("hidden");
+      document.getElementById("chatToggle").classList.remove("hidden");
 
       document.getElementById("displayUsername").textContent = currentUser.username;
       document.getElementById("userAvatar").textContent = currentUser.username[0].toUpperCase();
       document.getElementById("balanceValue").textContent = Number(currentUser.balance).toLocaleString();
       document.getElementById("usdBalanceValue").textContent = "$" + Number(currentUser.balanceUSD).toFixed(4);
+
+      // Update user status
+      const statusElement = document.getElementById("userStatus");
+      statusElement.textContent = currentUser.status || 'Active';
+      statusElement.className = `user-status status-${(currentUser.status || 'active').toLowerCase()}`;
 
       showPage("work");
     }
@@ -823,6 +1088,7 @@
       document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
       document.getElementById(id).classList.remove("hidden");
       if (id === "offerwalls") loadOfferwalls();
+      if (id === "cashout") loadCashoutHistory();
     }
 
     async function loadOfferwalls() {
@@ -836,16 +1102,32 @@
         return;
       }
       
-      container.innerHTML = data.offerwalls.map(w => `
+      container.innerHTML = data.offerwalls.map(w => {
+        const hasEnoughPoints = currentUser.balance >= (w.pointsRequired || 0);
+        const isUnlocked = hasEnoughPoints && (w.status === 'active');
+        
+        return `
         <div class="offerwall-item">
           <h4>${w.name}</h4>
           <p>${w.description || 'Complete offers to earn rewards'}</p>
+          <div class="offerwall-requirements ${isUnlocked ? 'unlocked' : 'locked'}">
+            ${isUnlocked ? 
+              '✅ Unlocked - Ready to earn!' : 
+              `🔒 Requires ${w.pointsRequired || 0} points to unlock (You have ${currentUser.balance})`
+            }
+          </div>
           <div class="offerwall-buttons">
-            <button onclick="openOfferwallInIframe('${w.id}', '${w.url}')">Open in App</button>
-            <button onclick="window.open('${w.url}', '_blank')">Open in New Tab</button>
+            <button onclick="openOfferwallInIframe('${w.id}', '${w.url}')" 
+                    ${!isUnlocked ? 'disabled' : ''}>
+              Open in App
+            </button>
+            <button onclick="window.open('${w.url}', '_blank')" 
+                    ${!isUnlocked ? 'disabled' : ''}>
+              Open in New Tab
+            </button>
           </div>
         </div>
-      `).join("");
+      `}).join("");
     }
 
     function openOfferwallInIframe(offerwallId, url) {
@@ -899,10 +1181,107 @@
 
       document.getElementById("rewardSelect").value = "";
       document.getElementById("cashoutBtn").disabled = true;
+      loadCashoutHistory();
+    }
+
+    async function loadCashoutHistory() {
+      if (!currentUser) return;
+      
+      const res = await fetch(SCRIPT_URL + "?action=getCashoutHistory&username=" + currentUser.username);
+      const data = await res.json();
+      const container = document.getElementById("cashoutHistory");
+      
+      if (data.status === "success" && data.history && data.history.length > 0) {
+        container.innerHTML = data.history.map(item => `
+          <div class="cashout-item">
+            <strong>${item.reward}</strong> - $${item.amount} 
+            <span class="cashout-status status-${item.status.toLowerCase()}">${item.status}</span>
+            <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.5rem;">
+              ${new Date(item.date).toLocaleDateString()}
+            </div>
+            ${item.adminNotes ? `
+              <div class="admin-notes">
+                <strong>Admin Notes:</strong> ${item.adminNotes}
+              </div>
+            ` : ''}
+          </div>
+        `).join("");
+      } else {
+        container.innerHTML = "<p>No cashout history yet.</p>";
+      }
+    }
+
+    // Chat System Functions
+    function toggleChat() {
+      const chatBox = document.getElementById('chatBox');
+      const chatToggle = document.getElementById('chatToggle');
+      
+      if (chatBox.classList.contains('hidden')) {
+        chatBox.classList.remove('hidden');
+        chatToggle.textContent = '✖';
+        loadChatMessages();
+      } else {
+        chatBox.classList.add('hidden');
+        chatToggle.textContent = '💬';
+      }
+    }
+
+    function handleChatInput(event) {
+      if (event.key === 'Enter') {
+        sendChatMessage();
+      }
+    }
+
+    async function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      
+      if (!message || !currentUser) return;
+      
+      const fd = new FormData();
+      fd.append("action", "sendChatMessage");
+      fd.append("username", currentUser.username);
+      fd.append("message", message);
+
+      try {
+        await fetch(SCRIPT_URL, { method: "POST", body: fd });
+        input.value = "";
+        loadChatMessages();
+      } catch (e) {
+        showAlert("Failed to send message");
+      }
+    }
+
+    async function loadChatMessages() {
+      if (!currentUser) return;
+      
+      const res = await fetch(SCRIPT_URL + "?action=getChatMessages");
+      const data = await res.json();
+      const container = document.getElementById('chatMessages');
+      
+      if (data.status === "success") {
+        container.innerHTML = data.messages.map(msg => `
+          <div class="chat-message ${msg.username === currentUser.username ? 'own' : 'other'}">
+            <div class="message-sender">${msg.username}</div>
+            ${msg.message}
+          </div>
+        `).join("");
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+
+    function startChatPolling() {
+      // Load messages every 5 seconds if chat is open
+      chatInterval = setInterval(() => {
+        if (!document.getElementById('chatBox').classList.contains('hidden')) {
+          loadChatMessages();
+        }
+      }, 5000);
     }
 
     function logout() {
       localStorage.removeItem("quizbux_user");
+      if (chatInterval) clearInterval(chatInterval);
       location.reload();
     }
 
