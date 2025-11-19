@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>QuizBux - Earn Real Money</title>
-
   <style id="dynamic-styles">
     :root {
         --primary: #ff6b35;
@@ -28,54 +27,35 @@
         --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         --border-glow: 1px solid rgba(255, 158, 125, 0.3);
     }
-
-    * { 
-        margin: 0; 
-        padding: 0; 
-        box-sizing: border-box; 
-        font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; 
-    }
-
-    body { 
-        background: var(--bg-gradient), var(--bg-pattern); 
-        color: var(--text-light); 
-        min-height: 100vh; 
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif; }
+    body {
+        background: var(--bg-gradient), var(--bg-pattern);
+        background-attachment: fixed;
+        color: var(--text-light);
+        min-height: 100vh;
         overflow-x: hidden;
         line-height: 1.6;
-        font-weight: 400;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 20px;
     }
-
     .hidden { display: none !important; }
-
-    /* Loading Screen */
-    #loadingScreen { 
-        text-align: center; 
-        background: var(--bg-gradient), var(--bg-pattern);
+    #loadingScreen {
+        text-align: center;
+        background: rgba(0,0,0,0.8);
         padding: 40px;
         border-radius: 24px;
         backdrop-filter: blur(20px);
     }
-    #loadingScreen h2 { 
-        font-size: 2.5rem; 
+    #loadingScreen h2 {
+        font-size: 2.5rem;
         background: linear-gradient(135deg, var(--accent), var(--primary));
-        -webkit-background-clip: text; 
+        -webkit-background-clip: text;
         background-clip: text;
-        color: transparent; 
-        margin-bottom: 1rem;
+        color: transparent;
     }
-
-    /* Auth Container */
-    .auth-container {
-        display: flex;
-        gap: 2rem;
-        max-width: 1000px;
-        width: 100%;
-    }
-
+    .auth-container { display: flex; gap: 2rem; max-width: 1000px; width: 100%; }
     .auth-card {
         flex: 1;
         background: var(--bg-card);
@@ -87,865 +67,271 @@
         position: relative;
         overflow: hidden;
     }
-
     .auth-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 6px;
+        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px;
         background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
         background-size: 200% 100%;
         animation: shimmer 3s ease-in-out infinite;
     }
-
-    @keyframes shimmer {
-        0%, 100% { background-position: -200% 0; }
-        50% { background-position: 200% 0; }
-    }
-
+    @keyframes shimmer { 0%, 100% { background-position: -200% 0; } 50% { background-position: 200% 0; } }
     .auth-card h1 {
-        font-size: 2.5rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        margin-bottom: 0.5rem;
-        text-align: center;
+        font-size: 2.5rem; font-weight: 800;
+        background: linear-gradient(135deg, var(--accent), var(--primary));
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+        text-align: center; margin-bottom: 0.5rem;
     }
-
-    .auth-card p {
-        color: var(--text-dim);
-        margin-bottom: 2rem;
-        text-align: center;
-        font-size: 1.1rem;
-    }
-
     .auth-input {
-        width: 100%;
-        padding: 1.2rem 1.5rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 16px;
-        color: var(--text-light);
-        font-size: 1rem;
-        margin-bottom: 1.5rem;
-        transition: var(--transition);
-        outline: none;
-        backdrop-filter: blur(10px);
+        width: 100%; padding: 1.2rem 1.5rem; background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; color: white;
+        font-size: 1rem; margin-bottom: 1.5rem; outline: none; backdrop-filter: blur(10px);
     }
-
-    .auth-input:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(255, 158, 125, 0.3);
-        transform: translateY(-2px);
-        background: rgba(255, 255, 255, 0.15);
-    }
-
+    .auth-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,158,125,0.3); }
     .auth-btn {
-        width: 100%;
-        padding: 1.3rem;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-        border: none;
-        border-radius: 16px;
-        color: white;
-        font-size: 1.1rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: var(--transition);
-        box-shadow: var(--shadow-glow);
-        margin-bottom: 1rem;
+        width: 100%; padding: 1.3rem; background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border: none; border-radius: 16px; color: white; font-size: 1.1rem; font-weight: 700;
+        cursor: pointer; box-shadow: var(--shadow-glow); margin-bottom: 1rem;
     }
-
-    .auth-btn:hover {
-        transform: translateY(-4px) scale(1.02);
-        box-shadow: 0 15px 30px rgba(255, 107, 53, 0.5);
-    }
-
-    .auth-switch {
-        text-align: center;
-        color: var(--text-dim);
-        margin-top: 1.5rem;
-    }
-
-    .auth-switch a {
-        color: var(--accent);
-        text-decoration: none;
-        font-weight: 600;
-        cursor: pointer;
-    }
-
-    .auth-switch a:hover {
-        text-decoration: underline;
-    }
-
-    /* Verification Code */
-    .verification-code {
-        display: flex;
-        gap: 0.8rem;
-        justify-content: center;
-        margin: 2rem 0;
-    }
-
+    .auth-btn:hover { transform: translateY(-4px); }
+    .auth-switch { text-align: center; color: var(--text-dim); margin-top: 1.5rem; }
+    .auth-switch a { color: var(--accent); text-decoration: none; font-weight: 600; cursor: pointer; }
+    .verification-code { display: flex; gap: 0.8rem; justify-content: center; margin: 2rem 0; }
     .code-input {
-        width: 60px;
-        height: 70px;
-        text-align: center;
-        font-size: 1.5rem;
-        font-weight: 700;
-        background: rgba(255, 255, 255, 0.1);
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        color: var(--text-light);
-        transition: var(--transition);
+        width: 60px; height: 70px; text-align: center; font-size: 1.8rem; font-weight: 700;
+        background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 12px; color: white;
     }
-
-    .code-input:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(255, 158, 125, 0.3);
-        transform: scale(1.05);
+    #header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 2rem;
+        background: var(--bg-card); backdrop-filter: blur(20px); border-radius: 24px; margin: 1.5rem;
+        box-shadow: var(--shadow); border: var(--border-glow); }
+    #logo-img { height: 50px; border-radius: 12px; }
+    .header-buttons button {
+        background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2);
+        color: white; padding: 0.75rem 1.5rem; border-radius: 14px; cursor: pointer; margin-left: 0.5rem;
     }
-
-    /* Header */
-    #header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.5rem 2rem;
-        background: var(--bg-card);
-        backdrop-filter: blur(20px) saturate(180%);
-        border-radius: 24px;
-        margin: 1.5rem;
-        box-shadow: var(--shadow);
-        border: var(--border-glow);
-    }
-
-    #logo-img {
-        height: 50px;
-        border-radius: 12px;
-    }
-
-    .header-buttons {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    #header button {
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: var(--text-light);
-        padding: 0.75rem 1.5rem;
-        border-radius: 14px;
-        cursor: pointer;
-        transition: var(--transition);
-        font-weight: 600;
-    }
-
-    #header button:hover {
-        background: var(--primary);
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-glow);
-    }
-
-    /* Dashboard */
-    .profile {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        background: var(--bg-card);
-        backdrop-filter: blur(20px);
-        padding: 2rem;
-        border-radius: 24px;
-        margin: 1.5rem;
-        box-shadow: var(--shadow);
-        border: var(--border-glow);
-    }
-
-    .avatar {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        font-weight: 700;
-        box-shadow: var(--shadow-glow);
-    }
-
-    .user-status {
-        display: inline-block;
-        padding: 0.3rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        margin-left: 0.5rem;
-    }
-
-    .status-active {
-        background: var(--success);
-        color: white;
-    }
-
-    .status-suspended {
-        background: var(--error);
-        color: white;
-    }
-
-    .nav {
-        display: flex;
-        background: var(--bg-card);
-        backdrop-filter: blur(20px);
-        border-radius: 20px;
-        overflow: hidden;
-        margin: 1.5rem;
-        box-shadow: var(--shadow);
-        border: var(--border-glow);
-    }
-
-    .nav button {
-        flex: 1;
-        padding: 1.2rem;
-        background: transparent;
-        border: none;
-        color: var(--text-dim);
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-    .nav button:hover {
-        background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(196, 69, 105, 0.2));
-        color: var(--text-light);
-    }
-
-    .page {
-        background: var(--bg-card);
-        backdrop-filter: blur(20px);
-        border-radius: 24px;
-        padding: 2.5rem;
-        margin: 1.5rem;
-        box-shadow: var(--shadow);
-        min-height: 400px;
-        border: var(--border-glow);
-    }
-
-    .page h3 {
-        font-size: 1.8rem;
-        color: var(--accent);
-        margin-bottom: 1.5rem;
-        font-weight: 700;
-    }
-
-    /* Offerwalls */
-    .offerwall-iframe {
-        width: 100%;
-        height: 600px;
-        border: none;
-        border-radius: 16px;
-        background: white;
-    }
-
-    .offerwall-item {
-        background: linear-gradient(135deg, rgba(40, 25, 55, 0.9), rgba(70, 35, 55, 0.9));
-        backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 2rem;
-        margin: 1rem 0;
-        border: 1px solid rgba(255, 158, 125, 0.15);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        transition: var(--transition);
-    }
-
-    .offerwall-item:hover {
-        transform: translateY(-5px);
-        border-color: rgba(255, 158, 125, 0.3);
-    }
-
-    .offerwall-requirements {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 0.8rem;
-        border-radius: 12px;
-        margin: 1rem 0;
-        text-align: center;
-    }
-
-    .offerwall-requirements.unlocked {
-        background: rgba(76, 217, 100, 0.2);
-        border: 1px solid var(--success);
-    }
-
-    .offerwall-requirements.locked {
-        background: rgba(255, 71, 87, 0.2);
-        border: 1px solid var(--error);
-    }
-
-    .offerwall-buttons {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        margin-top: 1.5rem;
-    }
-
-    .offerwall-buttons button {
-        padding: 1rem 2rem;
-        border: none;
-        border-radius: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-    .offerwall-buttons button:first-child {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        color: white;
-    }
-
-    .offerwall-buttons button:last-child {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: var(--text-light);
-    }
-
-    .offerwall-buttons button:disabled {
-        background: #555;
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none !important;
-    }
-
-    .offerwall-buttons button:hover:not(:disabled) {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
-    }
-
-    .iframe-container {
-        position: relative;
-        margin: 2rem 0;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: var(--shadow);
-    }
-
-    .close-iframe {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        cursor: pointer;
-        z-index: 1000;
-        font-size: 1.2rem;
-        font-weight: bold;
-        box-shadow: var(--shadow);
-    }
-
-    /* Cashout History */
-    .cashout-history {
-        margin-top: 2rem;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        padding: 1.5rem;
-    }
-
-    .cashout-item {
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 12px;
-        padding: 1.2rem;
-        margin: 0.8rem 0;
-        border-left: 4px solid var(--accent);
-    }
-
-    .cashout-status {
-        display: inline-block;
-        padding: 0.3rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        margin-left: 0.5rem;
-    }
-
-    .status-pending {
-        background: var(--warning);
-        color: black;
-    }
-
-    .status-approved {
-        background: var(--success);
-        color: white;
-    }
-
-    .status-rejected {
-        background: var(--error);
-        color: white;
-    }
-
-    .admin-notes {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 0.8rem;
-        border-radius: 8px;
-        margin-top: 0.8rem;
-        font-size: 0.9rem;
-        color: var(--text-dim);
-    }
-
-    /* Chat System */
-    #chatToggle {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        border: none;
-        border-radius: 50%;
-        color: white;
-        font-size: 1.5rem;
-        cursor: pointer;
-        box-shadow: var(--shadow-glow);
-        z-index: 1000;
-        transition: var(--transition);
-    }
-
-    #chatToggle:hover {
-        transform: scale(1.1);
-    }
-
-    #chatBox {
-        position: fixed;
-        bottom: 100px;
-        right: 30px;
-        width: 350px;
-        height: 500px;
-        background: var(--bg-card);
-        backdrop-filter: blur(25px);
-        border-radius: 20px;
-        box-shadow: var(--shadow);
-        border: var(--border-glow);
-        display: flex;
-        flex-direction: column;
-        z-index: 999;
-        transition: var(--transition);
-    }
-
-    .chat-header {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        padding: 1.2rem;
-        border-radius: 20px 20px 0 0;
-        font-weight: 700;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .chat-close {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.2rem;
-        cursor: pointer;
-    }
-
-    .chat-messages {
-        flex: 1;
-        padding: 1.2rem;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 0.8rem;
-    }
-
-    .chat-message {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 0.8rem 1rem;
-        border-radius: 12px;
-        max-width: 80%;
-        word-wrap: break-word;
-    }
-
-    .chat-message.own {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        align-self: flex-end;
-    }
-
-    .chat-message.other {
-        background: rgba(255, 255, 255, 0.15);
-        align-self: flex-start;
-    }
-
-    .message-sender {
-        font-size: 0.8rem;
-        font-weight: 600;
-        margin-bottom: 0.3rem;
-        color: var(--accent);
-    }
-
-    .chat-input-container {
-        padding: 1.2rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .chat-input {
-        width: 100%;
-        padding: 0.8rem 1rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        color: var(--text-light);
-        font-size: 0.9rem;
-        resize: none;
-        outline: none;
-    }
-
-    .chat-input:focus {
-        border-color: var(--accent);
-    }
-
-    /* Alert Modal */
-    #alertModal {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(15px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-    }
-
-    #alertModal .modal {
-        background: var(--bg-card);
-        backdrop-filter: blur(25px);
-        padding: 3rem;
-        border-radius: 24px;
-        max-width: 450px;
-        text-align: center;
-        box-shadow: var(--shadow), 0 0 40px rgba(255, 107, 53, 0.2);
-        border: var(--border-glow);
-    }
-
-    #alertModal button {
-        margin-top: 1.5rem;
-        padding: 1rem 2.5rem;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        border: none;
-        border-radius: 14px;
-        color: white;
-        font-weight: 700;
-        cursor: pointer;
-    }
-
-    /* Responsive */
+    .profile { display: flex; align-items: center; gap: 1.5rem; background: var(--bg-card);
+        padding: 2rem; border-radius: 24px; margin: 1.5rem; box-shadow: var(--shadow); }
+    .avatar { width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        font-size: 2rem; font-weight: 700; color: white; }
+    .nav { display: flex; background: var(--bg-card); border-radius: 20px; margin: 1.5rem; overflow: hidden; }
+    .nav button { flex: 1; padding: 1.2rem; background: transparent; border: none; color: var(--text-dim); font-weight: 600; cursor: pointer; }
+    .nav button:hover, .nav button.active { background: rgba(255,107,53,0.3); color: white; }
+    .page { background: var(--bg-card); border-radius: 24px; padding: 2.5rem; margin: 1.5rem; box-shadow: var(--shadow); min-height: 400px; }
+    .offerwall-item { background: rgba(0,0,0,0.4); border-radius: 20px; padding: 2rem; margin: 1rem 0; border: 1px solid rgba(255,158,125,0.2); }
+    .offerwall-requirements { padding: 1rem; border-radius: 12px; text-align: center; font-weight: bold; }
+    .unlocked { background: rgba(76,217,100,0.3); border: 1px solid var(--success); }
+    .locked { background: rgba(255,71,87,0.3); border: 1px solid var(--error); }
+    .offerwall-buttons button:disabled { opacity: 0.5; cursor: not-allowed; }
+    #chatToggle { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--primary); border: none; border-radius: 50%; color: white; font-size: 1.8rem; cursor: pointer; box-shadow: var(--shadow-glow); z-index: 1000; }
+    #chatBox { position: fixed; bottom: 100px; right: 30px; width: 360px; height: 520px; background: var(--bg-card); border-radius: 20px; box-shadow: var(--shadow); z-index: 999; display: flex; flex-direction: column; }
+    .chat-header { background: var(--primary); padding: 1.2rem; border-radius: 20px 20px 0 0; color: white; font-weight: bold; display: flex; justify-content: space-between; }
+    .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.8rem; }
+    .chat-message { padding: 0.8rem 1rem; border-radius: 18px; max-width: 80%; word-wrap: break-word; }
+    .own { background: var(--primary); align-self: flex-end; color: white; }
+    .other { background: rgba(255,255,255,0.15); align-self: flex-start; }
+    .message-sender { font-size: 0.8rem; opacity: 0.8; margin-bottom: 0.3rem; }
+    #alertModal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+    #alertModal .modal { background: var(--bg-card); padding: 3rem; border-radius: 24px; text-align: center; max-width: 90%; box-shadow: var(--shadow); }
     @media (max-width: 768px) {
-        .auth-container {
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .auth-card {
-            padding: 2rem;
-        }
-        
-        .verification-code {
-            gap: 0.5rem;
-        }
-        
-        .code-input {
-            width: 50px;
-            height: 60px;
-            font-size: 1.2rem;
-        }
-
-        #chatBox {
-            width: 300px;
-            height: 400px;
-            right: 20px;
-            bottom: 80px;
-        }
-
-        .header-buttons {
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-
-        #header button {
-            padding: 0.6rem 1rem;
-            font-size: 0.9rem;
-        }
+        .auth-container { flex-direction: column; }
+        #chatBox { width: 320px; height: 480px; right: 10px; bottom: 80px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Loading -->
   <div id="loadingScreen">
     <h2>Loading QuizBux...</h2>
-    <p>Please wait</p>
+    <p>Please wait while we connect securely</p>
   </div>
 
-  <!-- Main App -->
   <div id="app" class="hidden">
-
-    <!-- Header -->
     <header id="header">
-      <img id="logo-img" src="" alt="Logo">
+      <img id="logo-img" src="" alt="QuizBux">
       <div class="header-buttons">
-        <button onclick="toggleChat()">💬 Chat</button>
+        <button onclick="toggleChat()">Chat</button>
         <button onclick="showAlert('Support: contact@quizbux.com')">Help</button>
         <button onclick="logout()">Logout</button>
       </div>
     </header>
 
-    <!-- Auth Screens -->
     <section id="authScreens">
       <div class="auth-container">
-        <!-- Login Card -->
         <div id="loginCard" class="auth-card">
           <h1>Welcome Back</h1>
-          <p>Sign in to start earning</p>
-          <input type="text" id="loginUsername" class="auth-input" placeholder="Username" autocomplete="off">
-          <input type="password" id="loginPassword" class="auth-input" placeholder="Password" autocomplete="off">
-          <button class="auth-btn" onclick="login()">Login</button>
-          <div class="auth-switch">
-            Don't have an account? <a onclick="showSignup()">Sign up</a>
-          </div>
+          <p>Login to continue earning</p>
+          <input type="text" id="loginUsername" class="auth-input" placeholder="Username" autocomplete="username">
+          <input type="password" id="loginPassword" class="auth-input" placeholder="Password" autocomplete="current-password">
+          <button class="auth-btn" onclick="login()">Login Now</button>
+          <div class="auth-switch">New here? <a onclick="showSignup()">Create Account</a></div>
         </div>
 
-        <!-- Signup Card -->
         <div id="signupCard" class="auth-card hidden">
-          <h1>Create Account</h1>
-          <p>Join now to start earning</p>
-          <input type="text" id="signupUsername" class="auth-input" placeholder="Choose Username" autocomplete="off">
-          <input type="email" id="signupEmail" class="auth-input" placeholder="Email Address" autocomplete="off">
-          <input type="password" id="signupPassword" class="auth-input" placeholder="Create Password" autocomplete="off">
-          <button class="auth-btn" onclick="signup()">Create Account</button>
-          <div class="auth-switch">
-            Already have an account? <a onclick="showLogin()">Login</a>
-          </div>
+          <h1>Join QuizBux</h1>
+          <p>Earn real money daily</p>
+          <input type="text" id="signupUsername" class="auth-input" placeholder="Username">
+          <input type="email" id="signupEmail" class="auth-input" placeholder="Email Address">
+          <input type="password" id="signupPassword" class="auth-input" placeholder="Password (6+ chars)">
+          <button class="auth-btn" onclick="signup()">Sign Up</button>
+          <div class="auth-switch">Have account? <a onclick="showLogin()">Login</a></div>
         </div>
 
-        <!-- Verification Card -->
         <div id="verifyCard" class="auth-card hidden">
           <h1>Verify Email</h1>
-          <p>We sent a 6-digit code to your email</p>
+          <p>Enter the 6-digit code sent to your email</p>
           <div class="verification-code">
-            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 1)">
-            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 2)">
-            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 3)">
-            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 4)">
-            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 5)">
-            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 6)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveFocus(this,1)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveFocus(this,2)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveFocus(this,3)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveFocus(this,4)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveFocus(this,5)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveFocus(this,6)">
           </div>
-          <button class="auth-btn" onclick="verifyEmail()">Verify Code</button>
-          <div class="auth-switch">
-            Didn't receive code? <a onclick="resendCode()">Resend</a>
-          </div>
+          <button class="auth-btn" onclick="verifyEmail()">Verify</button>
+          <div class="auth-switch"><a onclick="resendCode()">Resend Code</a></div>
         </div>
       </div>
     </section>
 
-    <!-- Dashboard -->
     <section id="dashboard" class="hidden">
       <div class="profile">
         <div class="avatar" id="userAvatar">U</div>
         <div>
-          <h2 id="displayUsername">User <span id="userStatus" class="user-status status-active">Active</span></h2>
-          <div>
-            <strong id="balanceValue">0</strong> Points • 
-            <strong id="usdBalanceValue">$0.0000</strong>
-          </div>
+          <h2 id="displayUsername">User</h2>
+          <p><strong id="balanceValue">0</strong> Points • <strong id="usdBalanceValue">$0.00</strong></p>
         </div>
       </div>
 
       <nav class="nav">
-        <button onclick="showPage('work')">Work</button>
+        <button onclick="showPage('work')" class="active">Work</button>
         <button onclick="showPage('offerwalls')">Offerwalls</button>
         <button onclick="showPage('cashout')">Cashout</button>
         <button onclick="showPage('terms')">Terms</button>
       </nav>
 
       <div id="pages">
-        <!-- Work Page -->
         <div id="work" class="page">
-          <h3>Submit Your Work</h3>
-          <textarea id="workInput" class="auth-input" placeholder="Describe what you did today... (e.g. completed surveys, watched videos, etc.)" style="height: 160px;"></textarea>
-          <button class="auth-btn" onclick="submitWork()">Submit Work</button>
-          <p style="margin-top: 1rem; color: var(--text-dim);">
-            Approved work = 50 Points + $0.001 USD
-          </p>
+          <h3>Submit Work</h3>
+          <textarea id="workInput" class="auth-input" placeholder="What did you do today? (surveys, videos, tasks...)" style="height:180px;resize:none;"></textarea>
+          <button class="auth-btn" onclick="submitWork()">Submit for Approval</button>
+          <p style="margin-top:1rem;color:#aaa;">Approved = +50 Points & +$0.001</p>
         </div>
 
-        <!-- Offerwalls Page -->
         <div id="offerwalls" class="page hidden">
-          <h3>Earn More with Offerwalls</h3>
-          <div id="offerwallList">
-            <p>Loading offerwalls...</p>
-          </div>
-          <div id="iframeContainer" class="iframe-container hidden">
-            <button class="close-iframe" onclick="closeIframe()">×</button>
-            <iframe id="offerwallFrame" class="offerwall-iframe" src="about:blank"></iframe>
+          <h3>Offerwalls</h3>
+          <div id="offerwallList">Loading offerwalls...</div>
+          <div id="iframeContainer" class="hidden" style="margin-top:2rem;">
+            <button onclick="closeIframe()" style="position:absolute;top:10px;right:10px;z-index:10;background:red;color:white;border:none;padding:10px;border-radius:50%;width:40px;height:40px;font-size:20px;">×</button>
+            <iframe id="offerwallFrame" style="width:100%;height:700px;border:none;border-radius:16px;" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
           </div>
         </div>
 
-        <!-- Cashout Page -->
         <div id="cashout" class="page hidden">
-          <h3>Request Cashout</h3>
+          <h3>Cashout Rewards</h3>
           <select id="rewardSelect" class="auth-input">
-            <option value="">Choose reward...</option>
+            <option value="">Select reward...</option>
           </select>
-          <button id="cashoutBtn" class="auth-btn" onclick="submitCashout()" disabled>Request Cashout</button>
-          <p style="margin-top: 1rem; color: var(--text-dim);">
-            1 USD = 50,000 Points<br>
-            You need both Points & USD balance
-          </p>
-
-          <!-- Cashout History -->
-          <div class="cashout-history">
-            <h4>Cashout History</h4>
-            <div id="cashoutHistory">
-              <p>Loading history...</p>
-            </div>
+          <button class="auth-btn" onclick="submitCashout()" disabled>Request Cashout</button>
+          <p style="margin-top:1rem;color:#aaa;">1 USD = 50,000 Points</p>
+          <div style="margin-top:2rem;padding:1.5rem;background:rgba(255,255,255,0.05);border-radius:16px;">
+            <h4>History</h4>
+            <div id="cashoutHistory">Loading...</div>
           </div>
         </div>
 
-        <!-- Terms Page -->
         <div id="terms" class="page hidden">
-          <div id="termsContent" style="text-align: left;"></div>
+          <div id="termsContent" style="text-align:left;line-height:1.8;"></div>
         </div>
       </div>
     </section>
   </div>
 
-  <!-- Chat System -->
-  <button id="chatToggle" class="hidden">💬</button>
+  <button id="chatToggle" class="hidden" onclick="toggleChat()">Chat</button>
   <div id="chatBox" class="hidden">
     <div class="chat-header">
-      <span>Support Chat</span>
-      <button class="chat-close" onclick="toggleChat()">×</button>
+      <span>Live Support</span>
+      <button style="background:none;border:none;color:white;font-size:1.5rem;cursor:pointer;" onclick="toggleChat()">×</button>
     </div>
-    <div class="chat-messages" id="chatMessages">
-      <div class="chat-message other">
-        <div class="message-sender">Support</div>
-        Welcome to QuizBux! How can we help you?
-      </div>
-    </div>
-    <div class="chat-input-container">
-      <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." onkeypress="handleChatInput(event)">
+    <div class="chat-messages" id="chatMessages"></div>
+    <div style="padding:1rem;border-top:1px solid rgba(255,255,255,0.1);">
+      <input type="text" id="chatInput" placeholder="Type message..." onkeypress="if(event.key==='Enter') sendChatMessage()" style="width:100%;padding:0.8rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:12px;color:white;outline:none;">
     </div>
   </div>
 
-  <!-- Alert Modal -->
   <div id="alertModal" class="hidden">
     <div class="modal">
       <p id="alertMessage">Message</p>
-      <button onclick="closeAlert()">OK</button>
+      <button class="auth-btn" style="margin-top:1.5rem;width:auto;padding:1rem 2rem;" onclick="closeAlert()">OK</button>
     </div>
   </div>
 
-  <!-- MAIN SCRIPT -->
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEp9gDxpguJpVVaRAXzHCkOOwu40rH3gRhAet39nbLEXiprHzYzUcPseXUZD2aHGPscw/exec";
-
     let currentUser = null;
     let pendingUser = null;
-    let chatInterval = null;
+    let isLoading = false;
 
-    async function init() {
-      try {
-        const res = await fetch(SCRIPT_URL + "?action=getConfig");
-        const config = await res.json();
-
-        if (config.status === "success") {
-          // Inject additional CSS if any
-          if (config.styles) {
-            document.getElementById("dynamic-styles").textContent += config.styles;
-          }
-
-          // Texts and logo
-          Object.keys(config.texts || {}).forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = config.texts[id];
-          });
-
-          if (config.logo) document.getElementById("logo-img").src = config.logo;
-
-          // Offers
-          const select = document.getElementById("rewardSelect");
-          (config.offers || []).forEach(o => {
-            const opt = document.createElement("option");
-            opt.value = o.amount;
-            opt.textContent = `${o.name} ($${o.amount.toFixed(2)})`;
-            select.appendChild(opt);
-          });
-          select.onchange = () => document.getElementById("cashoutBtn").disabled = !select.value;
-
-          // Terms
-          if (config.terms) document.getElementById("termsContent").innerHTML = config.terms;
-
-          // Done loading
-          document.getElementById("loadingScreen").classList.add("hidden");
-          document.getElementById("app").classList.remove("hidden");
-
-          // Auto login
-          const saved = localStorage.getItem("quizbux_user");
-          if (saved) restoreSession(JSON.parse(saved).username);
+    // Safe fetch with retry
+    async function safeFetch(url, options = {}, retries = 3) {
+      for (let i = 0; i < retries; i++) {
+        try {
+          const res = await fetch(url, { ...options, cache: "no-store" });
+          if (res.ok) return res;
+        } catch (e) {
+          if (i === retries - 1) throw e;
+          await new Promise(r => setTimeout(r, 1000 * (i + 1)));
         }
-      } catch (e) {
-        showAlert("Failed to load. Check your internet or Web App URL.");
       }
     }
 
-    function showLogin() {
-      document.getElementById("signupCard").classList.add("hidden");
-      document.getElementById("verifyCard").classList.add("hidden");
-      document.getElementById("loginCard").classList.remove("hidden");
-    }
+    window.onload = async () => {
+      try {
+        const res = await safeFetch(SCRIPT_URL + "?action=getConfig&t=" + Date.now());
+        const config = await res.json();
+        if (config.status === "success") {
+          if (config.logo) document.getElementById("logo-img").src = config.logo;
+          if (config.terms) document.getElementById("termsContent").innerHTML = config.terms.replace(/\n/g, "<br>");
 
-    function showSignup() {
-      document.getElementById("loginCard").classList.add("hidden");
-      document.getElementById("verifyCard").classList.add("hidden");
-      document.getElementById("signupCard").classList.remove("hidden");
-    }
+          const select = document.getElementById("rewardSelect");
+          (config.offers || []).forEach(o => {
+            const opt = new Option(`${o.name} ($${o.amount})`, o.amount);
+            select.add(opt);
+          });
+          select.onchange = () => document.querySelector("#cashout button.auth-btn").disabled = !select.value;
 
-    function showVerification() {
-      document.getElementById("loginCard").classList.add("hidden");
-      document.getElementById("signupCard").classList.add("hidden");
-      document.getElementById("verifyCard").classList.remove("hidden");
-      // Clear and focus first input
-      document.querySelectorAll('.code-input').forEach(input => input.value = '');
-      document.querySelector('.code-input').focus();
-    }
+          document.getElementById("loadingScreen").classList.add("hidden");
+          document.getElementById("app").classList.remove("hidden");
 
-    function moveToNext(input, nextIndex) {
-      if (input.value.length === 1) {
-        const nextInput = document.querySelectorAll('.code-input')[nextIndex];
-        if (nextInput) nextInput.focus();
+          const saved = localStorage.getItem("quizbux_user");
+          if (saved) {
+            const { username } = JSON.parse(saved);
+            await restoreSession(username);
+          }
+        }
+      } catch (e) {
+        showAlert("Connection failed. Please check your internet and try again.");
+      }
+    };
+
+    function showLogin() { ["signupCard","verifyCard"].forEach(id => document.getElementById(id).classList.add("hidden")); document.getElementById("loginCard").classList.remove("hidden"); }
+    function showSignup() { ["loginCard","verifyCard"].forEach(id => document.getElementById(id).classList.add("hidden")); document.getElementById("signupCard").classList.remove("hidden"); }
+    function showVerification() { ["loginCard","signupCard"].forEach(id => document.getElementById(id).classList.add("hidden")); document.getElementById("verifyCard").classList.remove("hidden"); document.querySelector(".code-input").focus(); }
+
+    function moveFocus(el, idx) {
+      if (el.value.length === 1 && idx < 6) {
+        document.querySelectorAll(".code-input")[idx].focus();
       }
     }
 
     async function signup() {
+      if (isLoading) return;
+      isLoading = true;
       const username = document.getElementById("signupUsername").value.trim();
       const email = document.getElementById("signupEmail").value.trim();
       const password = document.getElementById("signupPassword").value;
-
-      if (!username || !email || !password) {
-        return showAlert("Please fill all fields");
-      }
-
-      if (username.length < 3) {
-        return showAlert("Username must be at least 3 characters");
-      }
-
-      if (password.length < 6) {
-        return showAlert("Password must be at least 6 characters");
-      }
+      if (!username || !email || !password) return showAlert("Fill all fields");
+      if (username.length < 3) return showAlert("Username too short");
+      if (password.length < 6) return showAlert("Password must be 6+ characters");
 
       const fd = new FormData();
       fd.append("action", "signup");
@@ -954,28 +340,21 @@
       fd.append("password", password);
 
       try {
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
+        const res = await safeFetch(SCRIPT_URL, { method: "POST", body: fd });
         const data = await res.json();
-
         if (data.status === "success") {
           pendingUser = { username, email, password };
           showVerification();
-          showAlert("Verification code sent to your email!");
-        } else {
-          showAlert(data.message || "Signup failed");
-        }
-      } catch (e) {
-        showAlert("Network error. Please try again.");
-      }
+          showAlert("Verification code sent!");
+        } else showAlert(data.message);
+      } catch (e) { showAlert("Network error. Try again."); }
+      isLoading = false;
     }
 
     async function verifyEmail() {
-      const codeInputs = document.querySelectorAll('.code-input');
-      const code = Array.from(codeInputs).map(input => input.value).join('');
-
-      if (code.length !== 6) {
-        return showAlert("Please enter the 6-digit code");
-      }
+      const code = Array.from(document.querySelectorAll(".code-input")).map(i => i.value).join("");
+      if (code.length !== 6) return showAlert("Enter full code");
+      if (!pendingUser) return;
 
       const fd = new FormData();
       fd.append("action", "verifyEmail");
@@ -985,50 +364,35 @@
       fd.append("code", code);
 
       try {
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
+        const res = await safeFetch(SCRIPT_URL, { method: "POST", body: fd });
         const data = await res.json();
-
         if (data.status === "success") {
-          showAlert("Account verified successfully! You can now login.");
+          showAlert("Account created! You can now login.");
           showLogin();
           pendingUser = null;
-        } else {
-          showAlert(data.message || "Verification failed");
-        }
-      } catch (e) {
-        showAlert("Network error. Please try again.");
-      }
+        } else showAlert(data.message);
+      } catch (e) { showAlert("Network error"); }
     }
 
     async function resendCode() {
       if (!pendingUser) return;
-
       const fd = new FormData();
       fd.append("action", "resendCode");
       fd.append("username", pendingUser.username);
       fd.append("email", pendingUser.email);
-
       try {
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
+        const res = await safeFetch(SCRIPT_URL, { method: "POST", body: fd });
         const data = await res.json();
-
-        if (data.status === "success") {
-          showAlert("New verification code sent!");
-        } else {
-          showAlert(data.message || "Failed to resend code");
-        }
-      } catch (e) {
-        showAlert("Network error. Please try again.");
-      }
+        showAlert(data.status === "success" ? "Code resent!" : data.message);
+      } catch (e) { showAlert("Failed to resend"); }
     }
 
     async function login() {
+      if (isLoading) return;
+      isLoading = true;
       const username = document.getElementById("loginUsername").value.trim();
       const password = document.getElementById("loginPassword").value;
-
-      if (!username || !password) {
-        return showAlert("Please fill all fields");
-      }
+      if (!username || !password) return showAlert("Fill all fields");
 
       const fd = new FormData();
       fd.append("action", "login");
@@ -1036,34 +400,28 @@
       fd.append("password", password);
 
       try {
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
+        const res = await safeFetch(SCRIPT_URL, { method: "POST", body: fd });
         const data = await res.json();
-
         if (data.status === "success") {
           currentUser = data.user;
-          localStorage.setItem("quizbux_user", JSON.stringify({ username }));
+          localStorage.setItem("quizbux_user", JSON.stringify({ username: currentUser.username }));
           showDashboard();
-          loadOfferwalls();
-          loadCashoutHistory();
-          startChatPolling();
-        } else {
-          showAlert(data.message || "Login failed");
-        }
-      } catch (e) {
-        showAlert("Network error. Please try again.");
-      }
+        } else showAlert(data.message || "Login failed");
+      } catch (e) { showAlert("Network error"); }
+      isLoading = false;
     }
 
     async function restoreSession(username) {
-      const res = await fetch(SCRIPT_URL + "?action=getUserData&username=" + encodeURIComponent(username));
-      const data = await res.json();
-      if (data.status === "success") {
-        currentUser = data.user;
-        showDashboard();
-        loadOfferwalls();
-        loadCashoutHistory();
-        startChatPolling();
-      }
+      try {
+        const res = await safeFetch(`${SCRIPT_URL}?action=getUserData&username=${encodeURIComponent(username)}`);
+        const data = await res.json();
+        if (data.status === "success") {
+          currentUser = data.user;
+          showDashboard();
+        } else {
+          localStorage.removeItem("quizbux_user");
+        }
+      } catch (e) { console.log("Session restore failed"); }
     }
 
     function showDashboard() {
@@ -1076,16 +434,15 @@
       document.getElementById("balanceValue").textContent = Number(currentUser.balance).toLocaleString();
       document.getElementById("usdBalanceValue").textContent = "$" + Number(currentUser.balanceUSD).toFixed(4);
 
-      // Update user status
-      const statusElement = document.getElementById("userStatus");
-      statusElement.textContent = currentUser.status || 'Active';
-      statusElement.className = `user-status status-${(currentUser.status || 'active').toLowerCase()}`;
-
+      loadOfferwalls();
+      loadCashoutHistory();
       showPage("work");
     }
 
     function showPage(id) {
+      document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
       document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+      document.querySelector(`.nav button[onclick="showPage('${id}')"]`).classList.add("active");
       document.getElementById(id).classList.remove("hidden");
       if (id === "offerwalls") loadOfferwalls();
       if (id === "cashout") loadCashoutHistory();
@@ -1093,195 +450,150 @@
 
     async function loadOfferwalls() {
       if (!currentUser) return;
-      const res = await fetch(SCRIPT_URL + "?action=getOfferwalls&username=" + currentUser.username);
-      const data = await res.json();
-      const container = document.getElementById("offerwallList");
-      
-      if (!data.offerwalls || data.offerwalls.length === 0) {
-        container.innerHTML = "<p>No active offerwalls right now</p>";
-        return;
-      }
-      
-      container.innerHTML = data.offerwalls.map(w => {
-        const hasEnoughPoints = currentUser.balance >= (w.pointsRequired || 0);
-        const isUnlocked = hasEnoughPoints && (w.status === 'active');
-        
-        return `
-        <div class="offerwall-item">
-          <h4>${w.name}</h4>
-          <p>${w.description || 'Complete offers to earn rewards'}</p>
-          <div class="offerwall-requirements ${isUnlocked ? 'unlocked' : 'locked'}">
-            ${isUnlocked ? 
-              '✅ Unlocked - Ready to earn!' : 
-              `🔒 Requires ${w.pointsRequired || 0} points to unlock (You have ${currentUser.balance})`
-            }
-          </div>
-          <div class="offerwall-buttons">
-            <button onclick="openOfferwallInIframe('${w.id}', '${w.url}')" 
-                    ${!isUnlocked ? 'disabled' : ''}>
-              Open in App
-            </button>
-            <button onclick="window.open('${w.url}', '_blank')" 
-                    ${!isUnlocked ? 'disabled' : ''}>
-              Open in New Tab
-            </button>
-          </div>
-        </div>
-      `}).join("");
+      try {
+        const res = await safeFetch(`${SCRIPT_URL}?action=getOfferwalls&username=${currentUser.username}`);
+        const data = await res.json();
+        const list = document.getElementById("offerwallList");
+        if (!data.offerwalls || data.offerwalls.length === 0) {
+          list.innerHTML = "<p>No offerwalls available right now.</p>";
+          return;
+        }
+        list.innerHTML = data.offerwalls.map(w => {
+          const required = w.pointsRequired || 0;
+          const unlocked = currentUser.balance >= required;
+          return `
+            <div class="offerwall-item">
+              <h4>${w.name}</h4>
+              <div class="offerwall-requirements ${unlocked ? 'unlocked' : 'locked'}">
+                ${unlocked ? 'Unlocked - Ready!' : `Locked - Need ${required} points (You have ${currentUser.balance})`}
+              </div>
+              <div style="margin-top:1rem;display:flex;gap:1rem;">
+                <button class="auth-btn" style="flex:1;padding:1rem;" ${unlocked ? '' : 'disabled'}
+                  onclick="openIframe('${w.url}')">Open Here</button>
+                <button class="auth-btn" style="flex:1;padding:1rem;background:rgba(255,255,255,0.2);" ${unlocked ? '' : 'disabled'}
+                  onclick="window.open('${w.url}','_blank')">New Tab</button>
+              </div>
+            </div>`;
+        }).join("");
+      } catch (e) { document.getElementById("offerwallList").innerHTML = "<p>Failed to load offerwalls</p>"; }
     }
 
-    function openOfferwallInIframe(offerwallId, url) {
-      const iframe = document.getElementById('offerwallFrame');
-      const iframeContainer = document.getElementById('iframeContainer');
-      const offerwallList = document.getElementById('offerwallList');
-      
-      iframe.src = url;
-      iframeContainer.classList.remove('hidden');
-      offerwallList.classList.add('hidden');
+    function openIframe(url) {
+      document.getElementById("offerwallList").classList.add("hidden");
+      const cont = document.getElementById("iframeContainer");
+      cont.classList.remove("hidden");
+      document.getElementById("offerwallFrame").src = url;
     }
 
     function closeIframe() {
-      const iframeContainer = document.getElementById('iframeContainer');
-      const offerwallList = document.getElementById('offerwallList');
-      const iframe = document.getElementById('offerwallFrame');
-      
-      iframeContainer.classList.add('hidden');
-      offerwallList.classList.remove('hidden');
-      iframe.src = 'about:blank';
+      document.getElementById("iframeContainer").classList.add("hidden");
+      document.getElementById("offerwallList").classList.remove("hidden");
+      document.getElementById("offerwallFrame").src = "about:blank";
     }
 
     async function submitWork() {
       const text = document.getElementById("workInput").value.trim();
-      if (!text) return showAlert("Please write something");
-
+      if (!text) return showAlert("Write something first");
       const fd = new FormData();
       fd.append("action", "submitWork");
       fd.append("username", currentUser.username);
       fd.append("submission", text);
-
-      const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
-      const data = await res.json();
-      showAlert(data.message);
-      document.getElementById("workInput").value = "";
+      try {
+        const res = await safeFetch(SCRIPT_URL, { method: "POST", body: fd });
+        const data = await res.json();
+        showAlert(data.message || "Submitted!");
+        document.getElementById("workInput").value = "";
+      } catch (e) { showAlert("Failed to submit"); }
     }
 
     async function submitCashout() {
       const amount = document.getElementById("rewardSelect").value;
-      if (!amount) return showAlert("Please select a reward");
-
+      if (!amount) return showAlert("Select a reward");
       const fd = new FormData();
       fd.append("action", "submitCashout");
       fd.append("username", currentUser.username);
       fd.append("reward", document.getElementById("rewardSelect").selectedOptions[0].text);
       fd.append("amount", amount);
-
-      const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
-      const data = await res.json();
-      showAlert(data.message);
-
-      document.getElementById("rewardSelect").value = "";
-      document.getElementById("cashoutBtn").disabled = true;
-      loadCashoutHistory();
+      try {
+        const res = await safeFetch(SCRIPT_URL, { method: "POST", body: fd });
+        const data = await res.json();
+        showAlert(data.message || "Request sent!");
+        document.getElementById("rewardSelect").value = "";
+        loadCashoutHistory();
+      } catch (e) { showAlert("Cashout failed"); }
     }
 
     async function loadCashoutHistory() {
-      if (!currentUser) return;
-      
-      const res = await fetch(SCRIPT_URL + "?action=getCashoutHistory&username=" + currentUser.username);
-      const data = await res.json();
-      const container = document.getElementById("cashoutHistory");
-      
-      if (data.status === "success" && data.history && data.history.length > 0) {
-        container.innerHTML = data.history.map(item => `
-          <div class="cashout-item">
-            <strong>${item.reward}</strong> - $${item.amount} 
-            <span class="cashout-status status-${item.status.toLowerCase()}">${item.status}</span>
-            <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.5rem;">
-              ${new Date(item.date).toLocaleDateString()}
-            </div>
-            ${item.adminNotes ? `
-              <div class="admin-notes">
-                <strong>Admin Notes:</strong> ${item.adminNotes}
+      try {
+        const res = await safeFetch(`${SCRIPT_URL}?action=getCashoutHistory&username=${currentUser.username}`);
+        const data = await res.json();
+        const el = document.getElementById("cashoutHistory");
+        if (data.history && data.history.length > 0) {
+          el.innerHTML = data.history.map(h => `
+            <div style="background:rgba(255,255,255,0.1);padding:1rem;margin:0.5rem 0;border-radius:12px;">
+              <strong>${h.reward}</strong> - $${h.amount}
+              <span style="float:right;background:${h.status==='APPROVED'?'#4cd964':h.status==='PENDING'?'#ffd166':'#ff4757'};color:${h.status==='PENDING'?'black':'white'};padding:0.2rem 0.6rem;border-radius:12px;font-size:0.8rem;">
+                ${h.status}
+              </span>
+              <div style="font-size:0.9rem;color:#ccc;margin-top:0.5rem;">
+                ${new Date(h.date).toLocaleString()}
+                ${h.adminNotes ? `<br><em>${h.adminNotes}</em>` : ''}
               </div>
-            ` : ''}
-          </div>
-        `).join("");
-      } else {
-        container.innerHTML = "<p>No cashout history yet.</p>";
-      }
+            </div>
+          `).join("");
+        } else el.innerHTML = "<p>No requests yet</p>";
+      } catch (e) { document.getElementById("cashoutHistory").innerHTML = "<p>Failed to load</p>"; }
     }
 
-    // Chat System Functions
     function toggleChat() {
-      const chatBox = document.getElementById('chatBox');
-      const chatToggle = document.getElementById('chatToggle');
-      
-      if (chatBox.classList.contains('hidden')) {
-        chatBox.classList.remove('hidden');
-        chatToggle.textContent = '✖';
-        loadChatMessages();
-      } else {
-        chatBox.classList.add('hidden');
-        chatToggle.textContent = '💬';
-      }
-    }
-
-    function handleChatInput(event) {
-      if (event.key === 'Enter') {
-        sendChatMessage();
-      }
+      const box = document.getElementById("chatBox");
+      const btn = document.getElementById("chatToggle");
+      box.classList.toggle("hidden");
+      btn.textContent = box.classList.contains("hidden") ? "Chat" : "×";
+      if (!box.classList.contains("hidden")) loadChatMessages();
     }
 
     async function sendChatMessage() {
-      const input = document.getElementById('chatInput');
-      const message = input.value.trim();
-      
-      if (!message || !currentUser) return;
-      
+      const input = document.getElementById("chatInput");
+      const msg = input.value.trim();
+      if (!msg || !currentUser) return;
       const fd = new FormData();
       fd.append("action", "sendChatMessage");
       fd.append("username", currentUser.username);
-      fd.append("message", message);
-
+      fd.append("message", msg);
       try {
-        await fetch(SCRIPT_URL, { method: "POST", body: fd });
+        await safeFetch(SCRIPT_URL, { method: "POST", body: fd });
         input.value = "";
         loadChatMessages();
-      } catch (e) {
-        showAlert("Failed to send message");
-      }
+      } catch (e) { showAlert("Message failed"); }
     }
 
     async function loadChatMessages() {
       if (!currentUser) return;
-      
-      const res = await fetch(SCRIPT_URL + "?action=getChatMessages");
-      const data = await res.json();
-      const container = document.getElementById('chatMessages');
-      
-      if (data.status === "success") {
-        container.innerHTML = data.messages.map(msg => `
-          <div class="chat-message ${msg.username === currentUser.username ? 'own' : 'other'}">
-            <div class="message-sender">${msg.username}</div>
-            ${msg.message}
-          </div>
-        `).join("");
-        container.scrollTop = container.scrollHeight;
-      }
+      try {
+        const res = await safeFetch(SCRIPT_URL + "?action=getChatMessages");
+        const data = await res.json();
+        if (data.messages) {
+          const container = document.getElementById("chatMessages");
+          container.innerHTML = data.messages.map(m => `
+            <div class="chat-message ${m.username === currentUser.username ? 'own' : 'other'}">
+              <div class="message-sender">${m.username}</div>
+              ${m.message}
+            </div>
+          `).join("");
+          container.scrollTop = container.scrollHeight;
+        }
+      } catch (e) { console.log("Chat load failed"); }
     }
 
-    function startChatPolling() {
-      // Load messages every 5 seconds if chat is open
-      chatInterval = setInterval(() => {
-        if (!document.getElementById('chatBox').classList.contains('hidden')) {
-          loadChatMessages();
-        }
-      }, 5000);
-    }
+    setInterval(() => {
+      if (currentUser && !document.getElementById("chatBox").classList.contains("hidden")) {
+        loadChatMessages();
+      }
+    }, 5000);
 
     function logout() {
       localStorage.removeItem("quizbux_user");
-      if (chatInterval) clearInterval(chatInterval);
       location.reload();
     }
 
@@ -1289,12 +601,9 @@
       document.getElementById("alertMessage").textContent = msg;
       document.getElementById("alertModal").classList.remove("hidden");
     }
-
     function closeAlert() {
       document.getElementById("alertModal").classList.add("hidden");
     }
-
-    window.onload = init;
   </script>
 </body>
 </html>
