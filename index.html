@@ -5,6 +5,580 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QuizBux - Earn Money</title>
 </head>
+  <style>
+    /* Ultra Dark Windows 6.5 Modernized Theme */
+:root {
+    --black-1: #000000;
+    --black-2: #0a0a0a;
+    --black-3: #111111;
+    --black-4: #1a1a1a;
+    --gray-1: #2d2d2d;
+    --gray-2: #404040;
+    --gray-3: #555555;
+    --gray-4: #6a6a6a;
+    --accent: #0066cc;
+    --accent-dark: #004499;
+    --accent-light: #0088ff;
+    --text: #e0e0e0;
+    --text-dim: #a0a0a0;
+    --text-bright: #ffffff;
+    --success: #00cc66;
+    --warning: #ffaa00;
+    --error: #ff4444;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: var(--black-1);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.4;
+}
+
+.hidden { 
+    display: none !important; 
+}
+
+/* Loading Screen */
+#loadingScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--black-1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+#loadingScreen h2 {
+    color: var(--accent-light);
+    margin-bottom: 1rem;
+    font-weight: 300;
+}
+
+/* Header */
+#header {
+    background: var(--black-3);
+    border-bottom: 1px solid var(--gray-1);
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#logo-img {
+    height: 32px;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+#header button {
+    background: var(--gray-1);
+    border: 1px solid var(--gray-2);
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+#header button:hover {
+    background: var(--gray-2);
+    border-color: var(--gray-3);
+}
+
+/* Auth Container */
+.auth-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.auth-card {
+    background: var(--black-2);
+    border: 1px solid var(--gray-1);
+    padding: 2rem;
+}
+
+.auth-card h1 {
+    color: var(--accent-light);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 300;
+}
+
+.auth-card p {
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+}
+
+.auth-input {
+    width: 100%;
+    background: var(--black-3);
+    border: 1px solid var(--gray-1);
+    color: var(--text);
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.auth-input:focus {
+    outline: 1px solid var(--accent);
+    border-color: var(--accent);
+}
+
+.auth-btn {
+    width: 100%;
+    background: var(--accent);
+    border: 1px solid var(--accent-dark);
+    color: var(--text-bright);
+    padding: 0.8rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.auth-btn:hover {
+    background: var(--accent-light);
+}
+
+.auth-btn:disabled {
+    background: var(--gray-3);
+    cursor: not-allowed;
+}
+
+.auth-switch {
+    text-align: center;
+    color: var(--text-dim);
+}
+
+.auth-switch a {
+    color: var(--accent-light);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+
+/* Verification Code */
+.verification-code {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin: 1.5rem 0;
+}
+
+.code-input {
+    width: 40px;
+    height: 50px;
+    text-align: center;
+    background: var(--black-3);
+    border: 1px solid var(--gray-1);
+    color: var(--text);
+    font-size: 1.2rem;
+}
+
+.code-input:focus {
+    outline: 1px solid var(--accent);
+    border-color: var(--accent);
+}
+
+/* Dashboard */
+#dashboard {
+    padding: 1rem;
+}
+
+.profile {
+    background: var(--black-2);
+    border: 1px solid var(--gray-1);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+}
+
+.user-status {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+}
+
+.status-active {
+    background: var(--success);
+    color: black;
+}
+
+.status-suspended {
+    background: var(--error);
+    color: white;
+}
+
+/* Navigation */
+.nav {
+    display: flex;
+    background: var(--black-2);
+    border: 1px solid var(--gray-1);
+    margin-bottom: 1rem;
+}
+
+.nav button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    padding: 1rem;
+    cursor: pointer;
+    border-right: 1px solid var(--gray-1);
+}
+
+.nav button:last-child {
+    border-right: none;
+}
+
+.nav button:hover {
+    background: var(--black-3);
+}
+
+/* Pages */
+.page {
+    background: var(--black-2);
+    border: 1px solid var(--gray-1);
+    padding: 1.5rem;
+    min-height: 400px;
+}
+
+.page h3 {
+    color: var(--accent-light);
+    margin-bottom: 1rem;
+    font-weight: 300;
+}
+
+/* Work Page */
+#workInput {
+    height: 120px;
+    resize: vertical;
+}
+
+/* Offerwalls */
+.offerwall-item {
+    background: var(--black-3);
+    border: 1px solid var(--gray-1);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.offerwall-requirements {
+    background: var(--black-4);
+    padding: 0.8rem;
+    margin: 1rem 0;
+    text-align: center;
+    border: 1px solid var(--gray-1);
+}
+
+.offerwall-requirements.unlocked {
+    border-color: var(--success);
+    color: var(--success);
+}
+
+.offerwall-requirements.locked {
+    border-color: var(--error);
+    color: var(--error);
+}
+
+.offerwall-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.offerwall-buttons button {
+    flex: 1;
+    padding: 0.8rem;
+    border: 1px solid var(--gray-2);
+    background: var(--black-4);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.offerwall-buttons button:first-child {
+    background: var(--accent);
+    border-color: var(--accent-dark);
+}
+
+.offerwall-buttons button:hover:not(:disabled) {
+    background: var(--gray-2);
+}
+
+.offerwall-buttons button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.offerwall-iframe {
+    width: 100%;
+    height: 500px;
+    border: 1px solid var(--gray-1);
+    background: white;
+}
+
+.iframe-container {
+    position: relative;
+}
+
+.close-iframe {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--error);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    z-index: 100;
+}
+
+/* Cashout */
+.cashout-history {
+    margin-top: 2rem;
+}
+
+.cashout-item {
+    background: var(--black-3);
+    border: 1px solid var(--gray-1);
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-left: 3px solid var(--accent);
+}
+
+.cashout-status {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+}
+
+.status-pending {
+    background: var(--warning);
+    color: black;
+}
+
+.status-approved {
+    background: var(--success);
+    color: white;
+}
+
+.status-rejected {
+    background: var(--error);
+    color: white;
+}
+
+.admin-notes {
+    background: var(--black-4);
+    padding: 0.8rem;
+    margin-top: 0.8rem;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+}
+
+/* Chat System */
+#chatToggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: var(--accent);
+    border: 1px solid var(--accent-dark);
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+#chatBox {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background: var(--black-2);
+    border: 1px solid var(--gray-1);
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+}
+
+.chat-header {
+    background: var(--accent);
+    color: white;
+    padding: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.chat-message {
+    background: var(--black-3);
+    padding: 0.8rem;
+    border-radius: 5px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.chat-message.own {
+    background: var(--accent);
+    align-self: flex-end;
+}
+
+.chat-message.other {
+    background: var(--black-4);
+    align-self: flex-start;
+}
+
+.message-sender {
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+    color: var(--text-dim);
+}
+
+.chat-input-container {
+    padding: 0.8rem;
+    border-top: 1px solid var(--gray-1);
+}
+
+.chat-input {
+    width: 100%;
+    background: var(--black-3);
+    border: 1px solid var(--gray-1);
+    color: var(--text);
+    padding: 0.8rem;
+    font-size: 0.9rem;
+}
+
+.chat-input:focus {
+    outline: 1px solid var(--accent);
+}
+
+/* Alert Modal */
+#alertModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+#alertModal .modal {
+    background: var(--black-2);
+    border: 1px solid var(--gray-1);
+    padding: 2rem;
+    max-width: 400px;
+    text-align: center;
+}
+
+#alertModal button {
+    margin-top: 1rem;
+    padding: 0.8rem 2rem;
+    background: var(--accent);
+    border: 1px solid var(--accent-dark);
+    color: white;
+    cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1rem auto;
+    }
+    
+    .auth-card {
+        padding: 1.5rem;
+    }
+    
+    .profile {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .nav {
+        flex-direction: column;
+    }
+    
+    .nav button {
+        border-right: none;
+        border-bottom: 1px solid var(--gray-1);
+    }
+    
+    .nav button:last-child {
+        border-bottom: none;
+    }
+    
+    #chatBox {
+        width: calc(100% - 40px);
+        right: 20px;
+        left: 20px;
+    }
+    
+    .offerwall-buttons {
+        flex-direction: column;
+    }
+}
+    </style>
 <body>
 
   <!-- Loading Screen -->
