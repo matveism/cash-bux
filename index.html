@@ -1,1311 +1,302 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuizBux - Earn Money</title>
-  <style>
-    /* Ultra Dark Windows 6.5 Modernized Theme */
-    :root {
-        --black-1: #000000;
-        --black-2: #0a0a0a;
-        --black-3: #111111;
-        --black-4: #1a1a1a;
-        --gray-1: #2d2d2d;
-        --gray-2: #404040;
-        --gray-3: #555555;
-        --gray-4: #6a6a6a;
-        --accent: #0066cc;
-        --accent-dark: #004499;
-        --accent-light: #0088ff;
-        --text: #e0e0e0;
-        --text-dim: #a0a0a0;
-        --text-bright: #ffffff;
-        --success: #00cc66;
-        --warning: #ffaa00;
-        --error: #ff4444;
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-        background: var(--black-1);
-        color: var(--text);
-        min-height: 100vh;
-        overflow-x: hidden;
-        line-height: 1.4;
-    }
-
-    .hidden { 
-        display: none !important; 
-    }
-
-    /* Loading Screen */
-    #loadingScreen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: var(--black-1);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-    }
-
-    #loadingScreen h2 {
-        color: var(--accent-light);
-        margin-bottom: 1rem;
-        font-weight: 300;
-    }
-
-    /* Header */
-    #header {
-        background: var(--black-3);
-        border-bottom: 1px solid var(--gray-1);
-        padding: 0.8rem 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    #logo-img {
-        height: 32px;
-    }
-
-    .header-buttons {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    #header button {
-        background: var(--gray-1);
-        border: 1px solid var(--gray-2);
-        color: var(--text);
-        padding: 0.5rem 1rem;
-        cursor: pointer;
-        font-size: 0.9rem;
-    }
-
-    #header button:hover {
-        background: var(--gray-2);
-        border-color: var(--gray-3);
-    }
-
-    /* Auth Container */
-    .auth-container {
-        max-width: 400px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-    }
-
-    .auth-card {
-        background: var(--black-2);
-        border: 1px solid var(--gray-1);
-        padding: 2rem;
-    }
-
-    .auth-card h1 {
-        color: var(--accent-light);
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
-        font-weight: 300;
-    }
-
-    .auth-card p {
-        color: var(--text-dim);
-        margin-bottom: 1.5rem;
-    }
-
-    .auth-input {
-        width: 100%;
-        background: var(--black-3);
-        border: 1px solid var(--gray-1);
-        color: var(--text);
-        padding: 0.8rem;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
-    }
-
-    .auth-input:focus {
-        outline: 1px solid var(--accent);
-        border-color: var(--accent);
-    }
-
-    .auth-btn {
-        width: 100%;
-        background: var(--accent);
-        border: 1px solid var(--accent-dark);
-        color: var(--text-bright);
-        padding: 0.8rem;
-        cursor: pointer;
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
-    }
-
-    .auth-btn:hover {
-        background: var(--accent-light);
-    }
-
-    .auth-btn:disabled {
-        background: var(--gray-3);
-        cursor: not-allowed;
-    }
-
-    .auth-switch {
-        text-align: center;
-        color: var(--text-dim);
-    }
-
-    .auth-switch a {
-        color: var(--accent-light);
-        cursor: pointer;
-        text-decoration: none;
-    }
-
-    .auth-switch a:hover {
-        text-decoration: underline;
-    }
-
-    /* Verification Code */
-    .verification-code {
-        display: flex;
-        gap: 0.5rem;
-        justify-content: center;
-        margin: 1.5rem 0;
-    }
-
-    .code-input {
-        width: 40px;
-        height: 50px;
-        text-align: center;
-        background: var(--black-3);
-        border: 1px solid var(--gray-1);
-        color: var(--text);
-        font-size: 1.2rem;
-    }
-
-    .code-input:focus {
-        outline: 1px solid var(--accent);
-        border-color: var(--accent);
-    }
-
-    /* Dashboard */
-    #dashboard {
-        padding: 1rem;
-    }
-
-    .profile {
-        background: var(--black-2);
-        border: 1px solid var(--gray-1);
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .avatar {
-        width: 60px;
-        height: 60px;
-        background: var(--accent);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: white;
-    }
-
-    .user-status {
-        display: inline-block;
-        padding: 0.2rem 0.6rem;
-        border-radius: 3px;
-        font-size: 0.8rem;
-        margin-left: 0.5rem;
-    }
-
-    .status-active {
-        background: var(--success);
-        color: black;
-    }
-
-    .status-suspended {
-        background: var(--error);
-        color: white;
-    }
-
-    /* Navigation */
-    .nav {
-        display: flex;
-        background: var(--black-2);
-        border: 1px solid var(--gray-1);
-        margin-bottom: 1rem;
-    }
-
-    .nav button {
-        flex: 1;
-        background: transparent;
-        border: none;
-        color: var(--text);
-        padding: 1rem;
-        cursor: pointer;
-        border-right: 1px solid var(--gray-1);
-    }
-
-    .nav button:last-child {
-        border-right: none;
-    }
-
-    .nav button:hover {
-        background: var(--black-3);
-    }
-
-    /* Pages */
-    .page {
-        background: var(--black-2);
-        border: 1px solid var(--gray-1);
-        padding: 1.5rem;
-        min-height: 400px;
-    }
-
-    .page h3 {
-        color: var(--accent-light);
-        margin-bottom: 1rem;
-        font-weight: 300;
-    }
-
-    /* Work Page */
-    #workInput {
-        height: 120px;
-        resize: vertical;
-    }
-
-    /* Offerwalls */
-    .offerwall-item {
-        background: var(--black-3);
-        border: 1px solid var(--gray-1);
-        padding: 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .offerwall-requirements {
-        background: var(--black-4);
-        padding: 0.8rem;
-        margin: 1rem 0;
-        text-align: center;
-        border: 1px solid var(--gray-1);
-    }
-
-    .offerwall-requirements.unlocked {
-        border-color: var(--success);
-        color: var(--success);
-    }
-
-    .offerwall-requirements.locked {
-        border-color: var(--error);
-        color: var(--error);
-    }
-
-    .offerwall-buttons {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .offerwall-buttons button {
-        flex: 1;
-        padding: 0.8rem;
-        border: 1px solid var(--gray-2);
-        background: var(--black-4);
-        color: var(--text);
-        cursor: pointer;
-    }
-
-    .offerwall-buttons button:first-child {
-        background: var(--accent);
-        border-color: var(--accent-dark);
-    }
-
-    .offerwall-buttons button:hover:not(:disabled) {
-        background: var(--gray-2);
-    }
-
-    .offerwall-buttons button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-    .offerwall-iframe {
-        width: 100%;
-        height: 500px;
-        border: 1px solid var(--gray-1);
-        background: white;
-    }
-
-    .iframe-container {
-        position: relative;
-    }
-
-    .close-iframe {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: var(--error);
-        border: none;
-        color: white;
-        width: 30px;
-        height: 30px;
-        cursor: pointer;
-        z-index: 100;
-    }
-
-    /* Cashout */
-    .cashout-history {
-        margin-top: 2rem;
-    }
-
-    .cashout-item {
-        background: var(--black-3);
-        border: 1px solid var(--gray-1);
-        padding: 1rem;
-        margin: 0.5rem 0;
-        border-left: 3px solid var(--accent);
-    }
-
-    .cashout-status {
-        display: inline-block;
-        padding: 0.2rem 0.6rem;
-        border-radius: 3px;
-        font-size: 0.8rem;
-        margin-left: 0.5rem;
-    }
-
-    .status-pending {
-        background: var(--warning);
-        color: black;
-    }
-
-    .status-approved {
-        background: var(--success);
-        color: white;
-    }
-
-    .status-rejected {
-        background: var(--error);
-        color: white;
-    }
-
-    .admin-notes {
-        background: var(--black-4);
-        padding: 0.8rem;
-        margin-top: 0.8rem;
-        font-size: 0.9rem;
-        color: var(--text-dim);
-    }
-
-    /* Chat System */
-    #chatToggle {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 50px;
-        height: 50px;
-        background: var(--accent);
-        border: 1px solid var(--accent-dark);
-        color: white;
-        border-radius: 50%;
-        cursor: pointer;
-        z-index: 1000;
-    }
-
-    #chatBox {
-        position: fixed;
-        bottom: 80px;
-        right: 20px;
-        width: 300px;
-        height: 400px;
-        background: var(--black-2);
-        border: 1px solid var(--gray-1);
-        display: flex;
-        flex-direction: column;
-        z-index: 999;
-    }
-
-    .chat-header {
-        background: var(--accent);
-        color: white;
-        padding: 0.8rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .chat-close {
-        background: none;
-        border: none;
-        color: white;
-        cursor: pointer;
-        font-size: 1.2rem;
-    }
-
-    .chat-messages {
-        flex: 1;
-        padding: 1rem;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .chat-message {
-        background: var(--black-3);
-        padding: 0.8rem;
-        border-radius: 5px;
-        max-width: 80%;
-        word-wrap: break-word;
-    }
-
-    .chat-message.own {
-        background: var(--accent);
-        align-self: flex-end;
-    }
-
-    .chat-message.other {
-        background: var(--black-4);
-        align-self: flex-start;
-    }
-
-    .message-sender {
-        font-size: 0.8rem;
-        font-weight: bold;
-        margin-bottom: 0.3rem;
-        color: var(--text-dim);
-    }
-
-    .chat-input-container {
-        padding: 0.8rem;
-        border-top: 1px solid var(--gray-1);
-    }
-
-    .chat-input {
-        width: 100%;
-        background: var(--black-3);
-        border: 1px solid var(--gray-1);
-        color: var(--text);
-        padding: 0.8rem;
-        font-size: 0.9rem;
-    }
-
-    .chat-input:focus {
-        outline: 1px solid var(--accent);
-    }
-
-    /* Alert Modal */
-    #alertModal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-    }
-
-    #alertModal .modal {
-        background: var(--black-2);
-        border: 1px solid var(--gray-1);
-        padding: 2rem;
-        max-width: 400px;
-        text-align: center;
-    }
-
-    #alertModal button {
-        margin-top: 1rem;
-        padding: 0.8rem 2rem;
-        background: var(--accent);
-        border: 1px solid var(--accent-dark);
-        color: white;
-        cursor: pointer;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .auth-container {
-            margin: 1rem auto;
-        }
-        
-        .auth-card {
-            padding: 1.5rem;
-        }
-        
-        .profile {
-            flex-direction: column;
-            text-align: center;
-        }
-        
-        .nav {
-            flex-direction: column;
-        }
-        
-        .nav button {
-            border-right: none;
-            border-bottom: 1px solid var(--gray-1);
-        }
-        
-        .nav button:last-child {
-            border-bottom: none;
-        }
-        
-        #chatBox {
-            width: calc(100% - 40px);
-            right: 20px;
-            left: 20px;
-        }
-        
-        .offerwall-buttons {
-            flex-direction: column;
-        }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizBux - Earn Rewards</title>
+    <!-- Styles will be dynamically loaded from Google Sheets -->
 </head>
 <body>
-
-  <!-- Loading Screen -->
-  <div id="loadingScreen">
-    <h2>Loading QuizBux...</h2>
-    <p>Please wait</p>
-  </div>
-
-  <!-- Main App -->
-  <div id="app" style="display: none;">
-
     <!-- Header -->
-    <header id="header">
-      <img id="logo-img" src="" alt="Logo">
-      <div class="header-buttons">
-        <button onclick="toggleChat()">💬 Chat</button>
-        <button onclick="showAlert('Support: contact@quizbux.com')">Help</button>
-        <button onclick="logout()">Logout</button>
-      </div>
+    <header>
+        <div class="container header-content">
+            <div class="logo" id="site-logo">QuizBux</div>
+            <div class="nav-container">
+                <button class="nav-toggle">☰</button>
+                <nav class="nav-oval">
+                    <a href="#" class="active" data-section="dashboard">Dashboard</a>
+                    <a href="#" data-section="offerwalls">Offerwalls</a>
+                    <a href="#" data-section="submissions">Submissions</a>
+                    <a href="#" data-section="cashouts">Cashouts</a>
+                    <a href="#" data-section="rewards">Rewards</a>
+                    <a href="#" data-section="admin" id="admin-nav" style="display: none;">Admin</a>
+                </nav>
+            </div>
+            <div class="user-actions">
+                <button class="btn btn-secondary" id="loginBtn">Login</button>
+                <button class="btn btn-primary" id="signupBtn">Sign Up</button>
+                <div id="user-info" style="display: none;">
+                    <span id="user-name"></span>
+                    <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+        </div>
     </header>
 
-    <!-- Auth Screens -->
-    <section id="authScreens">
-      <div class="auth-container">
-        <!-- Login Card -->
-        <div id="loginCard" class="auth-card" style="display: none;">
-          <h1>Welcome Back</h1>
-          <p>Sign in to start earning</p>
-          <input type="text" id="loginUsername" class="auth-input" placeholder="Username">
-          <input type="password" id="loginPassword" class="auth-input" placeholder="Password">
-          <button class="auth-btn" onclick="login()">Login</button>
-          <div class="auth-switch">
-            Don't have an account? <a onclick="showSignup()">Sign up</a>
-          </div>
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <!-- Dashboard -->
+            <section id="dashboard" class="active-section">
+                <h1 id="dashboard-title">User Dashboard</h1>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-title" id="points-label">Total Points</div>
+                        </div>
+                        <div class="card-value" id="totalPoints">0</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-title" id="balance-label">Available Balance</div>
+                        </div>
+                        <div class="card-value" id="availableBalance">$0.00</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-title">Pending Cashouts</div>
+                        </div>
+                        <div class="card-value" id="pendingCashouts">0</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-title" id="submissions-label">Completed Submissions</div>
+                        </div>
+                        <div class="card-value" id="completedSubmissions">0</div>
+                    </div>
+                </div>
+
+                <h2 id="offerwalls-title">Available Offerwalls</h2>
+                <div class="offerwall-grid" id="offerwallGrid">
+                    <!-- Offerwalls will be dynamically loaded here -->
+                </div>
+            </section>
+
+            <!-- Offerwalls Section -->
+            <section id="offerwallsSection" style="display: none;">
+                <h1 id="offerwalls-page-title">Offerwalls</h1>
+                <p>Complete offers to earn points and rewards. Each completed offer will be credited to your account after verification.</p>
+                
+                <div class="offerwall-grid" id="offerwallSectionGrid">
+                    <!-- Offerwalls will be dynamically loaded here -->
+                </div>
+            </section>
+
+            <!-- Submission Form -->
+            <section id="submissionSection" style="display: none;">
+                <div class="form-container">
+                    <h2 class="form-title" id="submit-work-title">Submit Your Work</h2>
+                    <form id="submissionForm">
+                        <div class="form-group">
+                            <label class="form-label" for="submissionType">Submission Type</label>
+                            <select class="form-input" id="submissionType" required>
+                                <option value="">Select type</option>
+                                <option value="survey">Survey</option>
+                                <option value="offer">Offer Completion</option>
+                                <option value="task">Task Completion</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="submissionDetails">Details</label>
+                            <textarea class="form-input" id="submissionDetails" rows="4" required placeholder="Provide details about your submission"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="submissionProof">Proof (URL)</label>
+                            <input type="url" class="form-input" id="submissionProof" placeholder="https://example.com/proof" required>
+                        </div>
+                        <button type="submit" class="form-submit">Submit Work (50 pts = $0.001)</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Cashouts Section -->
+            <section id="cashoutsSection" style="display: none;">
+                <div class="form-container">
+                    <h2 class="form-title" id="cashout-title">Request Cashout</h2>
+                    <form id="cashoutForm">
+                        <div class="form-group">
+                            <label class="form-label" for="cashoutAmount">Amount ($)</label>
+                            <input type="number" class="form-input" id="cashoutAmount" min="5" max="100" step="0.01" required>
+                            <small>Minimum cashout: $5.00</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="cashoutMethod">Payment Method</label>
+                            <select class="form-input" id="cashoutMethod" required>
+                                <option value="">Select method</option>
+                                <option value="paypal">PayPal</option>
+                                <option value="bank">Bank Transfer</option>
+                                <option value="crypto">Cryptocurrency</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="cashoutDetails">Payment Details</label>
+                            <input type="text" class="form-input" id="cashoutDetails" required placeholder="Email, wallet address, etc.">
+                        </div>
+                        <button type="submit" class="form-submit">Request Cashout</button>
+                    </form>
+                </div>
+                
+                <div class="admin-panel" style="margin-top: 30px;">
+                    <h3>Your Cashout History</h3>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userCashoutsTable">
+                            <!-- Cashout history will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Rewards Section -->
+            <section id="rewardsSection" style="display: none;">
+                <h1 id="rewards-title">Rewards</h1>
+                <p>Exchange your points for exciting rewards and gift cards.</p>
+                
+                <div class="dashboard-grid" id="rewardsGrid">
+                    <!-- Rewards will be dynamically loaded here -->
+                </div>
+            </section>
+
+            <!-- Admin Section -->
+            <section id="adminSection" style="display: none;">
+                <h1>Admin Panel</h1>
+                
+                <div class="admin-panel">
+                    <h2>Pending Submissions</h2>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>Details</th>
+                                <th>Proof</th>
+                                <th>Points</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingSubmissionsTable">
+                            <!-- Pending submissions will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="admin-panel">
+                    <h2>Pending Cashouts</h2>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Details</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingCashoutsTable">
+                            <!-- Pending cashouts will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="admin-panel">
+                    <h2>System Configuration</h2>
+                    <div class="form-group">
+                        <label class="form-label" for="pointsPerSubmission">Points Per Submission</label>
+                        <input type="number" class="form-input" id="pointsPerSubmission" value="50">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="submissionValue">Submission Value ($)</label>
+                        <input type="number" class="form-input" id="submissionValue" value="0.001" step="0.001">
+                    </div>
+                    <button class="btn btn-primary" id="updateConfigBtn">Update Configuration</button>
+                </div>
+            </section>
         </div>
+    </main>
 
-        <!-- Signup Card -->
-        <div id="signupCard" class="auth-card" style="display: none;">
-          <h1>Create Account</h1>
-          <p>Join now to start earning</p>
-          <input type="text" id="signupUsername" class="auth-input" placeholder="Choose Username">
-          <input type="email" id="signupEmail" class="auth-input" placeholder="Email Address">
-          <input type="password" id="signupPassword" class="auth-input" placeholder="Create Password">
-          <button class="auth-btn" onclick="signup()">Create Account</button>
-          <div class="auth-switch">
-            Already have an account? <a onclick="showLogin()">Login</a>
-          </div>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 <span id="footer-site-name">QuizBux</span>. All rights reserved.</p>
         </div>
+    </footer>
 
-        <!-- Verification Card -->
-        <div id="verifyCard" class="auth-card" style="display: none;">
-          <h1>Verify Email</h1>
-          <p>We sent a 6-digit code to your email</p>
-          <div class="verification-code">
-            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 1)">
-            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 2)">
-            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 3)">
-            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 4)">
-            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 5)">
-            <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 6)">
-          </div>
-          <button class="auth-btn" onclick="verifyEmail()">Verify Code</button>
-          <div class="auth-switch">
-            Didn't receive code? <a onclick="resendCode()">Resend</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Dashboard -->
-    <section id="dashboard" style="display: none;">
-      <div class="profile">
-        <div class="avatar" id="userAvatar">U</div>
-        <div>
-          <h2 id="displayUsername">User <span id="userStatus" class="user-status status-active">Active</span></h2>
-          <div>
-            <strong id="balanceValue">0</strong> Points • 
-            <strong id="usdBalanceValue">$0.0000</strong>
-          </div>
-        </div>
-      </div>
-
-      <nav class="nav">
-        <button onclick="showPage('work')">Work</button>
-        <button onclick="showPage('offerwalls')">Offerwalls</button>
-        <button onclick="showPage('cashout')">Cashout</button>
-        <button onclick="showPage('terms')">Terms</button>
-      </nav>
-
-      <div id="pages">
-        <!-- Work Page -->
-        <div id="work" class="page" style="display: none;">
-          <h3>Submit Your Work</h3>
-          <textarea id="workInput" class="auth-input" placeholder="Describe what you did today... (e.g. completed surveys, watched videos, etc.)"></textarea>
-          <button class="auth-btn" onclick="submitWork()">Submit Work</button>
-          <p>
-            Approved work = 50 Points + $0.001 USD
-          </p>
-        </div>
-
-        <!-- Offerwalls Page -->
-        <div id="offerwalls" class="page" style="display: none;">
-          <h3>Earn More with Offerwalls</h3>
-          <div id="offerwallList">
-            <p>Loading offerwalls...</p>
-          </div>
-          <div id="iframeContainer" class="iframe-container" style="display: none;">
-            <button class="close-iframe" onclick="closeIframe()">×</button>
-            <iframe id="offerwallFrame" class="offerwall-iframe" src="about:blank"></iframe>
-          </div>
-        </div>
-
-        <!-- Cashout Page -->
-        <div id="cashout" class="page" style="display: none;">
-          <h3>Request Cashout</h3>
-          <select id="rewardSelect" class="auth-input">
-            <option value="">Choose reward...</option>
-          </select>
-          <button id="cashoutBtn" class="auth-btn" onclick="submitCashout()" disabled>Request Cashout</button>
-          <p>
-            1 USD = 50,000 Points<br>
-            You need both Points & USD balance
-          </p>
-
-          <!-- Cashout History -->
-          <div class="cashout-history">
-            <h4>Cashout History</h4>
-            <div id="cashoutHistory">
-              <p>Loading history...</p>
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Login</h3>
+                <button class="modal-close" id="closeLoginModal">&times;</button>
             </div>
-          </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="loginEmail">Email</label>
+                    <input type="email" class="form-input" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">Password</label>
+                    <input type="password" class="form-input" id="loginPassword" required>
+                </div>
+                <button type="submit" class="form-submit">Login</button>
+            </form>
+            <div class="form-footer">
+                <p>Don't have an account? <a href="#" class="form-link" id="showSignup">Sign Up</a></p>
+            </div>
         </div>
+    </div>
 
-        <!-- Terms Page -->
-        <div id="terms" class="page" style="display: none;">
-          <div id="termsContent"></div>
+    <!-- Signup Modal -->
+    <div class="modal" id="signupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create Account</h3>
+                <button class="modal-close" id="closeSignupModal">&times;</button>
+            </div>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label class="form-label" for="signupName">Full Name</label>
+                    <input type="text" class="form-input" id="signupName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="signupEmail">Email</label>
+                    <input type="email" class="form-input" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="signupPassword">Password</label>
+                    <input type="password" class="form-input" id="signupPassword" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="signupConfirmPassword">Confirm Password</label>
+                    <input type="password" class="form-input" id="signupConfirmPassword" required>
+                </div>
+                <button type="submit" class="form-submit">Create Account</button>
+            </form>
+            <div class="form-footer">
+                <p>Already have an account? <a href="#" class="form-link" id="showLogin">Login</a></p>
+            </div>
         </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- Chat System -->
-  <button id="chatToggle" style="display: none;">💬</button>
-  <div id="chatBox" style="display: none;">
-    <div class="chat-header">
-      <span>Support Chat</span>
-      <button class="chat-close" onclick="toggleChat()">×</button>
     </div>
-    <div class="chat-messages" id="chatMessages">
-      <div class="chat-message other">
-        <div class="message-sender">Support</div>
-        Welcome to QuizBux! How can we help you?
-      </div>
+
+    <!-- Offerwall Modal -->
+    <div class="modal" id="offerwallModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="offerwallModalTitle">Offerwall</h3>
+                <button class="modal-close" id="closeOfferwallModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <iframe id="offerwallIframe" class="offerwall-iframe" src="about:blank"></iframe>
+            </div>
+        </div>
     </div>
-    <div class="chat-input-container">
-      <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." onkeypress="handleChatInput(event)">
-    </div>
-  </div>
 
-  <!-- Alert Modal -->
-  <div id="alertModal" style="display: none;">
-    <div class="modal">
-      <p id="alertMessage">Message</p>
-      <button onclick="closeAlert()">OK</button>
-    </div>
-  </div>
-
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxWOrSIq2wLtuW6RBogZAKEhBPrPR-WWI_ec6l_qZQuIhVsmhWXRobPkXQIwpTNsa8etg/exec";
-
-    let currentUser = null;
-    let pendingUser = null;
-    let chatInterval = null;
-    let config = null;
-
-    async function init() {
-      console.log('🚀 Initializing QuizBux...');
-      
-      try {
-        // Load configuration first
-        await loadConfig();
-        
-        // Hide loading screen and show app
-        document.getElementById('loadingScreen').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        
-        showLogin();
-        
-        // Check if user was previously logged in
-        const savedUser = localStorage.getItem('quizbux_user');
-        if (savedUser) {
-          try {
-            const userData = JSON.parse(savedUser);
-            // Verify user still exists
-            const formData = new FormData();
-            formData.append('action', 'getUserData');
-            formData.append('username', userData.username);
-            
-            const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-            const data = await response.json();
-            
-            if (data.status === 'success') {
-              currentUser = data.user;
-              showDashboard();
-            } else {
-              localStorage.removeItem('quizbux_user');
-            }
-          } catch (error) {
-            localStorage.removeItem('quizbux_user');
-          }
-        }
-      } catch (error) {
-        console.error('Initialization error:', error);
-        document.getElementById('loadingScreen').innerHTML = '<h2>Error Loading App</h2><p>Please refresh the page</p>';
-      }
-    }
-
-    async function loadConfig() {
-      try {
-        const formData = new FormData();
-        formData.append('action', 'getConfig');
-        
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-        
-        if (data.status === 'success') {
-          config = data.data;
-          document.getElementById('logo-img').src = config.logo;
-          document.getElementById('termsContent').innerHTML = config.texts.terms;
-          
-          // Populate cashout rewards
-          const rewardSelect = document.getElementById('rewardSelect');
-          rewardSelect.innerHTML = '<option value="">Choose reward...</option>';
-          
-          if (config.offers && config.offers.length > 0) {
-            config.offers.forEach(offer => {
-              const option = document.createElement('option');
-              option.value = offer.name;
-              option.textContent = `${offer.name} - $${offer.amount}`;
-              option.setAttribute('data-amount', offer.amount);
-              rewardSelect.appendChild(option);
-            });
-          }
-        }
-      } catch (error) {
-        console.error('Config loading error:', error);
-      }
-    }
-
-    function showLogin() {
-      hideAllAuthCards();
-      document.getElementById('loginCard').style.display = 'block';
-    }
-
-    function showSignup() {
-      hideAllAuthCards();
-      document.getElementById('signupCard').style.display = 'block';
-    }
-
-    function showVerification() {
-      hideAllAuthCards();
-      document.getElementById('verifyCard').style.display = 'block';
-      // Clear verification inputs
-      document.querySelectorAll('.code-input').forEach(input => input.value = '');
-    }
-
-    function hideAllAuthCards() {
-      document.getElementById('loginCard').style.display = 'none';
-      document.getElementById('signupCard').style.display = 'none';
-      document.getElementById('verifyCard').style.display = 'none';
-    }
-
-    function moveToNext(input, nextIndex) {
-      if (input.value.length === 1) {
-        const nextInput = document.querySelectorAll('.code-input')[nextIndex];
-        if (nextInput) nextInput.focus();
-      }
-    }
-
-    async function signup() {
-      const username = document.getElementById('signupUsername').value.trim();
-      const email = document.getElementById('signupEmail').value.trim();
-      const password = document.getElementById('signupPassword').value;
-
-      if (!username || !email || !password) {
-        return showAlert('Please fill all fields');
-      }
-
-      if (password.length < 6) {
-        return showAlert('Password must be at least 6 characters');
-      }
-
-      const formData = new FormData();
-      formData.append('action', 'signup');
-      formData.append('username', username);
-      formData.append('email', email);
-      formData.append('password', password);
-
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-
-        if (data.status === 'success') {
-          pendingUser = { username, email, password };
-          showVerification();
-          showAlert('Verification code sent to your email! Code: ' + (data.data?.code || 'Check console'));
-        } else {
-          showAlert(data.message || 'Signup failed');
-        }
-      } catch (error) {
-        showAlert('Network error. Please try again.');
-      }
-    }
-
-    async function verifyEmail() {
-      const codeInputs = document.querySelectorAll('.code-input');
-      const code = Array.from(codeInputs).map(input => input.value).join('');
-
-      if (code.length !== 6) {
-        return showAlert('Please enter the 6-digit code');
-      }
-
-      const formData = new FormData();
-      formData.append('action', 'verifyEmail');
-      formData.append('username', pendingUser.username);
-      formData.append('email', pendingUser.email);
-      formData.append('password', pendingUser.password);
-      formData.append('code', code);
-
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-
-        if (data.status === 'success') {
-          showAlert('Account verified successfully! You can now login.');
-          showLogin();
-          pendingUser = null;
-        } else {
-          showAlert(data.message || 'Verification failed');
-        }
-      } catch (error) {
-        showAlert('Network error. Please try again.');
-      }
-    }
-
-    async function resendCode() {
-      if (!pendingUser) {
-        return showAlert('No pending verification found');
-      }
-
-      const formData = new FormData();
-      formData.append('action', 'resendCode');
-      formData.append('username', pendingUser.username);
-      formData.append('email', pendingUser.email);
-
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-
-        if (data.status === 'success') {
-          showAlert('New verification code sent! Code: ' + (data.data?.code || 'Check console'));
-        } else {
-          showAlert(data.message || 'Failed to resend code');
-        }
-      } catch (error) {
-        showAlert('Network error. Please try again.');
-      }
-    }
-
-    async function login() {
-      const username = document.getElementById('loginUsername').value.trim();
-      const password = document.getElementById('loginPassword').value;
-
-      if (!username || !password) {
-        return showAlert('Please fill all fields');
-      }
-
-      const formData = new FormData();
-      formData.append('action', 'login');
-      formData.append('username', username);
-      formData.append('password', password);
-
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-
-        if (data.status === 'success') {
-          currentUser = data.user;
-          // Save user to localStorage
-          localStorage.setItem('quizbux_user', JSON.stringify(currentUser));
-          showDashboard();
-          showAlert('Login successful! Welcome back.');
-        } else {
-          showAlert(data.message || 'Login failed');
-        }
-      } catch (error) {
-        showAlert('Network error. Please try again.');
-      }
-    }
-
-    function showDashboard() {
-      document.getElementById('authScreens').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-      document.getElementById('chatToggle').style.display = 'block';
-
-      document.getElementById('displayUsername').textContent = currentUser.username;
-      document.getElementById('userAvatar').textContent = currentUser.username[0].toUpperCase();
-      document.getElementById('balanceValue').textContent = Number(currentUser.balance).toLocaleString();
-      document.getElementById('usdBalanceValue').textContent = '$' + Number(currentUser.balanceUSD).toFixed(4);
-
-      // Load offerwalls and cashout history
-      loadOfferwalls();
-      loadCashoutHistory();
-      
-      showPage('work');
-      
-      // Start chat polling
-      if (chatInterval) clearInterval(chatInterval);
-      chatInterval = setInterval(loadChatMessages, 3000);
-    }
-
-    function showPage(id) {
-      document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-      document.getElementById(id).style.display = 'block';
-      
-      // Load page-specific data
-      if (id === 'offerwalls') {
-        loadOfferwalls();
-      } else if (id === 'cashout') {
-        loadCashoutHistory();
-      }
-    }
-
-    async function loadOfferwalls() {
-      if (!currentUser) return;
-
-      try {
-        const formData = new FormData();
-        formData.append('action', 'getOfferwalls');
-        formData.append('username', currentUser.username);
-
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-
-        const offerwallList = document.getElementById('offerwallList');
-        
-        if (data.status === 'success' && data.data.offerwalls.length > 0) {
-          offerwallList.innerHTML = '';
-          
-          data.data.offerwalls.forEach(wall => {
-            const isUnlocked = currentUser.balance >= wall.pointsRequired;
-            const wallElement = document.createElement('div');
-            wallElement.className = 'offerwall-item';
-            wallElement.innerHTML = `
-              <h4>${wall.name}</h4>
-              <div class="offerwall-requirements ${isUnlocked ? 'unlocked' : 'locked'}">
-                ${isUnlocked ? '✅ Unlocked' : `🔒 Requires ${wall.pointsRequired} points`}
-              </div>
-              <div class="offerwall-buttons">
-                <button onclick="openOfferwallInIframe('${wall.id}', '${wall.url}')" ${!isUnlocked ? 'disabled' : ''}>
-                  Start Earning
-                </button>
-                <button onclick="showAlert('Complete tasks on ${wall.name} to earn more points!')">
-                  Info
-                </button>
-              </div>
-            `;
-            offerwallList.appendChild(wallElement);
-          });
-        } else {
-          offerwallList.innerHTML = '<p>No offerwalls available at the moment.</p>';
-        }
-      } catch (error) {
-        document.getElementById('offerwallList').innerHTML = '<p>Error loading offerwalls.</p>';
-      }
-    }
-
-    function openOfferwallInIframe(offerwallId, url) {
-      const iframe = document.getElementById('offerwallFrame');
-      const iframeContainer = document.getElementById('iframeContainer');
-      const offerwallList = document.getElementById('offerwallList');
-      
-      iframe.src = url;
-      iframeContainer.style.display = 'block';
-      offerwallList.style.display = 'none';
-    }
-
-    function closeIframe() {
-      const iframeContainer = document.getElementById('iframeContainer');
-      const offerwallList = document.getElementById('offerwallList');
-      const iframe = document.getElementById('offerwallFrame');
-      
-      iframeContainer.style.display = 'none';
-      offerwallList.style.display = 'block';
-      iframe.src = 'about:blank';
-    }
-
-    async function submitWork() {
-      if (!currentUser) return;
-
-      const text = document.getElementById('workInput').value.trim();
-      if (!text) return showAlert('Please write something');
-      
-      if (text.length < 10) return showAlert('Please provide more details (at least 10 characters)');
-
-      const formData = new FormData();
-      formData.append('action', 'submitWork');
-      formData.append('username', currentUser.username);
-      formData.append('submission', text);
-
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-        
-        showAlert(data.message || 'Work submitted!');
-        
-        if (data.status === 'success') {
-          document.getElementById('workInput').value = '';
-          // Update user balance display
-          currentUser.balance += 50;
-          currentUser.balanceUSD += 0.001;
-          updateBalanceDisplay();
-        }
-      } catch (error) {
-        showAlert('Network error. Please try again.');
-      }
-    }
-
-    function updateBalanceDisplay() {
-      document.getElementById('balanceValue').textContent = Number(currentUser.balance).toLocaleString();
-      document.getElementById('usdBalanceValue').textContent = '$' + Number(currentUser.balanceUSD).toFixed(4);
-    }
-
-    async function submitCashout() {
-      if (!currentUser) return;
-
-      const rewardSelect = document.getElementById('rewardSelect');
-      const selectedOption = rewardSelect.options[rewardSelect.selectedIndex];
-      
-      if (!selectedOption.value) return showAlert('Please select a reward');
-
-      const reward = selectedOption.value;
-      const amount = selectedOption.getAttribute('data-amount');
-
-      const formData = new FormData();
-      formData.append('action', 'submitCashout');
-      formData.append('username', currentUser.username);
-      formData.append('reward', reward);
-      formData.append('amount', amount);
-
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-
-        if (data.status === 'success') {
-          showAlert(data.message || 'Cashout request submitted!');
-          rewardSelect.selectedIndex = 0;
-          document.getElementById('cashoutBtn').disabled = true;
-          
-          // Update balances
-          const pointsUsed = amount * 50000;
-          currentUser.balance -= pointsUsed;
-          currentUser.balanceUSD -= parseFloat(amount);
-          updateBalanceDisplay();
-          
-          // Reload history
-          loadCashoutHistory();
-        } else {
-          showAlert(data.message || 'Cashout failed');
-        }
-      } catch (error) {
-        showAlert('Network error. Please try again.');
-      }
-    }
-
-    async function loadCashoutHistory() {
-      if (!currentUser) return;
-
-      try {
-        const formData = new FormData();
-        formData.append('action', 'getCashoutHistory');
-        formData.append('username', currentUser.username);
-
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-
-        const historyContainer = document.getElementById('cashoutHistory');
-        
-        if (data.status === 'success' && data.data.history.length > 0) {
-          historyContainer.innerHTML = '';
-          
-          data.data.history.forEach(cashout => {
-            const cashoutElement = document.createElement('div');
-            cashoutElement.className = 'cashout-item';
-            
-            const statusClass = `status-${cashout.status}`;
-            const date = new Date(cashout.date).toLocaleDateString();
-            
-            cashoutElement.innerHTML = `
-              <strong>${cashout.reward}</strong>
-              <span class="cashout-status ${statusClass}">${cashout.status}</span>
-              <div>Amount: $${cashout.amount} | Points: ${Number(cashout.pointsUsed).toLocaleString()}</div>
-              <div>Date: ${date}</div>
-              ${cashout.adminNotes ? `<div class="admin-notes">Admin: ${cashout.adminNotes}</div>` : ''}
-            `;
-            historyContainer.appendChild(cashoutElement);
-          });
-        } else {
-          historyContainer.innerHTML = '<p>No cashout history found.</p>';
-        }
-      } catch (error) {
-        document.getElementById('cashoutHistory').innerHTML = '<p>Error loading history.</p>';
-      }
-    }
-
-    function toggleChat() {
-      const chatBox = document.getElementById('chatBox');
-      chatBox.style.display = chatBox.style.display === 'none' ? 'flex' : 'none';
-      
-      if (chatBox.style.display === 'flex') {
-        loadChatMessages();
-        document.getElementById('chatInput').focus();
-      }
-    }
-
-    function handleChatInput(event) {
-      if (event.key === 'Enter') {
-        sendChatMessage();
-      }
-    }
-
-    async function sendChatMessage() {
-      if (!currentUser) return;
-
-      const input = document.getElementById('chatInput');
-      const message = input.value.trim();
-      
-      if (!message) return;
-      
-      const formData = new FormData();
-      formData.append('action', 'sendChatMessage');
-      formData.append('username', currentUser.username);
-      formData.append('message', message);
-
-      try {
-        await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        input.value = '';
-        
-        // Add message to chat immediately
-        addChatMessage(currentUser.username, message, true);
-      } catch (error) {
-        showAlert('Failed to send message');
-      }
-    }
-
-    async function loadChatMessages() {
-      try {
-        const formData = new FormData();
-        formData.append('action', 'getChatMessages');
-
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-
-        if (data.status === 'success') {
-          const chatMessages = document.getElementById('chatMessages');
-          chatMessages.innerHTML = '';
-          
-          data.data.messages.forEach(msg => {
-            addChatMessage(msg.username, msg.message, msg.username === currentUser.username);
-          });
-          
-          // Scroll to bottom
-          chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-      } catch (error) {
-        console.error('Chat load error:', error);
-      }
-    }
-
-    function addChatMessage(username, message, isOwn) {
-      const chatMessages = document.getElementById('chatMessages');
-      const messageElement = document.createElement('div');
-      messageElement.className = `chat-message ${isOwn ? 'own' : 'other'}`;
-      
-      if (!isOwn) {
-        messageElement.innerHTML = `<div class="message-sender">${username}</div>`;
-      }
-      
-      const textNode = document.createTextNode(message);
-      messageElement.appendChild(textNode);
-      chatMessages.appendChild(messageElement);
-    }
-
-    function logout() {
-      if (chatInterval) clearInterval(chatInterval);
-      currentUser = null;
-      pendingUser = null;
-      localStorage.removeItem('quizbux_user');
-      location.reload();
-    }
-
-    function showAlert(msg) {
-      document.getElementById('alertMessage').textContent = msg;
-      document.getElementById('alertModal').style.display = 'flex';
-    }
-
-    function closeAlert() {
-      document.getElementById('alertModal').style.display = 'none';
-    }
-
-    // Initialize reward select change handler
-    document.getElementById('rewardSelect').onchange = function() {
-      document.getElementById('cashoutBtn').disabled = !this.value;
-    };
-
-    // Add Enter key support for login/signup
-    document.getElementById('loginPassword').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') login();
-    });
-    
-    document.getElementById('signupPassword').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') signup();
-    });
-
-    // Initialize the app when page loads
-    window.onload = init;
-  </script>
+    <!-- Scripts will be dynamically loaded from Google Sheets -->
 </body>
 </html>
