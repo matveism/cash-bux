@@ -68,33 +68,6 @@
         margin-bottom: 1rem;
     }
 
-    /* Connection Status */
-    #connectionStatus {
-        position: fixed;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        z-index: 10000;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-    
-    .status-connected {
-        background: rgba(76, 217, 100, 0.2);
-        border: 1px solid var(--success);
-        color: var(--success);
-    }
-    
-    .status-disconnected {
-        background: rgba(255, 71, 87, 0.2);
-        border: 1px solid var(--error);
-        color: var(--error);
-    }
-
     /* Auth Container */
     .auth-container {
         display: flex;
@@ -718,11 +691,6 @@
 </head>
 <body>
 
-  <!-- Connection Status -->
-  <div id="connectionStatus" class="hidden">
-    Checking connection...
-  </div>
-
   <!-- Loading -->
   <div id="loadingScreen">
     <h2>Loading QuizBux...</h2>
@@ -734,7 +702,7 @@
 
     <!-- Header -->
     <header id="header">
-      <img id="logo-img" src="" alt="Logo">
+      <img id="logo-img" src="https://i.postimg.cc/nrzCgp87/Gemini-Generated-Image-rfo9ogrfo9ogrfo9-1-removebg-preview.png" alt="Logo">
       <div class="header-buttons">
         <button onclick="toggleChat()">💬 Chat</button>
         <button onclick="showAlert('Support: contact@quizbux.com')">Help</button>
@@ -896,25 +864,21 @@
     let currentUser = null;
     let pendingUser = null;
     let chatInterval = null;
-    let connectionCheckInterval = null;
 
-    // Enhanced initialization with connection monitoring
+    // Initialize the app
     async function init() {
       console.log('🚀 Initializing QuizBux...');
       
       try {
-        // Start connection monitoring
-        startConnectionMonitoring();
-        
         // Test connection first
-        const connectionStatus = await testConnection();
+        const testResponse = await fetch(SCRIPT_URL + '?action=test');
+        const testData = await testResponse.json();
         
-        if (connectionStatus.connected) {
+        if (testData.status === 'success') {
           console.log('✅ Connection test successful');
-          updateConnectionStatus(true, 'Connected to server');
           
           // Load configuration
-          const configResponse = await fetch(SCRIPT_URL + '?action=getConfig&t=' + Date.now());
+          const configResponse = await fetch(SCRIPT_URL + '?action=getConfig');
           const config = await configResponse.json();
           
           if (config.status === 'success') {
@@ -933,96 +897,14 @@
           }
           
         } else {
-          throw new Error('Connection test failed: ' + connectionStatus.error);
+          throw new Error('Connection test failed: ' + testData.message);
         }
         
       } catch (error) {
         console.error('❌ Initialization failed:', error);
-        updateConnectionStatus(false, 'Connection failed');
         showAlert('Failed to connect to server. Please check your internet connection and try again.');
         document.getElementById('loadingScreen').classList.add('hidden');
         document.getElementById('app').classList.remove('hidden');
-      }
-    }
-
-    // Connection monitoring
-    function startConnectionMonitoring() {
-      // Show connection status
-      document.getElementById('connectionStatus').classList.remove('hidden');
-      
-      // Check connection every 30 seconds
-      connectionCheckInterval = setInterval(async () => {
-        const status = await testConnection();
-        updateConnectionStatus(status.connected, status.message);
-      }, 30000);
-    }
-
-    function updateConnectionStatus(connected, message) {
-      const statusElement = document.getElementById('connectionStatus');
-      statusElement.textContent = message;
-      
-      if (connected) {
-        statusElement.className = 'status-connected';
-      } else {
-        statusElement.className = 'status-disconnected';
-      }
-    }
-
-    async function testConnection() {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
-        
-        const response = await fetch(SCRIPT_URL + '?action=test&t=' + Date.now(), {
-          signal: controller.signal
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-          return {
-            connected: false,
-            error: `HTTP ${response.status}: ${response.statusText}`,
-            message: 'Server error - Please try again later'
-          };
-        }
-        
-        const data = await response.json();
-        
-        if (data.status === 'success') {
-          return {
-            connected: true,
-            message: 'Connected ✓'
-          };
-        } else {
-          return {
-            connected: false,
-            error: data.message,
-            message: 'Server error - ' + data.message
-          };
-        }
-      } catch (error) {
-        console.error('Connection test error:', error);
-        
-        if (error.name === 'AbortError') {
-          return {
-            connected: false,
-            error: 'Timeout',
-            message: 'Connection timeout - Check your internet'
-          };
-        } else if (error.message.includes('Failed to fetch')) {
-          return {
-            connected: false,
-            error: 'Network error',
-            message: 'No connection - Check your network'
-          };
-        } else {
-          return {
-            connected: false,
-            error: error.message,
-            message: 'Connection failed - ' + error.message
-          };
-        }
       }
     }
 
@@ -1125,12 +1007,6 @@
         return showAlert('Password must be at least 6 characters');
       }
 
-      // Test connection first
-      const isConnected = await testConnection();
-      if (!isConnected.connected) {
-        return showAlert('Cannot connect to server. Please check your internet connection.');
-      }
-
       const formData = new FormData();
       formData.append('action', 'signup');
       formData.append('username', username);
@@ -1138,41 +1014,29 @@
       formData.append('password', password);
 
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
-        
-        const response = await fetch(SCRIPT_URL, { 
-          method: 'POST', 
-          body: formData,
-          signal: controller.signal
-        });
-        
-        clearTimeout(timeoutId);
+        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
         const data = await response.json();
 
         if (data.status === 'success') {
           pendingUser = { username, email, password };
           showVerification();
-          showAlert('Verification code sent to your email! Check your inbox.');
+          showAlert('Verification code sent to your email!');
         } else {
           showAlert(data.message || 'Signup failed');
         }
       } catch (error) {
         console.error('Signup error:', error);
-        handleNetworkError(error, 'signup');
+        showAlert('Network error. Please try again.');
       }
     }
 
     async function verifyEmail() {
       const codeInputs = document.querySelectorAll('.code-input');
-      const code = Array.from(codeInputs).map(input => input.value.trim()).join('');
+      const code = Array.from(codeInputs).map(input => input.value).join('');
 
       if (code.length !== 6) {
         return showAlert('Please enter the 6-digit code');
       }
-
-      console.log('Verifying code:', code);
-      console.log('Pending user:', pendingUser);
 
       const formData = new FormData();
       formData.append('action', 'verifyEmail');
@@ -1185,18 +1049,16 @@
         const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
         const data = await response.json();
 
-        console.log('Verification response:', data);
-
         if (data.status === 'success') {
           showAlert('Account verified successfully! You can now login.');
           showLogin();
           pendingUser = null;
         } else {
-          showAlert(data.message || 'Verification failed. Please check the code and try again.');
+          showAlert(data.message || 'Verification failed');
         }
       } catch (error) {
         console.error('Verification error:', error);
-        handleNetworkError(error, 'email verification');
+        showAlert('Network error. Please try again.');
       }
     }
 
@@ -1219,25 +1081,8 @@
         }
       } catch (error) {
         console.error('Resend code error:', error);
-        handleNetworkError(error, 'resend code');
+        showAlert('Network error. Please try again.');
       }
-    }
-
-    function handleNetworkError(error, operation) {
-      let errorMessage = '';
-      
-      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
-        errorMessage = `Request timeout during ${operation}. Please check your internet connection and try again.`;
-      } else if (error.message.includes('Failed to fetch')) {
-        errorMessage = `Network error: Cannot connect to server during ${operation}. Please check your internet connection.`;
-      } else if (error.message.includes('HTTP error')) {
-        errorMessage = `Server error during ${operation}. Please try again later.`;
-      } else {
-        errorMessage = `${operation} failed: ${error.message}`;
-      }
-      
-      showAlert(errorMessage);
-      updateConnectionStatus(false, 'Connection error');
     }
 
     async function login() {
@@ -1248,66 +1093,28 @@
         return showAlert('Please fill all fields');
       }
 
-      // Disable button during request
-      const loginBtn = document.querySelector('#loginCard .auth-btn');
-      const originalText = loginBtn.textContent;
-      loginBtn.disabled = true;
-      loginBtn.textContent = 'Logging in...';
-
-      // Test connection first
-      const isConnected = await testConnection();
-      if (!isConnected.connected) {
-        loginBtn.disabled = false;
-        loginBtn.textContent = originalText;
-        return showAlert('Cannot connect to server. Please check your internet connection.');
-      }
-
       const formData = new FormData();
       formData.append('action', 'login');
       formData.append('username', username);
       formData.append('password', password);
 
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
-        
-        const response = await fetch(SCRIPT_URL, { 
-          method: 'POST', 
-          body: formData,
-          signal: controller.signal
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
+        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
         const data = await response.json();
-        console.log('📨 Login response:', data);
 
         if (data.status === 'success') {
           currentUser = data.user;
           localStorage.setItem('quizbux_user', JSON.stringify({ username }));
+          showDashboard();
+          loadOfferwalls();
+          loadCashoutHistory();
           showAlert('Login successful! Welcome back.');
-          
-          // Small delay before showing dashboard
-          setTimeout(() => {
-            showDashboard();
-            loadOfferwalls();
-            loadCashoutHistory();
-          }, 1000);
-          
         } else {
-          showAlert(data.message || 'Login failed. Please check your credentials.');
+          showAlert(data.message || 'Login failed');
         }
       } catch (error) {
-        console.error('❌ Login error:', error);
-        handleNetworkError(error, 'login');
-      } finally {
-        // Re-enable button
-        loginBtn.disabled = false;
-        loginBtn.textContent = originalText;
+        console.error('Login error:', error);
+        showAlert('Network error. Please check your connection and try again.');
       }
     }
 
@@ -1438,7 +1245,7 @@
         document.getElementById('workInput').value = '';
       } catch (error) {
         console.error('Submit work error:', error);
-        handleNetworkError(error, 'submitting work');
+        showAlert('Network error. Please try again.');
       }
     }
 
@@ -1466,7 +1273,7 @@
         loadCashoutHistory();
       } catch (error) {
         console.error('Submit cashout error:', error);
-        handleNetworkError(error, 'submitting cashout');
+        showAlert('Network error. Please try again.');
       }
     }
 
@@ -1584,7 +1391,6 @@
     function logout() {
       localStorage.removeItem('quizbux_user');
       if (chatInterval) clearInterval(chatInterval);
-      if (connectionCheckInterval) clearInterval(connectionCheckInterval);
       location.reload();
     }
 
@@ -1596,37 +1402,6 @@
     function closeAlert() {
       document.getElementById('alertModal').classList.add('hidden');
     }
-
-    // Debug function for network issues
-    async function debugNetwork() {
-      console.log('🔧 Network Debug Information:');
-      console.log('SCRIPT_URL:', SCRIPT_URL);
-      
-      try {
-        // Test basic connectivity
-        const testResponse = await fetch(SCRIPT_URL + '?action=test&t=' + Date.now());
-        console.log('Test Response Status:', testResponse.status);
-        console.log('Test Response OK:', testResponse.ok);
-        
-        const testData = await testResponse.json();
-        console.log('Test Response Data:', testData);
-        
-        return {
-          connected: testResponse.ok,
-          status: testResponse.status,
-          data: testData
-        };
-      } catch (error) {
-        console.error('Network Debug Error:', error);
-        return {
-          connected: false,
-          error: error.message
-        };
-      }
-    }
-
-    // Make debug function available globally
-    window.debugNetwork = debugNetwork;
 
     // Initialize cashout button
     document.getElementById('rewardSelect').onchange = function() {
