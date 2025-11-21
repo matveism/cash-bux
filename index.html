@@ -1153,7 +1153,7 @@
         if (data.status === 'success') {
           pendingUser = { username, email, password };
           showVerification();
-          showAlert('Verification code sent to your email!');
+          showAlert('Verification code sent to your email! Check your inbox.');
         } else {
           showAlert(data.message || 'Signup failed');
         }
@@ -1165,11 +1165,14 @@
 
     async function verifyEmail() {
       const codeInputs = document.querySelectorAll('.code-input');
-      const code = Array.from(codeInputs).map(input => input.value).join('');
+      const code = Array.from(codeInputs).map(input => input.value.trim()).join('');
 
       if (code.length !== 6) {
         return showAlert('Please enter the 6-digit code');
       }
+
+      console.log('Verifying code:', code);
+      console.log('Pending user:', pendingUser);
 
       const formData = new FormData();
       formData.append('action', 'verifyEmail');
@@ -1182,12 +1185,14 @@
         const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
         const data = await response.json();
 
+        console.log('Verification response:', data);
+
         if (data.status === 'success') {
           showAlert('Account verified successfully! You can now login.');
           showLogin();
           pendingUser = null;
         } else {
-          showAlert(data.message || 'Verification failed');
+          showAlert(data.message || 'Verification failed. Please check the code and try again.');
         }
       } catch (error) {
         console.error('Verification error:', error);
@@ -1216,6 +1221,23 @@
         console.error('Resend code error:', error);
         handleNetworkError(error, 'resend code');
       }
+    }
+
+    function handleNetworkError(error, operation) {
+      let errorMessage = '';
+      
+      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+        errorMessage = `Request timeout during ${operation}. Please check your internet connection and try again.`;
+      } else if (error.message.includes('Failed to fetch')) {
+        errorMessage = `Network error: Cannot connect to server during ${operation}. Please check your internet connection.`;
+      } else if (error.message.includes('HTTP error')) {
+        errorMessage = `Server error during ${operation}. Please try again later.`;
+      } else {
+        errorMessage = `${operation} failed: ${error.message}`;
+      }
+      
+      showAlert(errorMessage);
+      updateConnectionStatus(false, 'Connection error');
     }
 
     async function login() {
@@ -1287,23 +1309,6 @@
         loginBtn.disabled = false;
         loginBtn.textContent = originalText;
       }
-    }
-
-    function handleNetworkError(error, operation) {
-      let errorMessage = '';
-      
-      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
-        errorMessage = `Request timeout during ${operation}. Please check your internet connection and try again.`;
-      } else if (error.message.includes('Failed to fetch')) {
-        errorMessage = `Network error: Cannot connect to server during ${operation}. Please check your internet connection.`;
-      } else if (error.message.includes('HTTP error')) {
-        errorMessage = `Server error during ${operation}. Please try again later.`;
-      } else {
-        errorMessage = `${operation} failed: ${error.message}`;
-      }
-      
-      showAlert(errorMessage);
-      updateConnectionStatus(false, 'Connection error');
     }
 
     async function restoreSession(username) {
