@@ -1,302 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuizBux - Earn Rewards</title>
-    <!-- Styles will be dynamically loaded from Google Sheets -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizBux - Earn Money Online</title>
+  <style>
+    body { margin:0; padding:0; background:#f0f2f5; font-family:Arial, sans-serif; }
+    #loading { position:fixed; inset:0; background:linear-gradient(135deg,#667eea,#764ba2); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:2em; gap:20px; z-index:9999; }
+    .spinner { width:60px; height:60px; border:8px solid #ffffff33; border-top:8px solid white; border-radius:50%; animation:spin 1s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container header-content">
-            <div class="logo" id="site-logo">QuizBux</div>
-            <div class="nav-container">
-                <button class="nav-toggle">☰</button>
-                <nav class="nav-oval">
-                    <a href="#" class="active" data-section="dashboard">Dashboard</a>
-                    <a href="#" data-section="offerwalls">Offerwalls</a>
-                    <a href="#" data-section="submissions">Submissions</a>
-                    <a href="#" data-section="cashouts">Cashouts</a>
-                    <a href="#" data-section="rewards">Rewards</a>
-                    <a href="#" data-section="admin" id="admin-nav" style="display: none;">Admin</a>
-                </nav>
-            </div>
-            <div class="user-actions">
-                <button class="btn btn-secondary" id="loginBtn">Login</button>
-                <button class="btn btn-primary" id="signupBtn">Sign Up</button>
-                <div id="user-info" style="display: none;">
-                    <span id="user-name"></span>
-                    <button class="btn btn-secondary" id="logoutBtn">Logout</button>
-                </div>
-            </div>
-        </div>
-    </header>
 
-    <!-- Main Content -->
-    <main>
+  <div id="loading">
+    <div class="spinner"></div>
+    <div>Loading QuizBux...</div>
+  </div>
+
+  <div id="app" style="display:none; min-height:100vh;"></div>
+
+  <script>
+    // PASTE YOUR DEPLOYED WEB APP URL HERE
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9fU6WDfnulZXufa34vvbMBng432TghqRaixhdhq_seHgLUaC74PNoCAk7pccvuwFYPg/exec"; // CHANGE THIS!
+
+    async function startQuizBux() {
+      try {
+        const resp = await fetch(`${SCRIPT_URL}?action=getConfig`);
+        const config = await resp.json();
+
+        if (config.status !== 'success') throw new Error('Failed to load site config');
+
+        // Inject CSS
+        const style = document.createElement('style');
+        style.textContent = config.styles || '';
+        document.head.appendChild(style);
+
+        // Build full page
+        document.getElementById('app').innerHTML = `
         <div class="container">
-            <!-- Dashboard -->
-            <section id="dashboard" class="active-section">
-                <h1 id="dashboard-title">User Dashboard</h1>
-                <div class="dashboard-grid">
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <div class="card-title" id="points-label">Total Points</div>
-                        </div>
-                        <div class="card-value" id="totalPoints">0</div>
-                    </div>
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <div class="card-title" id="balance-label">Available Balance</div>
-                        </div>
-                        <div class="card-value" id="availableBalance">$0.00</div>
-                    </div>
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <div class="card-title">Pending Cashouts</div>
-                        </div>
-                        <div class="card-value" id="pendingCashouts">0</div>
-                    </div>
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <div class="card-title" id="submissions-label">Completed Submissions</div>
-                        </div>
-                        <div class="card-value" id="completedSubmissions">0</div>
-                    </div>
-                </div>
+          <div class="header">
+            <img src="${config.logo || 'https://via.placeholder.com/200x60/4dccff/ffffff?text=QUIZBUX'}" alt="Logo" id="siteLogo" style="height:60px;margin-bottom:15px;">
+            <h1>${config.texts?.welcome_message || 'QuizBux'}</h1>
+            <p>${config.texts?.tagline || 'Earn real money online'}</p>
+          </div>
 
-                <h2 id="offerwalls-title">Available Offerwalls</h2>
-                <div class="offerwall-grid" id="offerwallGrid">
-                    <!-- Offerwalls will be dynamically loaded here -->
-                </div>
-            </section>
+          <div class="nav">
+            <button class="nav-btn active" data-tab="login">Login</button>
+            <button class="nav-btn" data-tab="dashboard">Dashboard</button>
+            <button class="nav-btn" data-tab="offers">Offers</button>
+            <button class="nav-btn" data-tab="offerwalls">Offerwalls</button>
+            <button class="nav-btn" data-tab="work">Submit Work</button>
+            <button class="nav-btn" data-tab="cashout">Cashout</button>
+            <button class="nav-btn hidden" id="logoutBtn">Logout</button>
+          </div>
 
-            <!-- Offerwalls Section -->
-            <section id="offerwallsSection" style="display: none;">
-                <h1 id="offerwalls-page-title">Offerwalls</h1>
-                <p>Complete offers to earn points and rewards. Each completed offer will be credited to your account after verification.</p>
-                
-                <div class="offerwall-grid" id="offerwallSectionGrid">
-                    <!-- Offerwalls will be dynamically loaded here -->
-                </div>
-            </section>
+          <div class="content">
+            <div id="alert" class="alert hidden"></div>
 
-            <!-- Submission Form -->
-            <section id="submissionSection" style="display: none;">
-                <div class="form-container">
-                    <h2 class="form-title" id="submit-work-title">Submit Your Work</h2>
-                    <form id="submissionForm">
-                        <div class="form-group">
-                            <label class="form-label" for="submissionType">Submission Type</label>
-                            <select class="form-input" id="submissionType" required>
-                                <option value="">Select type</option>
-                                <option value="survey">Survey</option>
-                                <option value="offer">Offer Completion</option>
-                                <option value="task">Task Completion</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="submissionDetails">Details</label>
-                            <textarea class="form-input" id="submissionDetails" rows="4" required placeholder="Provide details about your submission"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="submissionProof">Proof (URL)</label>
-                            <input type="url" class="form-input" id="submissionProof" placeholder="https://example.com/proof" required>
-                        </div>
-                        <button type="submit" class="form-submit">Submit Work (50 pts = $0.001)</button>
-                    </form>
-                </div>
-            </section>
-
-            <!-- Cashouts Section -->
-            <section id="cashoutsSection" style="display: none;">
-                <div class="form-container">
-                    <h2 class="form-title" id="cashout-title">Request Cashout</h2>
-                    <form id="cashoutForm">
-                        <div class="form-group">
-                            <label class="form-label" for="cashoutAmount">Amount ($)</label>
-                            <input type="number" class="form-input" id="cashoutAmount" min="5" max="100" step="0.01" required>
-                            <small>Minimum cashout: $5.00</small>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="cashoutMethod">Payment Method</label>
-                            <select class="form-input" id="cashoutMethod" required>
-                                <option value="">Select method</option>
-                                <option value="paypal">PayPal</option>
-                                <option value="bank">Bank Transfer</option>
-                                <option value="crypto">Cryptocurrency</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="cashoutDetails">Payment Details</label>
-                            <input type="text" class="form-input" id="cashoutDetails" required placeholder="Email, wallet address, etc.">
-                        </div>
-                        <button type="submit" class="form-submit">Request Cashout</button>
-                    </form>
-                </div>
-                
-                <div class="admin-panel" style="margin-top: 30px;">
-                    <h3>Your Cashout History</h3>
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Amount</th>
-                                <th>Method</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="userCashoutsTable">
-                            <!-- Cashout history will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Rewards Section -->
-            <section id="rewardsSection" style="display: none;">
-                <h1 id="rewards-title">Rewards</h1>
-                <p>Exchange your points for exciting rewards and gift cards.</p>
-                
-                <div class="dashboard-grid" id="rewardsGrid">
-                    <!-- Rewards will be dynamically loaded here -->
-                </div>
-            </section>
-
-            <!-- Admin Section -->
-            <section id="adminSection" style="display: none;">
-                <h1>Admin Panel</h1>
-                
-                <div class="admin-panel">
-                    <h2>Pending Submissions</h2>
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Type</th>
-                                <th>Details</th>
-                                <th>Proof</th>
-                                <th>Points</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pendingSubmissionsTable">
-                            <!-- Pending submissions will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="admin-panel">
-                    <h2>Pending Cashouts</h2>
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Amount</th>
-                                <th>Method</th>
-                                <th>Details</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pendingCashoutsTable">
-                            <!-- Pending cashouts will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="admin-panel">
-                    <h2>System Configuration</h2>
-                    <div class="form-group">
-                        <label class="form-label" for="pointsPerSubmission">Points Per Submission</label>
-                        <input type="number" class="form-input" id="pointsPerSubmission" value="50">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="submissionValue">Submission Value ($)</label>
-                        <input type="number" class="form-input" id="submissionValue" value="0.001" step="0.001">
-                    </div>
-                    <button class="btn btn-primary" id="updateConfigBtn">Update Configuration</button>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2023 <span id="footer-site-name">QuizBux</span>. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- Login Modal -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Login</h3>
-                <button class="modal-close" id="closeLoginModal">&times;</button>
+            <div id="loginTab" class="tab-content">
+              <div class="card">
+                <h3>${config.texts?.login_title || 'Login'}</h3>
+                <div class="form-group"><input type="text" id="username" class="form-control" placeholder="${config.texts?.username_placeholder || 'Username'}"></div>
+                <div class="form-group"><input type="password" id="password" class="form-control" placeholder="${config.texts?.password_placeholder || 'Password'}"></div>
+                <button class="btn" id="loginBtn">Login</button>
+              </div>
             </div>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label class="form-label" for="loginEmail">Email</label>
-                    <input type="email" class="form-input" id="loginEmail" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="loginPassword">Password</label>
-                    <input type="password" class="form-input" id="loginPassword" required>
-                </div>
-                <button type="submit" class="form-submit">Login</button>
-            </form>
-            <div class="form-footer">
-                <p>Don't have an account? <a href="#" class="form-link" id="showSignup">Sign Up</a></p>
-            </div>
-        </div>
-    </div>
 
-    <!-- Signup Modal -->
-    <div class="modal" id="signupModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Create Account</h3>
-                <button class="modal-close" id="closeSignupModal">&times;</button>
+            <div id="dashboardTab" class="tab-content hidden">
+              <div class="balance-card">
+                <h3>Welcome back, <span id="welcomeUser">User</span>!</h3>
+                <div class="balance-amount"><span id="userBalance">0</span> Points</div>
+                <div class="balance-amount">$<span id="userBalanceUSD">0.00</span> USD</div>
+              </div>
             </div>
-            <form id="signupForm">
-                <div class="form-group">
-                    <label class="form-label" for="signupName">Full Name</label>
-                    <input type="text" class="form-input" id="signupName" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="signupEmail">Email</label>
-                    <input type="email" class="form-input" id="signupEmail" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="signupPassword">Password</label>
-                    <input type="password" class="form-input" id="signupPassword" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="signupConfirmPassword">Confirm Password</label>
-                    <input type="password" class="form-input" id="signupConfirmPassword" required>
-                </div>
-                <button type="submit" class="form-submit">Create Account</button>
-            </form>
-            <div class="form-footer">
-                <p>Already have an account? <a href="#" class="form-link" id="showLogin">Login</a></p>
-            </div>
-        </div>
-    </div>
 
-    <!-- Offerwall Modal -->
-    <div class="modal" id="offerwallModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="offerwallModalTitle">Offerwall</h3>
-                <button class="modal-close" id="closeOfferwallModal">&times;</button>
+            <div id="offersTab" class="tab-content hidden">
+              <div class="card"><h3>Available Offers</h3><div id="offersContainer" class="offer-grid"></div></div>
             </div>
-            <div class="modal-body">
-                <iframe id="offerwallIframe" class="offerwall-iframe" src="about:blank"></iframe>
-            </div>
-        </div>
-    </div>
 
-    <!-- Scripts will be dynamically loaded from Google Sheets -->
+            <div id="offerwallsTab" class="tab-content hidden">
+              <div class="card"><h3>Offerwalls</h3><div id="offerwallsContainer" class="offer-grid"></div></div>
+            </div>
+
+            <div id="workTab" class="tab-content hidden">
+              <div class="card">
+                <h3>Submit Work</h3>
+                <textarea id="workSubmission" class="form-control" rows="6" placeholder="${config.texts?.work_placeholder || 'Paste proof or describe work...'}"></textarea>
+                <button class="btn" id="submitWorkBtn">Submit Work</button>
+              </div>
+            </div>
+
+            <div id="cashoutTab" class="tab-content hidden">
+              <div class="card">
+                <h3>Cashout Rewards</h3>
+                <input type="text" id="cashoutReward" class="form-control" placeholder="${config.texts?.cashout_reward_placeholder || 'PayPal, Amazon, etc.'}">
+                <input type="number" step="0.01" id="cashoutAmount" class="form-control" placeholder="${config.texts?.cashout_amount_placeholder || 'Amount in USD'}">
+                <button class="btn" id="cashoutBtn">Request Cashout</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <p>${config.texts?.footer_text || 'QuizBux © 2025'}</p>
+            <p style="font-size:0.9em;color:#888;">${config.texts?.terms || ''}</p>
+          </div>
+        </div>`;
+
+        // Remove loading screen
+        document.getElementById('loading').remove();
+        document.getElementById('app').style.display = 'block';
+
+        // Inject the main JS (from your Scripts sheet)
+        const script = document.createElement('script');
+        script.textContent = config.scripts.replace(/ScriptApp\.getService\(\)\.getUrl\(\)/g, `"${SCRIPT_URL}"`);
+        document.body.appendChild(script);
+
+      } catch (e) {
+        document.getElementById('loading').innerHTML = `<div style="text-align:center;color:white;">
+          <h2>Connection Failed</h2>
+          <p>Make sure you replaced SCRIPT_URL with your real web app URL</p>
+          <button onclick="location.reload()" style="padding:12px 24px;margin-top:20px;">Retry</button>
+        </div>`;
+      }
+    }
+
+    // Start the app
+    startQuizBux();
+  </script>
 </body>
 </html>
