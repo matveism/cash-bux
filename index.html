@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>QuizBux - Earn Real Money</title>
 
-  <style id="dynamic-styles">
+  <style>
     :root {
         --primary: #ff6b35;
         --primary-dark: #c53d13;
@@ -13,7 +13,8 @@
         --secondary: #c44569;
         --accent: #ff9e7d;
         --success: #4cd964;
-        --warning: #ffd166;
+        --warning: #ffcc00;
+        --error: #ff4757;
         --text-light: #ffffff;
         --text-dim: #e8e8e8;
         --bg-gradient: linear-gradient(135deg, #2d1b3d 0%, #8b2a3d 50%, #d45a29 100%);
@@ -65,6 +66,33 @@
         background-clip: text;
         color: transparent; 
         margin-bottom: 1rem;
+    }
+
+    /* Connection Status */
+    #connectionStatus {
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 10000;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .status-connected {
+        background: rgba(76, 217, 100, 0.2);
+        border: 1px solid var(--success);
+        color: var(--success);
+    }
+    
+    .status-disconnected {
+        background: rgba(255, 71, 87, 0.2);
+        border: 1px solid var(--error);
+        color: var(--error);
     }
 
     /* Auth Container */
@@ -163,6 +191,13 @@
         box-shadow: 0 15px 30px rgba(255, 107, 53, 0.5);
     }
 
+    .auth-btn:disabled {
+        background: #666;
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
     .auth-switch {
         text-align: center;
         color: var(--text-dim);
@@ -226,6 +261,11 @@
         border-radius: 12px;
     }
 
+    .header-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
     #header button {
         background: rgba(255, 255, 255, 0.15);
         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -235,7 +275,6 @@
         cursor: pointer;
         transition: var(--transition);
         font-weight: 600;
-        margin-left: 0.5rem;
     }
 
     #header button:hover {
@@ -269,6 +308,25 @@
         font-size: 2rem;
         font-weight: 700;
         box-shadow: var(--shadow-glow);
+    }
+
+    .user-status {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+
+    .status-active {
+        background: var(--success);
+        color: white;
+    }
+
+    .status-suspended {
+        background: var(--error);
+        color: white;
     }
 
     .nav {
@@ -341,6 +399,24 @@
         border-color: rgba(255, 158, 125, 0.3);
     }
 
+    .offerwall-requirements {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.8rem;
+        border-radius: 12px;
+        margin: 1rem 0;
+        text-align: center;
+    }
+
+    .offerwall-requirements.unlocked {
+        background: rgba(76, 217, 100, 0.2);
+        border: 1px solid var(--success);
+    }
+
+    .offerwall-requirements.locked {
+        background: rgba(255, 71, 87, 0.2);
+        border: 1px solid var(--error);
+    }
+
     .offerwall-buttons {
         display: flex;
         gap: 1rem;
@@ -368,7 +444,14 @@
         color: var(--text-light);
     }
 
-    .offerwall-buttons button:hover {
+    .offerwall-buttons button:disabled {
+        background: #555;
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+    .offerwall-buttons button:hover:not(:disabled) {
         transform: translateY(-3px);
         box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
     }
@@ -398,6 +481,167 @@
         box-shadow: var(--shadow);
     }
 
+    /* Cashout History */
+    .cashout-history {
+        margin-top: 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 1.5rem;
+    }
+
+    .cashout-item {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 1.2rem;
+        margin: 0.8rem 0;
+        border-left: 4px solid var(--accent);
+    }
+
+    .cashout-status {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+
+    .status-pending {
+        background: var(--warning);
+        color: black;
+    }
+
+    .status-approved {
+        background: var(--success);
+        color: white;
+    }
+
+    .status-rejected {
+        background: var(--error);
+        color: white;
+    }
+
+    .admin-notes {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.8rem;
+        border-radius: 8px;
+        margin-top: 0.8rem;
+        font-size: 0.9rem;
+        color: var(--text-dim);
+    }
+
+    /* Chat System */
+    #chatToggle {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: var(--shadow-glow);
+        z-index: 1000;
+        transition: var(--transition);
+    }
+
+    #chatToggle:hover {
+        transform: scale(1.1);
+    }
+
+    #chatBox {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        width: 350px;
+        height: 500px;
+        background: var(--bg-card);
+        backdrop-filter: blur(25px);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        border: var(--border-glow);
+        display: flex;
+        flex-direction: column;
+        z-index: 999;
+        transition: var(--transition);
+    }
+
+    .chat-header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        padding: 1.2rem;
+        border-radius: 20px 20px 0 0;
+        font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 1.2rem;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .chat-message {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.8rem 1rem;
+        border-radius: 12px;
+        max-width: 80%;
+        word-wrap: break-word;
+    }
+
+    .chat-message.own {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        align-self: flex-end;
+    }
+
+    .chat-message.other {
+        background: rgba(255, 255, 255, 0.15);
+        align-self: flex-start;
+    }
+
+    .message-sender {
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        color: var(--accent);
+    }
+
+    .chat-input-container {
+        padding: 1.2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .chat-input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: var(--text-light);
+        font-size: 0.9rem;
+        resize: none;
+        outline: none;
+    }
+
+    .chat-input:focus {
+        border-color: var(--accent);
+    }
+
     /* Alert Modal */
     #alertModal {
         position: fixed;
@@ -417,7 +661,7 @@
         border-radius: 24px;
         max-width: 450px;
         text-align: center;
-        box-shadow: var(--shadow);
+        box-shadow: var(--shadow), 0 0 40px rgba(255, 107, 53, 0.2);
         border: var(--border-glow);
     }
 
@@ -452,10 +696,32 @@
             height: 60px;
             font-size: 1.2rem;
         }
+
+        #chatBox {
+            width: 300px;
+            height: 400px;
+            right: 20px;
+            bottom: 80px;
+        }
+
+        .header-buttons {
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        #header button {
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
     }
   </style>
 </head>
 <body>
+
+  <!-- Connection Status -->
+  <div id="connectionStatus" class="hidden">
+    Checking connection...
+  </div>
 
   <!-- Loading -->
   <div id="loadingScreen">
@@ -469,8 +735,9 @@
     <!-- Header -->
     <header id="header">
       <img id="logo-img" src="" alt="Logo">
-      <div>
-        <button onclick="showAlert('Support coming soon')">Help</button>
+      <div class="header-buttons">
+        <button onclick="toggleChat()">💬 Chat</button>
+        <button onclick="showAlert('Support: contact@quizbux.com')">Help</button>
         <button onclick="logout()">Logout</button>
       </div>
     </header>
@@ -528,7 +795,7 @@
       <div class="profile">
         <div class="avatar" id="userAvatar">U</div>
         <div>
-          <h2 id="displayUsername">User</h2>
+          <h2 id="displayUsername">User <span id="userStatus" class="user-status status-active">Active</span></h2>
           <div>
             <strong id="balanceValue">0</strong> Points • 
             <strong id="usdBalanceValue">$0.0000</strong>
@@ -577,6 +844,14 @@
             1 USD = 50,000 Points<br>
             You need both Points & USD balance
           </p>
+
+          <!-- Cashout History -->
+          <div class="cashout-history">
+            <h4>Cashout History</h4>
+            <div id="cashoutHistory">
+              <p>Loading history...</p>
+            </div>
+          </div>
         </div>
 
         <!-- Terms Page -->
@@ -585,6 +860,24 @@
         </div>
       </div>
     </section>
+  </div>
+
+  <!-- Chat System -->
+  <button id="chatToggle" class="hidden">💬</button>
+  <div id="chatBox" class="hidden">
+    <div class="chat-header">
+      <span>Support Chat</span>
+      <button class="chat-close" onclick="toggleChat()">×</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-message other">
+        <div class="message-sender">Support</div>
+        Welcome to QuizBux! How can we help you?
+      </div>
+    </div>
+    <div class="chat-input-container">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." onkeypress="handleChatInput(event)">
+    </div>
   </div>
 
   <!-- Alert Modal -->
@@ -597,73 +890,213 @@
 
   <!-- MAIN SCRIPT -->
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9fU6WDfnulZXufa34vvbMBng432TghqRaixhdhq_seHgLUaC74PNoCAk7pccvuwFYPg/exec";
+    // ⚠️ REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT DEPLOYMENT URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTelvEYce1YEgw8-RDKth6xa_VJGRu2YOTxRMcgTGLuL6IXgO7tFG3xllYW4czAdbEEg/exec";
 
     let currentUser = null;
     let pendingUser = null;
+    let chatInterval = null;
+    let connectionCheckInterval = null;
 
+    // Enhanced initialization with connection monitoring
     async function init() {
+      console.log('🚀 Initializing QuizBux...');
+      
       try {
-        const res = await fetch(SCRIPT_URL + "?action=getConfig");
-        const config = await res.json();
-
-        if (config.status === "success") {
-          // Inject additional CSS if any
-          if (config.styles) {
-            document.getElementById("dynamic-styles").textContent += config.styles;
+        // Start connection monitoring
+        startConnectionMonitoring();
+        
+        // Test connection first
+        const connectionStatus = await testConnection();
+        
+        if (connectionStatus.connected) {
+          console.log('✅ Connection test successful');
+          updateConnectionStatus(true, 'Connected to server');
+          
+          // Load configuration
+          const configResponse = await fetch(SCRIPT_URL + '?action=getConfig&t=' + Date.now());
+          const config = await configResponse.json();
+          
+          if (config.status === 'success') {
+            applyConfig(config);
           }
-
-          // Texts and logo
-          Object.keys(config.texts || {}).forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = config.texts[id];
-          });
-
-          if (config.logo) document.getElementById("logo-img").src = config.logo;
-
-          // Offers
-          const select = document.getElementById("rewardSelect");
-          (config.offers || []).forEach(o => {
-            const opt = document.createElement("option");
-            opt.value = o.amount;
-            opt.textContent = `${o.name} ($${o.amount.toFixed(2)})`;
-            select.appendChild(opt);
-          });
-          select.onchange = () => document.getElementById("cashoutBtn").disabled = !select.value;
-
-          // Terms
-          if (config.terms) document.getElementById("termsContent").innerHTML = config.terms;
-
-          // Done loading
-          document.getElementById("loadingScreen").classList.add("hidden");
-          document.getElementById("app").classList.remove("hidden");
-
-          // Auto login
-          const saved = localStorage.getItem("quizbux_user");
-          if (saved) restoreSession(JSON.parse(saved).username);
+          
+          // Show app
+          document.getElementById('loadingScreen').classList.add('hidden');
+          document.getElementById('app').classList.remove('hidden');
+          
+          // Try auto-login
+          const saved = localStorage.getItem('quizbux_user');
+          if (saved) {
+            const userData = JSON.parse(saved);
+            await restoreSession(userData.username);
+          }
+          
+        } else {
+          throw new Error('Connection test failed: ' + connectionStatus.error);
         }
-      } catch (e) {
-        showAlert("Failed to load. Check your internet or Web App URL.");
+        
+      } catch (error) {
+        console.error('❌ Initialization failed:', error);
+        updateConnectionStatus(false, 'Connection failed');
+        showAlert('Failed to connect to server. Please check your internet connection and try again.');
+        document.getElementById('loadingScreen').classList.add('hidden');
+        document.getElementById('app').classList.remove('hidden');
       }
     }
 
+    // Connection monitoring
+    function startConnectionMonitoring() {
+      // Show connection status
+      document.getElementById('connectionStatus').classList.remove('hidden');
+      
+      // Check connection every 30 seconds
+      connectionCheckInterval = setInterval(async () => {
+        const status = await testConnection();
+        updateConnectionStatus(status.connected, status.message);
+      }, 30000);
+    }
+
+    function updateConnectionStatus(connected, message) {
+      const statusElement = document.getElementById('connectionStatus');
+      statusElement.textContent = message;
+      
+      if (connected) {
+        statusElement.className = 'status-connected';
+      } else {
+        statusElement.className = 'status-disconnected';
+      }
+    }
+
+    async function testConnection() {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        
+        const response = await fetch(SCRIPT_URL + '?action=test&t=' + Date.now(), {
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+          return {
+            connected: false,
+            error: `HTTP ${response.status}: ${response.statusText}`,
+            message: 'Server error - Please try again later'
+          };
+        }
+        
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+          return {
+            connected: true,
+            message: 'Connected ✓'
+          };
+        } else {
+          return {
+            connected: false,
+            error: data.message,
+            message: 'Server error - ' + data.message
+          };
+        }
+      } catch (error) {
+        console.error('Connection test error:', error);
+        
+        if (error.name === 'AbortError') {
+          return {
+            connected: false,
+            error: 'Timeout',
+            message: 'Connection timeout - Check your internet'
+          };
+        } else if (error.message.includes('Failed to fetch')) {
+          return {
+            connected: false,
+            error: 'Network error',
+            message: 'No connection - Check your network'
+          };
+        } else {
+          return {
+            connected: false,
+            error: error.message,
+            message: 'Connection failed - ' + error.message
+          };
+        }
+      }
+    }
+
+    // Apply configuration from Google Sheets
+    function applyConfig(config) {
+      console.log('Applying config:', config);
+      
+      // Update texts
+      if (config.texts) {
+        if (config.texts.welcome_message) {
+          document.querySelector('#loginCard p').textContent = config.texts.welcome_message;
+          document.querySelector('#signupCard p').textContent = config.texts.welcome_message;
+        }
+        
+        if (config.texts.terms) {
+          document.getElementById('termsContent').innerHTML = config.texts.terms;
+        }
+      }
+      
+      // Update app name
+      if (config.app_name) {
+        document.title = config.app_name + ' - Earn Real Money';
+      }
+      
+      // Update logo
+      if (config.logo) {
+        document.getElementById('logo-img').src = config.logo;
+      }
+      
+      // Update offers
+      const select = document.getElementById('rewardSelect');
+      select.innerHTML = '<option value="">Choose reward...</option>';
+      
+      if (config.offers && config.offers.length > 0) {
+        config.offers.forEach(offer => {
+          const option = document.createElement('option');
+          option.value = offer.amount;
+          option.textContent = `${offer.name} ($${offer.amount.toFixed(2)})`;
+          select.appendChild(option);
+        });
+      }
+      
+      // Apply custom styles
+      if (config.styles) {
+        const styleElement = document.createElement('style');
+        styleElement.textContent = config.styles;
+        document.head.appendChild(styleElement);
+      }
+      
+      // Apply custom scripts
+      if (config.scripts) {
+        const scriptElement = document.createElement('script');
+        scriptElement.textContent = config.scripts;
+        document.body.appendChild(scriptElement);
+      }
+    }
+
+    // Auth functions
     function showLogin() {
-      document.getElementById("signupCard").classList.add("hidden");
-      document.getElementById("verifyCard").classList.add("hidden");
-      document.getElementById("loginCard").classList.remove("hidden");
+      document.getElementById('signupCard').classList.add('hidden');
+      document.getElementById('verifyCard').classList.add('hidden');
+      document.getElementById('loginCard').classList.remove('hidden');
     }
 
     function showSignup() {
-      document.getElementById("loginCard").classList.add("hidden");
-      document.getElementById("verifyCard").classList.add("hidden");
-      document.getElementById("signupCard").classList.remove("hidden");
+      document.getElementById('loginCard').classList.add('hidden');
+      document.getElementById('verifyCard').classList.add('hidden');
+      document.getElementById('signupCard').classList.remove('hidden');
     }
 
     function showVerification() {
-      document.getElementById("loginCard").classList.add("hidden");
-      document.getElementById("signupCard").classList.add("hidden");
-      document.getElementById("verifyCard").classList.remove("hidden");
-      // Clear and focus first input
+      document.getElementById('loginCard').classList.add('hidden');
+      document.getElementById('signupCard').classList.add('hidden');
+      document.getElementById('verifyCard').classList.remove('hidden');
       document.querySelectorAll('.code-input').forEach(input => input.value = '');
       document.querySelector('.code-input').focus();
     }
@@ -676,41 +1109,57 @@
     }
 
     async function signup() {
-      const username = document.getElementById("signupUsername").value.trim();
-      const email = document.getElementById("signupEmail").value.trim();
-      const password = document.getElementById("signupPassword").value;
+      const username = document.getElementById('signupUsername').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value;
 
       if (!username || !email || !password) {
-        return showAlert("Please fill all fields");
+        return showAlert('Please fill all fields');
       }
 
       if (username.length < 3) {
-        return showAlert("Username must be at least 3 characters");
+        return showAlert('Username must be at least 3 characters');
       }
 
       if (password.length < 6) {
-        return showAlert("Password must be at least 6 characters");
+        return showAlert('Password must be at least 6 characters');
       }
 
-      const fd = new FormData();
-      fd.append("action", "signup");
-      fd.append("username", username);
-      fd.append("email", email);
-      fd.append("password", password);
+      // Test connection first
+      const isConnected = await testConnection();
+      if (!isConnected.connected) {
+        return showAlert('Cannot connect to server. Please check your internet connection.');
+      }
+
+      const formData = new FormData();
+      formData.append('action', 'signup');
+      formData.append('username', username);
+      formData.append('email', email);
+      formData.append('password', password);
 
       try {
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
-        const data = await res.json();
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        
+        const response = await fetch(SCRIPT_URL, { 
+          method: 'POST', 
+          body: formData,
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        const data = await response.json();
 
-        if (data.status === "success") {
+        if (data.status === 'success') {
           pendingUser = { username, email, password };
           showVerification();
-          showAlert("Verification code sent to your email!");
+          showAlert('Verification code sent to your email!');
         } else {
-          showAlert(data.message || "Signup failed");
+          showAlert(data.message || 'Signup failed');
         }
-      } catch (e) {
-        showAlert("Network error. Please try again.");
+      } catch (error) {
+        console.error('Signup error:', error);
+        handleNetworkError(error, 'signup');
       }
     }
 
@@ -719,133 +1168,231 @@
       const code = Array.from(codeInputs).map(input => input.value).join('');
 
       if (code.length !== 6) {
-        return showAlert("Please enter the 6-digit code");
+        return showAlert('Please enter the 6-digit code');
       }
 
-      const fd = new FormData();
-      fd.append("action", "verifyEmail");
-      fd.append("username", pendingUser.username);
-      fd.append("email", pendingUser.email);
-      fd.append("password", pendingUser.password);
-      fd.append("code", code);
+      const formData = new FormData();
+      formData.append('action', 'verifyEmail');
+      formData.append('username', pendingUser.username);
+      formData.append('email', pendingUser.email);
+      formData.append('password', pendingUser.password);
+      formData.append('code', code);
 
       try {
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
-        const data = await res.json();
+        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+        const data = await response.json();
 
-        if (data.status === "success") {
-          showAlert("Account verified successfully! You can now login.");
+        if (data.status === 'success') {
+          showAlert('Account verified successfully! You can now login.');
           showLogin();
           pendingUser = null;
         } else {
-          showAlert(data.message || "Verification failed");
+          showAlert(data.message || 'Verification failed');
         }
-      } catch (e) {
-        showAlert("Network error. Please try again.");
+      } catch (error) {
+        console.error('Verification error:', error);
+        handleNetworkError(error, 'email verification');
       }
     }
 
     async function resendCode() {
       if (!pendingUser) return;
 
-      const fd = new FormData();
-      fd.append("action", "resendCode");
-      fd.append("username", pendingUser.username);
-      fd.append("email", pendingUser.email);
+      const formData = new FormData();
+      formData.append('action', 'resendCode');
+      formData.append('username', pendingUser.username);
+      formData.append('email', pendingUser.email);
 
       try {
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
-        const data = await res.json();
+        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+        const data = await response.json();
 
-        if (data.status === "success") {
-          showAlert("New verification code sent!");
+        if (data.status === 'success') {
+          showAlert('New verification code sent!');
         } else {
-          showAlert(data.message || "Failed to resend code");
+          showAlert(data.message || 'Failed to resend code');
         }
-      } catch (e) {
-        showAlert("Network error. Please try again.");
+      } catch (error) {
+        console.error('Resend code error:', error);
+        handleNetworkError(error, 'resend code');
       }
     }
 
     async function login() {
-      const username = document.getElementById("loginUsername").value.trim();
-      const password = document.getElementById("loginPassword").value;
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value;
 
       if (!username || !password) {
-        return showAlert("Please fill all fields");
+        return showAlert('Please fill all fields');
       }
 
-      const fd = new FormData();
-      fd.append("action", "login");
-      fd.append("username", username);
-      fd.append("password", password);
+      // Disable button during request
+      const loginBtn = document.querySelector('#loginCard .auth-btn');
+      const originalText = loginBtn.textContent;
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Logging in...';
+
+      // Test connection first
+      const isConnected = await testConnection();
+      if (!isConnected.connected) {
+        loginBtn.disabled = false;
+        loginBtn.textContent = originalText;
+        return showAlert('Cannot connect to server. Please check your internet connection.');
+      }
+
+      const formData = new FormData();
+      formData.append('action', 'login');
+      formData.append('username', username);
+      formData.append('password', password);
 
       try {
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
-        const data = await res.json();
-
-        if (data.status === "success") {
-          currentUser = data.user;
-          localStorage.setItem("quizbux_user", JSON.stringify({ username }));
-          showDashboard();
-          loadOfferwalls();
-        } else {
-          showAlert(data.message || "Login failed");
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        
+        const response = await fetch(SCRIPT_URL, { 
+          method: 'POST', 
+          body: formData,
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      } catch (e) {
-        showAlert("Network error. Please try again.");
+        
+        const data = await response.json();
+        console.log('📨 Login response:', data);
+
+        if (data.status === 'success') {
+          currentUser = data.user;
+          localStorage.setItem('quizbux_user', JSON.stringify({ username }));
+          showAlert('Login successful! Welcome back.');
+          
+          // Small delay before showing dashboard
+          setTimeout(() => {
+            showDashboard();
+            loadOfferwalls();
+            loadCashoutHistory();
+          }, 1000);
+          
+        } else {
+          showAlert(data.message || 'Login failed. Please check your credentials.');
+        }
+      } catch (error) {
+        console.error('❌ Login error:', error);
+        handleNetworkError(error, 'login');
+      } finally {
+        // Re-enable button
+        loginBtn.disabled = false;
+        loginBtn.textContent = originalText;
       }
     }
 
+    function handleNetworkError(error, operation) {
+      let errorMessage = '';
+      
+      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+        errorMessage = `Request timeout during ${operation}. Please check your internet connection and try again.`;
+      } else if (error.message.includes('Failed to fetch')) {
+        errorMessage = `Network error: Cannot connect to server during ${operation}. Please check your internet connection.`;
+      } else if (error.message.includes('HTTP error')) {
+        errorMessage = `Server error during ${operation}. Please try again later.`;
+      } else {
+        errorMessage = `${operation} failed: ${error.message}`;
+      }
+      
+      showAlert(errorMessage);
+      updateConnectionStatus(false, 'Connection error');
+    }
+
     async function restoreSession(username) {
-      const res = await fetch(SCRIPT_URL + "?action=getUserData&username=" + encodeURIComponent(username));
-      const data = await res.json();
-      if (data.status === "success") {
-        currentUser = data.user;
-        showDashboard();
-        loadOfferwalls();
+      try {
+        const response = await fetch(SCRIPT_URL + '?action=getUserData&username=' + encodeURIComponent(username));
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+          currentUser = data.user;
+          showDashboard();
+          loadOfferwalls();
+          loadCashoutHistory();
+        } else {
+          localStorage.removeItem('quizbux_user');
+        }
+      } catch (error) {
+        console.error('Restore session error:', error);
+        localStorage.removeItem('quizbux_user');
       }
     }
 
     function showDashboard() {
-      document.getElementById("authScreens").classList.add("hidden");
-      document.getElementById("dashboard").classList.remove("hidden");
+      document.getElementById('authScreens').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+      document.getElementById('chatToggle').classList.remove('hidden');
 
-      document.getElementById("displayUsername").textContent = currentUser.username;
-      document.getElementById("userAvatar").textContent = currentUser.username[0].toUpperCase();
-      document.getElementById("balanceValue").textContent = Number(currentUser.balance).toLocaleString();
-      document.getElementById("usdBalanceValue").textContent = "$" + Number(currentUser.balanceUSD).toFixed(4);
+      document.getElementById('displayUsername').textContent = currentUser.username;
+      document.getElementById('userAvatar').textContent = currentUser.username[0].toUpperCase();
+      document.getElementById('balanceValue').textContent = Number(currentUser.balance).toLocaleString();
+      document.getElementById('usdBalanceValue').textContent = '$' + Number(currentUser.balanceUSD).toFixed(4);
 
-      showPage("work");
+      // Update user status
+      const statusElement = document.getElementById('userStatus');
+      statusElement.textContent = currentUser.status || 'Active';
+      statusElement.className = `user-status status-${(currentUser.status || 'active').toLowerCase()}`;
+
+      showPage('work');
     }
 
     function showPage(id) {
-      document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
-      document.getElementById(id).classList.remove("hidden");
-      if (id === "offerwalls") loadOfferwalls();
+      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+      if (id === 'offerwalls') loadOfferwalls();
+      if (id === 'cashout') loadCashoutHistory();
     }
 
     async function loadOfferwalls() {
       if (!currentUser) return;
-      const res = await fetch(SCRIPT_URL + "?action=getOfferwalls&username=" + currentUser.username);
-      const data = await res.json();
-      const container = document.getElementById("offerwallList");
       
-      if (!data.offerwalls || data.offerwalls.length === 0) {
-        container.innerHTML = "<p>No active offerwalls right now</p>";
-        return;
+      try {
+        const response = await fetch(SCRIPT_URL + '?action=getOfferwalls&username=' + currentUser.username);
+        const data = await response.json();
+        const container = document.getElementById('offerwallList');
+        
+        if (data.status === 'success' && data.offerwalls && data.offerwalls.length > 0) {
+          container.innerHTML = data.offerwalls.map(wall => {
+            const hasEnoughPoints = currentUser.balance >= (wall.pointsRequired || 0);
+            const isUnlocked = hasEnoughPoints && (wall.status === 'active');
+            
+            return `
+              <div class="offerwall-item">
+                <h4>${wall.name}</h4>
+                <p>Complete offers to earn rewards</p>
+                <div class="offerwall-requirements ${isUnlocked ? 'unlocked' : 'locked'}">
+                  ${isUnlocked ? 
+                    '✅ Unlocked - Ready to earn!' : 
+                    `🔒 Requires ${wall.pointsRequired || 0} points to unlock (You have ${currentUser.balance})`
+                  }
+                </div>
+                <div class="offerwall-buttons">
+                  <button onclick="openOfferwallInIframe('${wall.id}', '${wall.url}')" 
+                          ${!isUnlocked ? 'disabled' : ''}>
+                    Open in App
+                  </button>
+                  <button onclick="window.open('${wall.url}', '_blank')" 
+                          ${!isUnlocked ? 'disabled' : ''}>
+                    Open in New Tab
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        } else {
+          container.innerHTML = '<p>No active offerwalls right now</p>';
+        }
+      } catch (error) {
+        console.error('Load offerwalls error:', error);
+        document.getElementById('offerwallList').innerHTML = '<p>Error loading offerwalls</p>';
       }
-      
-      container.innerHTML = data.offerwalls.map(w => `
-        <div class="offerwall-item">
-          <h4>${w.name}</h4>
-          <p>${w.description || 'Complete offers to earn rewards'}</p>
-          <div class="offerwall-buttons">
-            <button onclick="openOfferwallInIframe('${w.id}', '${w.url}')">Open in App</button>
-            <button onclick="window.open('${w.url}', '_blank')">Open in New Tab</button>
-          </div>
-        </div>
-      `).join("");
     }
 
     function openOfferwallInIframe(offerwallId, url) {
@@ -869,52 +1416,219 @@
     }
 
     async function submitWork() {
-      const text = document.getElementById("workInput").value.trim();
-      if (!text) return showAlert("Please write something");
+      if (!currentUser) return;
 
-      const fd = new FormData();
-      fd.append("action", "submitWork");
-      fd.append("username", currentUser.username);
-      fd.append("submission", text);
+      const text = document.getElementById('workInput').value.trim();
+      if (!text) return showAlert('Please write something');
 
-      const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
-      const data = await res.json();
-      showAlert(data.message);
-      document.getElementById("workInput").value = "";
+      const formData = new FormData();
+      formData.append('action', 'submitWork');
+      formData.append('username', currentUser.username);
+      formData.append('submission', text);
+
+      try {
+        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+        const data = await response.json();
+        showAlert(data.message);
+        document.getElementById('workInput').value = '';
+      } catch (error) {
+        console.error('Submit work error:', error);
+        handleNetworkError(error, 'submitting work');
+      }
     }
 
     async function submitCashout() {
-      const amount = document.getElementById("rewardSelect").value;
-      if (!amount) return showAlert("Please select a reward");
+      if (!currentUser) return;
 
-      const fd = new FormData();
-      fd.append("action", "submitCashout");
-      fd.append("username", currentUser.username);
-      fd.append("reward", document.getElementById("rewardSelect").selectedOptions[0].text);
-      fd.append("amount", amount);
+      const amount = document.getElementById('rewardSelect').value;
+      if (!amount) return showAlert('Please select a reward');
 
-      const res = await fetch(SCRIPT_URL, { method: "POST", body: fd });
-      const data = await res.json();
-      showAlert(data.message);
+      const reward = document.getElementById('rewardSelect').selectedOptions[0].text;
 
-      document.getElementById("rewardSelect").value = "";
-      document.getElementById("cashoutBtn").disabled = true;
+      const formData = new FormData();
+      formData.append('action', 'submitCashout');
+      formData.append('username', currentUser.username);
+      formData.append('reward', reward);
+      formData.append('amount', amount);
+
+      try {
+        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+        const data = await response.json();
+        showAlert(data.message);
+
+        document.getElementById('rewardSelect').value = '';
+        document.getElementById('cashoutBtn').disabled = true;
+        loadCashoutHistory();
+      } catch (error) {
+        console.error('Submit cashout error:', error);
+        handleNetworkError(error, 'submitting cashout');
+      }
+    }
+
+    async function loadCashoutHistory() {
+      if (!currentUser) return;
+      
+      try {
+        const response = await fetch(SCRIPT_URL + '?action=getCashoutHistory&username=' + currentUser.username);
+        const data = await response.json();
+        const container = document.getElementById('cashoutHistory');
+        
+        if (data.status === 'success' && data.history && data.history.length > 0) {
+          container.innerHTML = data.history.map(item => `
+            <div class="cashout-item">
+              <strong>${item.reward}</strong> - $${item.amount} 
+              <span class="cashout-status status-${item.status.toLowerCase()}">${item.status}</span>
+              <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 0.5rem;">
+                ${new Date(item.date).toLocaleDateString()}
+              </div>
+              ${item.adminNotes ? `
+                <div class="admin-notes">
+                  <strong>Admin Notes:</strong> ${item.adminNotes}
+                </div>
+              ` : ''}
+            </div>
+          `).join('');
+        } else {
+          container.innerHTML = '<p>No cashout history yet.</p>';
+        }
+      } catch (error) {
+        console.error('Load cashout history error:', error);
+        document.getElementById('cashoutHistory').innerHTML = '<p>Error loading history</p>';
+      }
+    }
+
+    // Chat system
+    function toggleChat() {
+      const chatBox = document.getElementById('chatBox');
+      const chatToggle = document.getElementById('chatToggle');
+      
+      if (chatBox.classList.contains('hidden')) {
+        chatBox.classList.remove('hidden');
+        chatToggle.textContent = '✖';
+        loadChatMessages();
+        startChatPolling();
+      } else {
+        chatBox.classList.add('hidden');
+        chatToggle.textContent = '💬';
+        stopChatPolling();
+      }
+    }
+
+    function handleChatInput(event) {
+      if (event.key === 'Enter') {
+        sendChatMessage();
+      }
+    }
+
+    async function sendChatMessage() {
+      if (!currentUser) return;
+
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      
+      if (!message) return;
+      
+      const formData = new FormData();
+      formData.append('action', 'sendChatMessage');
+      formData.append('username', currentUser.username);
+      formData.append('message', message);
+
+      try {
+        await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+        input.value = '';
+        loadChatMessages();
+      } catch (error) {
+        console.error('Send chat message error:', error);
+        showAlert('Failed to send message');
+      }
+    }
+
+    async function loadChatMessages() {
+      if (!currentUser) return;
+      
+      try {
+        const response = await fetch(SCRIPT_URL + '?action=getChatMessages');
+        const data = await response.json();
+        const container = document.getElementById('chatMessages');
+        
+        if (data.status === 'success') {
+          container.innerHTML = data.messages.map(msg => `
+            <div class="chat-message ${msg.username === currentUser.username ? 'own' : 'other'}">
+              <div class="message-sender">${msg.username}</div>
+              ${msg.message}
+            </div>
+          `).join('');
+          container.scrollTop = container.scrollHeight;
+        }
+      } catch (error) {
+        console.error('Load chat messages error:', error);
+      }
+    }
+
+    function startChatPolling() {
+      chatInterval = setInterval(loadChatMessages, 3000);
+    }
+
+    function stopChatPolling() {
+      if (chatInterval) {
+        clearInterval(chatInterval);
+        chatInterval = null;
+      }
     }
 
     function logout() {
-      localStorage.removeItem("quizbux_user");
+      localStorage.removeItem('quizbux_user');
+      if (chatInterval) clearInterval(chatInterval);
+      if (connectionCheckInterval) clearInterval(connectionCheckInterval);
       location.reload();
     }
 
     function showAlert(msg) {
-      document.getElementById("alertMessage").textContent = msg;
-      document.getElementById("alertModal").classList.remove("hidden");
+      document.getElementById('alertMessage').textContent = msg;
+      document.getElementById('alertModal').classList.remove('hidden');
     }
 
     function closeAlert() {
-      document.getElementById("alertModal").classList.add("hidden");
+      document.getElementById('alertModal').classList.add('hidden');
     }
 
+    // Debug function for network issues
+    async function debugNetwork() {
+      console.log('🔧 Network Debug Information:');
+      console.log('SCRIPT_URL:', SCRIPT_URL);
+      
+      try {
+        // Test basic connectivity
+        const testResponse = await fetch(SCRIPT_URL + '?action=test&t=' + Date.now());
+        console.log('Test Response Status:', testResponse.status);
+        console.log('Test Response OK:', testResponse.ok);
+        
+        const testData = await testResponse.json();
+        console.log('Test Response Data:', testData);
+        
+        return {
+          connected: testResponse.ok,
+          status: testResponse.status,
+          data: testData
+        };
+      } catch (error) {
+        console.error('Network Debug Error:', error);
+        return {
+          connected: false,
+          error: error.message
+        };
+      }
+    }
+
+    // Make debug function available globally
+    window.debugNetwork = debugNetwork;
+
+    // Initialize cashout button
+    document.getElementById('rewardSelect').onchange = function() {
+      document.getElementById('cashoutBtn').disabled = !this.value;
+    };
+
+    // Start the app
     window.onload = init;
   </script>
 </body>
