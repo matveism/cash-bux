@@ -68,27 +68,6 @@
         align-items: center;
         justify-content: center;
         padding: 20px;
-        /* Prevent text selection and copying */
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-
-    /* Anti-cheat overlay */
-    #antiCheatOverlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        z-index: 9999;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        backdrop-filter: blur(10px);
     }
 
     .hidden { display: none !important; }
@@ -638,245 +617,21 @@
         border-radius: 2px;
     }
 
-    /* Quiz System Styles */
-    .quiz-container {
-        background: var(--bg-card);
-        backdrop-filter: var(--backdrop-blur);
-        border-radius: var(--border-radius-lg);
-        padding: 3rem;
-        margin: 1.5rem 0;
-        box-shadow: var(--shadow);
-        border: var(--border);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .quiz-container::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(120, 119, 255, 0.03) 0%, transparent 50%);
-        pointer-events: none;
-    }
-
-    .quiz-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        padding-bottom: 1.5rem;
-        border-bottom: var(--border);
-    }
-
-    .quiz-progress {
-        display: flex;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .progress-dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1);
-        transition: var(--transition);
-    }
-
-    .progress-dot.active {
-        background: var(--accent-primary);
-        box-shadow: 0 0 10px var(--accent-primary);
-    }
-
-    .progress-dot.completed {
-        background: var(--success);
-    }
-
-    .quiz-question {
-        font-size: 1.3rem;
-        margin-bottom: 2rem;
-        line-height: 1.6;
-        padding: 1.5rem;
-        background: rgba(15, 15, 20, 0.5);
-        border-radius: var(--border-radius-sm);
-        border-left: 4px solid var(--accent-primary);
-    }
-
-    .quiz-options {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    .quiz-option {
-        padding: 1.2rem 1.5rem;
+    /* Work Page */
+    .work-info {
         background: rgba(15, 15, 20, 0.7);
-        border: var(--border);
-        border-radius: var(--border-radius-sm);
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .quiz-option:hover {
-        background: rgba(20, 20, 30, 0.8);
-        transform: translateY(-2px);
-    }
-
-    .quiz-option.selected {
-        background: rgba(120, 119, 255, 0.2);
-        border-color: var(--accent-primary);
-        box-shadow: 0 0 15px rgba(120, 119, 255, 0.2);
-    }
-
-    .quiz-option.correct {
-        background: rgba(16, 185, 129, 0.2);
-        border-color: var(--success);
-    }
-
-    .quiz-option.incorrect {
-        background: rgba(239, 68, 68, 0.2);
-        border-color: var(--error);
-    }
-
-    .option-marker {
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 0.9rem;
-    }
-
-    .quiz-option.selected .option-marker {
-        background: var(--accent-primary);
-    }
-
-    .quiz-option.correct .option-marker {
-        background: var(--success);
-    }
-
-    .quiz-option.incorrect .option-marker {
-        background: var(--error);
-    }
-
-    .quiz-navigation {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 2rem;
-    }
-
-    .quiz-btn {
-        padding: 1rem 2rem;
-        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-        border: none;
-        border-radius: var(--border-radius-sm);
-        color: white;
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        gap: 0.7rem;
-    }
-
-    .quiz-btn:disabled {
-        background: #4b5563;
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none !important;
-    }
-
-    .quiz-btn:hover:not(:disabled) {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-glow);
-    }
-
-    .quiz-results {
-        text-align: center;
         padding: 2rem;
-    }
-
-    .quiz-score {
-        font-size: 3rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        margin: 1rem 0;
-    }
-
-    .quiz-feedback {
-        font-size: 1.2rem;
+        border-radius: var(--border-radius);
         margin-bottom: 2rem;
-        color: var(--text-secondary);
-    }
-
-    .points-earned {
-        display: inline-block;
-        padding: 0.5rem 1.5rem;
-        background: var(--success);
-        color: white;
-        border-radius: 50px;
-        font-weight: 600;
-        margin: 1rem 0;
-    }
-
-    .points-lost {
-        display: inline-block;
-        padding: 0.5rem 1.5rem;
-        background: var(--error);
-        color: white;
-        border-radius: 50px;
-        font-weight: 600;
-        margin: 1rem 0;
-    }
-
-    /* Anti-cheat warning */
-    .anti-cheat-warning {
-        text-align: center;
-        padding: 1rem;
-        background: rgba(239, 68, 68, 0.2);
-        border: 1px solid var(--error);
-        border-radius: var(--border-radius-sm);
-        margin-bottom: 1.5rem;
-        color: var(--error);
-        font-weight: 500;
-    }
-
-    /* Timer */
-    .quiz-timer {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(15, 15, 20, 0.7);
-        padding: 0.7rem 1.2rem;
-        border-radius: var(--border-radius-sm);
+        border-left: 4px solid var(--accent-primary);
         border: var(--border);
     }
 
-    .timer-warning {
-        color: var(--warning);
-        animation: pulse 1s infinite;
-    }
-
-    .timer-danger {
-        color: var(--error);
-        animation: pulse 0.5s infinite;
-    }
-
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.7; }
+    .work-info h4 {
+        color: var(--accent-primary);
+        margin-bottom: 0.8rem;
+        font-size: 1.3rem;
+        font-weight: 600;
     }
 
     /* Offerwalls */
@@ -1366,28 +1121,10 @@
             bottom: 20px;
             right: 20px;
         }
-        
-        .quiz-container {
-            padding: 2rem;
-        }
-        
-        .quiz-btn {
-            padding: 0.8rem 1.5rem;
-        }
     }
   </style>
 </head>
 <body>
-
-  <!-- Anti-cheat overlay -->
-  <div id="antiCheatOverlay">
-    <div class="auth-card" style="max-width: 500px; text-align: center;">
-      <h1>Security Violation Detected</h1>
-      <p>We've detected suspicious activity. The quiz has been terminated.</p>
-      <p>Please do not attempt to screenshot, copy content, or use developer tools during the quiz.</p>
-      <button class="auth-btn" onclick="closeAntiCheatOverlay()">Return to Dashboard</button>
-    </div>
-  </div>
 
   <!-- Loading -->
   <div id="loadingScreen">
@@ -1486,73 +1223,23 @@
         </div>
 
         <nav class="nav">
-          <button onclick="showPage('quiz')" class="active"><i class="fas fa-brain"></i> AI Quiz</button>
+          <button onclick="showPage('work')" class="active"><i class="fas fa-briefcase"></i> Tasks</button>
           <button onclick="showPage('offerwalls')"><i class="fas fa-gem"></i> Offerwalls</button>
           <button onclick="showPage('cashout')"><i class="fas fa-wallet"></i> Cashout</button>
           <button onclick="showPage('terms')"><i class="fas fa-file-contract"></i> Terms</button>
         </nav>
 
         <div id="pages">
-          <!-- Quiz Page -->
-          <div id="quiz" class="page">
-            <h3>AI-Generated Quiz</h3>
-            <div class="anti-cheat-warning">
-              <i class="fas fa-shield-alt"></i> Anti-cheat protection is active. Screenshots and developer tools are disabled.
-            </div>
-            
-            <div id="quizIntro" class="quiz-container">
+          <!-- Work Page -->
+          <div id="work" class="page">
+            <h3>Complete Tasks</h3>
+            <div class="work-info">
               <h4>How it works</h4>
-              <p>Answer two AI-generated questions correctly to earn 10 points and $0.01 USD.</p>
-              <p>Each correct answer gives you 5 points, each incorrect answer deducts 5 points.</p>
-              <p>You must answer both questions to complete the quiz.</p>
-              <button class="auth-btn" onclick="startQuiz()"><i class="fas fa-play"></i> Start Quiz</button>
+              <p>Each question you read and each answer you submit earns you rewards</p>
+              <p>5 Points + $0.005 USD for each approved submission</p>
             </div>
-
-            <div id="quizContainer" class="quiz-container hidden">
-              <div class="quiz-header">
-                <h4>AI Quiz</h4>
-                <div class="quiz-timer">
-                  <i class="fas fa-clock"></i>
-                  <span id="quizTimer">02:00</span>
-                </div>
-              </div>
-              
-              <div class="quiz-progress">
-                <div class="progress-dot" id="progress1"></div>
-                <div class="progress-dot" id="progress2"></div>
-              </div>
-              
-              <div class="quiz-question" id="quizQuestion">
-                Loading question...
-              </div>
-              
-              <div class="quiz-options" id="quizOptions">
-                <!-- Options will be populated by JavaScript -->
-              </div>
-              
-              <div class="quiz-navigation">
-                <button class="quiz-btn" id="prevBtn" onclick="previousQuestion()" disabled>
-                  <i class="fas fa-arrow-left"></i> Previous
-                </button>
-                <button class="quiz-btn" id="nextBtn" onclick="nextQuestion()">
-                  Next <i class="fas fa-arrow-right"></i>
-                </button>
-                <button class="quiz-btn" id="submitBtn" onclick="submitQuiz()" style="display: none;">
-                  <i class="fas fa-paper-plane"></i> Submit Quiz
-                </button>
-              </div>
-            </div>
-
-            <div id="quizResults" class="quiz-container hidden">
-              <div class="quiz-results">
-                <h4>Quiz Results</h4>
-                <div class="quiz-score" id="quizScore">0/2</div>
-                <div class="quiz-feedback" id="quizFeedback"></div>
-                <div id="pointsEarned" class="points-earned" style="display: none;">+10 Points Earned</div>
-                <div id="pointsLost" class="points-lost" style="display: none;">-10 Points Lost</div>
-                <button class="auth-btn" onclick="resetQuiz()"><i class="fas fa-redo"></i> Try Again</button>
-              </div>
-            </div>
+            <textarea id="workInput" class="auth-input" placeholder="Describe what questions you answered today..." style="height: 160px;"></textarea>
+            <button class="auth-btn" onclick="submitWork()"><i class="fas fa-paper-plane"></i> Submit Work</button>
           </div>
 
           <!-- Offerwalls Page -->
@@ -1635,20 +1322,10 @@
     let currentUser = null;
     let pendingUser = null;
     let chatInterval = null;
-    
-    // Quiz variables
-    let currentQuiz = null;
-    let currentQuestionIndex = 0;
-    let userAnswers = [];
-    let quizTimer = null;
-    let timeRemaining = 120; // 2 minutes in seconds
 
     // Initialize the app
     async function init() {
       console.log('🚀 Initializing Insignia...');
-      
-      // Enable anti-cheat protection
-      enableAntiCheatProtection();
       
       try {
         // Test connection first
@@ -1686,74 +1363,6 @@
         showAlert('Failed to connect to server. Please check your internet connection and try again.');
         document.getElementById('loadingScreen').classList.add('hidden');
         document.getElementById('app').classList.remove('hidden');
-      }
-    }
-
-    // Anti-cheat protection
-    function enableAntiCheatProtection() {
-      // Disable right-click context menu
-      document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        showAntiCheatWarning();
-        return false;
-      });
-      
-      // Disable keyboard shortcuts for developer tools
-      document.addEventListener('keydown', function(e) {
-        // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
-        if (e.keyCode === 123 || 
-            (e.ctrlKey && e.shiftKey && e.keyCode === 73) || 
-            (e.ctrlKey && e.shiftKey && e.keyCode === 74) ||
-            (e.ctrlKey && e.keyCode === 85)) {
-          e.preventDefault();
-          showAntiCheatWarning();
-          return false;
-        }
-      });
-      
-      // Detect if dev tools are open by checking window dimensions
-      function checkDevTools() {
-        const widthThreshold = window.outerWidth - window.innerWidth > 160;
-        const heightThreshold = window.outerHeight - window.innerHeight > 160;
-        
-        if (widthThreshold || heightThreshold) {
-          showAntiCheatWarning();
-        }
-      }
-      
-      // Check periodically
-      setInterval(checkDevTools, 1000);
-      
-      // Override console methods during quiz
-      const originalConsoleLog = console.log;
-      const originalConsoleWarn = console.warn;
-      const originalConsoleError = console.error;
-      
-      window.overrideConsole = function() {
-        console.log = function() {};
-        console.warn = function() {};
-        console.error = function() {};
-      };
-      
-      window.restoreConsole = function() {
-        console.log = originalConsoleLog;
-        console.warn = originalConsoleWarn;
-        console.error = originalConsoleError;
-      };
-    }
-    
-    function showAntiCheatWarning() {
-      document.getElementById('antiCheatOverlay').style.display = 'flex';
-      if (quizTimer) {
-        clearInterval(quizTimer);
-        quizTimer = null;
-      }
-    }
-    
-    function closeAntiCheatOverlay() {
-      document.getElementById('antiCheatOverlay').style.display = 'none';
-      if (currentQuiz) {
-        resetQuiz();
       }
     }
 
@@ -2004,7 +1613,7 @@
       statusElement.textContent = currentUser.status || 'Premium';
       statusElement.className = `user-status status-${(currentUser.status || 'active').toLowerCase()}`;
 
-      showPage('quiz');
+      showPage('work');
     }
 
     function showPage(id) {
@@ -2019,298 +1628,45 @@
       if (id === 'cashout') loadCashoutHistory();
     }
 
-    // Quiz Functions
-    async function startQuiz() {
-      if (!currentUser) return;
-      
-      // Override console to prevent cheating
-      overrideConsole();
-      
-      try {
-        // In a real implementation, this would call your backend
-        // For now, we'll use mock data
-        const mockQuiz = {
-          id: 'quiz_' + Date.now(),
-          questions: [
-            {
-              question: "What is the primary purpose of the 'this' keyword in JavaScript?",
-              options: [
-                "To refer to the current function",
-                "To refer to the current object context",
-                "To create a new variable",
-                "To reference the parent function"
-              ],
-              correctAnswer: 1
-            },
-            {
-              question: "Which of these is NOT a JavaScript data type?",
-              options: [
-                "String",
-                "Boolean",
-                "Character",
-                "Undefined"
-              ],
-              correctAnswer: 2
-            }
-          ]
-        };
-        
-        currentQuiz = mockQuiz;
-        currentQuestionIndex = 0;
-        userAnswers = [];
-        
-        // Show quiz container and hide intro
-        document.getElementById('quizIntro').classList.add('hidden');
-        document.getElementById('quizContainer').classList.remove('hidden');
-        document.getElementById('quizResults').classList.add('hidden');
-        
-        // Start timer
-        startTimer();
-        
-        // Load first question
-        loadQuestion(0);
-        
-      } catch (error) {
-        console.error('Start quiz error:', error);
-        showAlert('Failed to start quiz. Please try again.');
-      }
-    }
-    
-    function loadQuestion(index) {
-      if (!currentQuiz || !currentQuiz.questions || index >= currentQuiz.questions.length) return;
-      
-      const question = currentQuiz.questions[index];
-      document.getElementById('quizQuestion').textContent = question.question;
-      
-      const optionsContainer = document.getElementById('quizOptions');
-      optionsContainer.innerHTML = '';
-      
-      question.options.forEach((option, i) => {
-        const optionElement = document.createElement('div');
-        optionElement.className = 'quiz-option';
-        if (userAnswers[index] === i) {
-          optionElement.classList.add('selected');
-        }
-        optionElement.onclick = () => selectOption(i);
-        
-        optionElement.innerHTML = `
-          <div class="option-marker">${String.fromCharCode(65 + i)}</div>
-          <div class="option-text">${option}</div>
-        `;
-        
-        optionsContainer.appendChild(optionElement);
-      });
-      
-      // Update progress dots
-      updateProgressDots();
-      
-      // Update navigation buttons
-      document.getElementById('prevBtn').disabled = index === 0;
-      
-      if (index === currentQuiz.questions.length - 1) {
-        document.getElementById('nextBtn').style.display = 'none';
-        document.getElementById('submitBtn').style.display = 'block';
-      } else {
-        document.getElementById('nextBtn').style.display = 'block';
-        document.getElementById('submitBtn').style.display = 'none';
-      }
-    }
-    
-    function selectOption(optionIndex) {
-      userAnswers[currentQuestionIndex] = optionIndex;
-      
-      // Update UI
-      const options = document.querySelectorAll('.quiz-option');
-      options.forEach((option, i) => {
-        if (i === optionIndex) {
-          option.classList.add('selected');
-        } else {
-          option.classList.remove('selected');
-        }
-      });
-    }
-    
-    function previousQuestion() {
-      if (currentQuestionIndex > 0) {
-        currentQuestionIndex--;
-        loadQuestion(currentQuestionIndex);
-      }
-    }
-    
-    function nextQuestion() {
-      if (currentQuestionIndex < currentQuiz.questions.length - 1) {
-        currentQuestionIndex++;
-        loadQuestion(currentQuestionIndex);
-      }
-    }
-    
-    function updateProgressDots() {
-      for (let i = 0; i < 2; i++) {
-        const dot = document.getElementById(`progress${i+1}`);
-        if (i === currentQuestionIndex) {
-          dot.className = 'progress-dot active';
-        } else if (i < currentQuestionIndex) {
-          dot.className = 'progress-dot completed';
-        } else {
-          dot.className = 'progress-dot';
-        }
-      }
-    }
-    
-    function startTimer() {
-      timeRemaining = 120; // 2 minutes
-      updateTimerDisplay();
-      
-      quizTimer = setInterval(() => {
-        timeRemaining--;
-        updateTimerDisplay();
-        
-        if (timeRemaining <= 0) {
-          clearInterval(quizTimer);
-          submitQuiz();
-        }
-      }, 1000);
-    }
-    
-    function updateTimerDisplay() {
-      const minutes = Math.floor(timeRemaining / 60);
-      const seconds = timeRemaining % 60;
-      const timerElement = document.getElementById('quizTimer');
-      
-      timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-      
-      // Change color when time is running out
-      if (timeRemaining <= 30) {
-        timerElement.className = 'timer-danger';
-      } else if (timeRemaining <= 60) {
-        timerElement.className = 'timer-warning';
-      } else {
-        timerElement.className = '';
-      }
-    }
-    
-    async function submitQuiz() {
-      if (!currentQuiz || !currentUser) return;
-      
-      // Stop timer
-      if (quizTimer) {
-        clearInterval(quizTimer);
-        quizTimer = null;
-      }
-      
-      // Check if all questions are answered
-      if (userAnswers.length < currentQuiz.questions.length || userAnswers.some(a => a === undefined)) {
-        showAlert('Please answer all questions before submitting');
-        return;
-      }
-      
-      // Calculate score
-      let correctAnswers = 0;
-      currentQuiz.questions.forEach((question, index) => {
-        if (userAnswers[index] === question.correctAnswer) {
-          correctAnswers++;
-        }
-      });
-      
-      // Calculate points (5 per correct answer, -5 per incorrect)
-      const pointsEarned = (correctAnswers * 5) - ((currentQuiz.questions.length - correctAnswers) * 5);
-      const usdEarned = correctAnswers === currentQuiz.questions.length ? 0.01 : 0;
-      
-      // Show results
-      document.getElementById('quizContainer').classList.add('hidden');
-      document.getElementById('quizResults').classList.remove('hidden');
-      
-      document.getElementById('quizScore').textContent = `${correctAnswers}/${currentQuiz.questions.length}`;
-      
-      if (pointsEarned > 0) {
-        document.getElementById('quizFeedback').textContent = 'Great job! You passed the quiz.';
-        document.getElementById('pointsEarned').style.display = 'block';
-        document.getElementById('pointsEarned').textContent = `+${pointsEarned} Points Earned`;
-        document.getElementById('pointsLost').style.display = 'none';
-      } else {
-        document.getElementById('quizFeedback').textContent = 'You need to answer both questions correctly to earn points.';
-        document.getElementById('pointsEarned').style.display = 'none';
-        document.getElementById('pointsLost').style.display = 'block';
-        document.getElementById('pointsLost').textContent = `${pointsEarned} Points Lost`;
-      }
-      
-      // In a real implementation, submit results to backend
-      // For now, we'll update the UI directly
-      if (pointsEarned > 0) {
-        currentUser.balance = (parseInt(currentUser.balance) || 0) + pointsEarned;
-        currentUser.balanceUSD = (parseFloat(currentUser.balanceUSD) || 0) + usdEarned;
-        
-        document.getElementById('balanceValue').textContent = Number(currentUser.balance).toLocaleString();
-        document.getElementById('usdBalanceValue').textContent = '$' + Number(currentUser.balanceUSD).toFixed(4);
-      }
-      
-      // Restore console
-      restoreConsole();
-    }
-    
-    function resetQuiz() {
-      document.getElementById('quizResults').classList.add('hidden');
-      document.getElementById('quizIntro').classList.remove('hidden');
-      currentQuiz = null;
-      currentQuestionIndex = 0;
-      userAnswers = [];
-    }
-
-    // Existing functions for offerwalls, cashout, etc.
     async function loadOfferwalls() {
       if (!currentUser) return;
       
       try {
-        // Mock offerwalls data
-        const mockOfferwalls = [
-          {
-            id: 'wall1',
-            name: 'Premium Offers',
-            pointsRequired: 100,
-            status: 'active',
-            url: 'https://example.com/offerwall1'
-          },
-          {
-            id: 'wall2',
-            name: 'Survey Network',
-            pointsRequired: 200,
-            status: 'active',
-            url: 'https://example.com/offerwall2'
-          }
-        ];
-        
+        const response = await fetch(SCRIPT_URL + '?action=getOfferwalls&username=' + currentUser.username);
+        const data = await response.json();
         const container = document.getElementById('offerwallList');
-        container.innerHTML = '';
         
-        mockOfferwalls.forEach(wall => {
-          const hasEnoughPoints = (currentUser.balance || 0) >= (wall.pointsRequired || 0);
-          const isUnlocked = hasEnoughPoints && (wall.status === 'active');
-          
-          const offerwallElement = document.createElement('div');
-          offerwallElement.className = 'offerwall-item';
-          offerwallElement.innerHTML = `
-            <h4>${wall.name}</h4>
-            <p>Complete offers to earn rewards</p>
-            <div class="offerwall-requirements ${isUnlocked ? 'unlocked' : 'locked'}">
-              ${isUnlocked ? 
-                '✅ Unlocked - Ready to earn!' : 
-                `🔒 Requires ${wall.pointsRequired || 0} points to unlock (You have ${currentUser.balance || 0})`
-              }
-            </div>
-            <div class="offerwall-buttons">
-              <button onclick="openOfferwallInIframe('${wall.id}', '${wall.url}')" 
-                      ${!isUnlocked ? 'disabled' : ''}>
-                <i class="fas fa-play-circle"></i> Start Earning
-              </button>
-              <button onclick="window.open('${wall.url}', '_blank')" 
-                      ${!isUnlocked ? 'disabled' : ''}>
-                <i class="fas fa-external-link-alt"></i> Open Externally
-              </button>
-            </div>
-          `;
-          
-          container.appendChild(offerwallElement);
-        });
+        if (data.status === 'success' && data.offerwalls && data.offerwalls.length > 0) {
+          container.innerHTML = data.offerwalls.map(wall => {
+            const hasEnoughPoints = currentUser.balance >= (wall.pointsRequired || 0);
+            const isUnlocked = hasEnoughPoints && (wall.status === 'active');
+            
+            return `
+              <div class="offerwall-item">
+                <h4>${wall.name}</h4>
+                <p>Complete offers to earn rewards</p>
+                <div class="offerwall-requirements ${isUnlocked ? 'unlocked' : 'locked'}">
+                  ${isUnlocked ? 
+                    '✅ Unlocked - Ready to earn!' : 
+                    `🔒 Requires ${wall.pointsRequired || 0} points to unlock (You have ${currentUser.balance})`
+                  }
+                </div>
+                <div class="offerwall-buttons">
+                  <button onclick="openOfferwallInIframe('${wall.id}', '${wall.url}')" 
+                          ${!isUnlocked ? 'disabled' : ''}>
+                    <i class="fas fa-play-circle"></i> Start Earning
+                  </button>
+                  <button onclick="window.open('${wall.url}', '_blank')" 
+                          ${!isUnlocked ? 'disabled' : ''}>
+                    <i class="fas fa-external-link-alt"></i> Open Externally
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        } else {
+          container.innerHTML = '<p>No active offerwalls right now</p>';
+        }
       } catch (error) {
         console.error('Load offerwalls error:', error);
         document.getElementById('offerwallList').innerHTML = '<p>Error loading offerwalls</p>';
@@ -2337,6 +1693,28 @@
       iframe.src = 'about:blank';
     }
 
+    async function submitWork() {
+      if (!currentUser) return;
+
+      const text = document.getElementById('workInput').value.trim();
+      if (!text) return showAlert('Please describe the questions you answered');
+
+      const formData = new FormData();
+      formData.append('action', 'submitWork');
+      formData.append('username', currentUser.username);
+      formData.append('submission', text);
+
+      try {
+        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+        const data = await response.json();
+        showAlert(data.message);
+        document.getElementById('workInput').value = '';
+      } catch (error) {
+        console.error('Submit work error:', error);
+        showAlert('Network error. Please try again.');
+      }
+    }
+
     async function submitCashout() {
       if (!currentUser) return;
 
@@ -2345,56 +1723,52 @@
 
       const reward = document.getElementById('rewardSelect').selectedOptions[0].text;
 
-      // In a real implementation, submit to backend
-      showAlert(`Cashout request submitted for ${reward}`);
-      
-      document.getElementById('rewardSelect').value = '';
-      document.getElementById('cashoutBtn').disabled = true;
+      const formData = new FormData();
+      formData.append('action', 'submitCashout');
+      formData.append('username', currentUser.username);
+      formData.append('reward', reward);
+      formData.append('amount', amount);
+
+      try {
+        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+        const data = await response.json();
+        showAlert(data.message);
+
+        document.getElementById('rewardSelect').value = '';
+        document.getElementById('cashoutBtn').disabled = true;
+        loadCashoutHistory();
+      } catch (error) {
+        console.error('Submit cashout error:', error);
+        showAlert('Network error. Please try again.');
+      }
     }
 
     async function loadCashoutHistory() {
       if (!currentUser) return;
       
       try {
-        // Mock cashout history
-        const mockHistory = [
-          {
-            reward: 'PayPal $10',
-            amount: 10,
-            status: 'approved',
-            date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-            adminNotes: ''
-          },
-          {
-            reward: 'Amazon $5',
-            amount: 5,
-            status: 'pending',
-            date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-            adminNotes: ''
-          }
-        ];
-        
+        const response = await fetch(SCRIPT_URL + '?action=getCashoutHistory&username=' + currentUser.username);
+        const data = await response.json();
         const container = document.getElementById('cashoutHistory');
-        container.innerHTML = '';
         
-        mockHistory.forEach(item => {
-          const historyItem = document.createElement('div');
-          historyItem.className = 'cashout-item';
-          historyItem.innerHTML = `
-            <strong>${item.reward}</strong> - $${item.amount} 
-            <span class="cashout-status status-${item.status.toLowerCase()}">${item.status}</span>
-            <div style="font-size: 0.9rem; color: var(--text-tertiary); margin-top: 0.5rem;">
-              ${item.date.toLocaleDateString()}
-            </div>
-            ${item.adminNotes ? `
-              <div class="admin-notes">
-                <strong>Admin Notes:</strong> ${item.adminNotes}
+        if (data.status === 'success' && data.history && data.history.length > 0) {
+          container.innerHTML = data.history.map(item => `
+            <div class="cashout-item">
+              <strong>${item.reward}</strong> - $${item.amount} 
+              <span class="cashout-status status-${item.status.toLowerCase()}">${item.status}</span>
+              <div style="font-size: 0.9rem; color: var(--text-tertiary); margin-top: 0.5rem;">
+                ${new Date(item.date).toLocaleDateString()}
               </div>
-            ` : ''}
-          `;
-          
-          container.appendChild(historyItem);
-        });
+              ${item.adminNotes ? `
+                <div class="admin-notes">
+                  <strong>Admin Notes:</strong> ${item.adminNotes}
+                </div>
+              ` : ''}
+            </div>
+          `).join('');
+        } else {
+          container.innerHTML = '<p>No cashout history yet.</p>';
+        }
       } catch (error) {
         console.error('Load cashout history error:', error);
         document.getElementById('cashoutHistory').innerHTML = '<p>Error loading history</p>';
@@ -2432,34 +1806,41 @@
       
       if (!message) return;
       
-      // Add message to chat UI
-      const chatMessages = document.getElementById('chatMessages');
-      const messageElement = document.createElement('div');
-      messageElement.className = 'chat-message own';
-      messageElement.innerHTML = `
-        <div class="message-sender">${currentUser.username}</div>
-        ${message}
-      `;
-      chatMessages.appendChild(messageElement);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-      
-      input.value = '';
+      const formData = new FormData();
+      formData.append('action', 'sendChatMessage');
+      formData.append('username', currentUser.username);
+      formData.append('message', message);
+
+      try {
+        await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+        input.value = '';
+        loadChatMessages();
+      } catch (error) {
+        console.error('Send chat message error:', error);
+        showAlert('Failed to send message');
+      }
     }
 
-    function loadChatMessages() {
-      // This would normally load from the backend
-      // For now, we'll just ensure the welcome message is there
-      const chatMessages = document.getElementById('chatMessages');
-      if (chatMessages.children.length === 1) {
-        const welcomeMessage = document.createElement('div');
-        welcomeMessage.className = 'chat-message other';
-        welcomeMessage.innerHTML = `
-          <div class="message-sender">Insignia Support</div>
-          Welcome to Insignia Premium! How can we assist you today?
-        `;
-        chatMessages.appendChild(welcomeMessage);
+    async function loadChatMessages() {
+      if (!currentUser) return;
+      
+      try {
+        const response = await fetch(SCRIPT_URL + '?action=getChatMessages');
+        const data = await response.json();
+        const container = document.getElementById('chatMessages');
+        
+        if (data.status === 'success') {
+          container.innerHTML = data.messages.map(msg => `
+            <div class="chat-message ${msg.username === currentUser.username ? 'own' : 'other'}">
+              <div class="message-sender">${msg.username}</div>
+              ${msg.message}
+            </div>
+          `).join('');
+          container.scrollTop = container.scrollHeight;
+        }
+      } catch (error) {
+        console.error('Load chat messages error:', error);
       }
-      chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     function startChatPolling() {
@@ -2494,49 +1875,8 @@
       document.getElementById('cashoutBtn').disabled = !this.value;
     };
 
-    // Initialize cashout options
-    function initCashoutOptions() {
-      const select = document.getElementById('rewardSelect');
-      select.innerHTML = '<option value="">Choose reward...</option>';
-      
-      const rewards = [
-        { name: 'PayPal $10', amount: 10 },
-        { name: 'Amazon $5', amount: 5 },
-        { name: 'Steam $20', amount: 20 }
-      ];
-      
-      rewards.forEach(reward => {
-        const option = document.createElement('option');
-        option.value = reward.amount;
-        option.textContent = `${reward.name} ($${reward.amount.toFixed(2)})`;
-        select.appendChild(option);
-      });
-    }
-
-    // Initialize terms content
-    function initTermsContent() {
-      document.getElementById('termsContent').innerHTML = `
-        <h4>Terms of Service</h4>
-        <p>By using Insignia, you agree to the following terms:</p>
-        <ul>
-          <li>You must be at least 18 years old to participate</li>
-          <li>You may only have one account per person</li>
-          <li>Fraudulent activity will result in account suspension</li>
-          <li>All rewards are subject to approval</li>
-        </ul>
-        
-        <h4>Privacy Policy</h4>
-        <p>We value your privacy and are committed to protecting your personal information.</p>
-        <p>We collect only the information necessary to provide our services and never sell your data to third parties.</p>
-      `;
-    }
-
     // Start the app
-    window.onload = function() {
-      init();
-      initCashoutOptions();
-      initTermsContent();
-    };
+    window.onload = init;
   </script>
 </body>
 </html>
