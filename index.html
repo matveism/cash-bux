@@ -1,1882 +1,1415 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Insignia - Premium Rewards Platform</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <style>
-    :root {
-        /* Modern Dark Luxury Color Palette */
-        --bg-primary: #0a0a0f;
-        --bg-secondary: #111118;
-        --bg-tertiary: #1a1a24;
-        --bg-card: rgba(30, 30, 40, 0.7);
-        --bg-card-hover: rgba(40, 40, 55, 0.8);
-        --bg-gradient: linear-gradient(135deg, #0a0a0f 0%, #151522 50%, #0f0f1a 100%);
-        --bg-pattern: 
-            radial-gradient(circle at 15% 50%, rgba(120, 119, 198, 0.03) 0%, transparent 50%),
-            radial-gradient(circle at 85% 30%, rgba(255, 119, 198, 0.02) 0%, transparent 50%),
-            linear-gradient(135deg, transparent 60%, rgba(120, 119, 255, 0.03) 100%);
-        
-        /* Accent Colors */
-        --accent-primary: #7877ff;
-        --accent-secondary: #ff77c6;
-        --accent-tertiary: #5eead4;
-        --accent-glow: 0 0 20px rgba(120, 119, 255, 0.4);
-        
-        /* Status Colors */
-        --success: #10b981;
-        --warning: #f59e0b;
-        --error: #ef4444;
-        
-        /* Text Colors */
-        --text-primary: #f8fafc;
-        --text-secondary: #cbd5e1;
-        --text-tertiary: #94a3b8;
-        
-        /* UI Elements */
-        --border-radius: 20px;
-        --border-radius-sm: 12px;
-        --border-radius-lg: 28px;
-        --border: 1px solid rgba(255, 255, 255, 0.08);
-        --border-accent: 1px solid rgba(120, 119, 255, 0.2);
-        --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        --shadow-lg: 0 32px 64px -16px rgba(0, 0, 0, 0.6);
-        --shadow-glow: 0 0 30px rgba(120, 119, 255, 0.3);
-        --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        --backdrop-blur: blur(20px) saturate(180%);
-    }
-
-    * { 
-        margin: 0; 
-        padding: 0; 
-        box-sizing: border-box; 
-        font-family: 'Inter', sans-serif; 
-    }
-
-    body { 
-        background: var(--bg-gradient), var(--bg-pattern); 
-        color: var(--text-primary); 
-        min-height: 100vh; 
-        overflow-x: hidden;
-        line-height: 1.6;
-        font-weight: 400;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    }
-
-    .hidden { display: none !important; }
-
-    /* Modern Geometric Patterns */
-    .pattern-dots {
-        background-image: radial-gradient(rgba(120, 119, 255, 0.1) 1px, transparent 1px);
-        background-size: 20px 20px;
-    }
-
-    .pattern-grid {
-        background-image: 
-            linear-gradient(rgba(120, 119, 255, 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(120, 119, 255, 0.05) 1px, transparent 1px);
-        background-size: 30px 30px;
-    }
-
-    /* Loading Screen */
-    #loadingScreen { 
-        text-align: center; 
-        background: var(--bg-card);
-        backdrop-filter: var(--backdrop-blur);
-        padding: 60px 40px;
-        border-radius: var(--border-radius-lg);
-        box-shadow: var(--shadow);
-        border: var(--border);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    #loadingScreen::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-        animation: loadingBar 2s ease-in-out infinite;
-    }
-    
-    @keyframes loadingBar {
-        0% { transform: translateX(-100%); }
-        50% { transform: translateX(0%); }
-        100% { transform: translateX(100%); }
-    }
-    
-    #loadingScreen h2 { 
-        font-size: 2.8rem; 
-        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-        -webkit-background-clip: text; 
-        background-clip: text;
-        color: transparent; 
-        margin-bottom: 1rem;
-        font-weight: 800;
-        letter-spacing: -0.5px;
-    }
-    
-    #loadingScreen p {
-        color: var(--text-tertiary);
-        font-size: 1.1rem;
-    }
-
-    /* Main Container */
-    .main-container {
-        width: 100%;
-        max-width: 1400px;
-        margin: 0 auto;
-    }
-
-    /* Auth Container */
-    .auth-container {
-        display: flex;
-        gap: 2.5rem;
-        max-width: 1100px;
-        width: 100%;
-    }
-
-    .auth-card {
-        flex: 1;
-        background: var(--bg-card);
-        backdrop-filter: var(--backdrop-blur);
-        border-radius: var(--border-radius-lg);
-        padding: 3.5rem;
-        box-shadow: var(--shadow);
-        border: var(--border);
-        position: relative;
-        overflow: hidden;
-        transition: var(--transition);
-    }
-
-    .auth-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 5px;
-        background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary));
-        background-size: 200% 100%;
-        animation: shimmer 3s ease-in-out infinite;
-    }
-    
-    .auth-card::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(120, 119, 255, 0.03) 0%, transparent 50%);
-        pointer-events: none;
-    }
-
-    @keyframes shimmer {
-        0%, 100% { background-position: -200% 0; }
-        50% { background-position: 200% 0; }
-    }
-
-    .auth-card:hover {
-        transform: translateY(-8px);
-        box-shadow: var(--shadow-glow);
-        border: var(--border-accent);
-    }
-
-    .auth-card h1 {
-        font-size: 2.8rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        margin-bottom: 0.5rem;
-        text-align: center;
-        letter-spacing: -1px;
-    }
-
-    .auth-card p {
-        color: var(--text-tertiary);
-        margin-bottom: 2.5rem;
-        text-align: center;
-        font-size: 1.1rem;
-        font-weight: 400;
-    }
-
-    .auth-input-group {
-        position: relative;
-        margin-bottom: 2rem;
-    }
-
-    .auth-input {
-        width: 100%;
-        padding: 1.4rem 1.8rem;
-        background: rgba(15, 15, 20, 0.7);
-        border: var(--border);
-        border-radius: var(--border-radius-sm);
-        color: var(--text-primary);
-        font-size: 1rem;
-        transition: var(--transition);
-        outline: none;
-        font-weight: 400;
-        letter-spacing: 0.2px;
-    }
-
-    .auth-input:focus {
-        border-color: var(--accent-primary);
-        box-shadow: 0 0 0 3px rgba(120, 119, 255, 0.2);
-        transform: translateY(-2px);
-        background: rgba(20, 20, 30, 0.8);
-    }
-
-    .auth-input::placeholder {
-        color: var(--text-tertiary);
-    }
-
-    .auth-btn {
-        width: 100%;
-        padding: 1.5rem;
-        background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-        border: none;
-        border-radius: var(--border-radius-sm);
-        color: white;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        box-shadow: var(--shadow);
-        margin-bottom: 1.5rem;
-        letter-spacing: 0.5px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .auth-btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.7s;
-    }
-
-    .auth-btn:hover::before {
-        left: 100%;
-    }
-
-    .auth-btn:hover {
-        transform: translateY(-4px) scale(1.02);
-        box-shadow: var(--shadow-glow);
-    }
-
-    .auth-btn:disabled {
-        background: #4b5563;
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none !important;
-    }
-
-    .auth-switch {
-        text-align: center;
-        color: var(--text-tertiary);
-        margin-top: 2rem;
-        font-size: 1rem;
-    }
-
-    .auth-switch a {
-        color: var(--accent-primary);
-        text-decoration: none;
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        position: relative;
-    }
-
-    .auth-switch a::after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: var(--accent-primary);
-        transition: width 0.3s ease;
-    }
-
-    .auth-switch a:hover::after {
-        width: 100%;
-    }
-
-    /* Verification Code */
-    .verification-code {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        margin: 2.5rem 0;
-    }
-
-    .code-input {
-        width: 65px;
-        height: 75px;
-        text-align: center;
-        font-size: 1.8rem;
-        font-weight: 700;
-        background: rgba(15, 15, 20, 0.7);
-        border: var(--border);
-        border-radius: var(--border-radius-sm);
-        color: var(--text-primary);
-        transition: var(--transition);
-        font-family: 'JetBrains Mono', monospace;
-    }
-
-    .code-input:focus {
-        border-color: var(--accent-primary);
-        box-shadow: 0 0 0 3px rgba(120, 119, 255, 0.2);
-        transform: scale(1.05);
-    }
-
-    /* Header */
-    #header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.8rem 2.5rem;
-        background: var(--bg-card);
-        backdrop-filter: var(--backdrop-blur);
-        border-radius: var(--border-radius-lg);
-        margin: 1.5rem 0;
-        box-shadow: var(--shadow);
-        border: var(--border);
-        position: relative;
-        overflow: hidden;
-    }
-
-    #header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(120, 119, 255, 0.03) 0%, transparent 50%);
-        pointer-events: none;
-    }
-
-    #logo-img {
-        height: 55px;
-        border-radius: var(--border-radius-sm);
-        filter: brightness(1.1);
-    }
-
-    .header-buttons {
-        display: flex;
-        gap: 1rem;
-    }
-
-    #header button {
-        background: rgba(15, 15, 20, 0.7);
-        border: var(--border);
-        color: var(--text-primary);
-        padding: 0.9rem 1.8rem;
-        border-radius: var(--border-radius-sm);
-        cursor: pointer;
-        transition: var(--transition);
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    #header button:hover {
-        background: var(--accent-primary);
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-glow);
-    }
-
-    /* Dashboard */
-    .profile {
-        display: flex;
-        align-items: center;
-        gap: 2rem;
-        background: var(--bg-card);
-        backdrop-filter: var(--backdrop-blur);
-        padding: 2.5rem;
-        border-radius: var(--border-radius-lg);
-        margin: 1.5rem 0;
-        box-shadow: var(--shadow);
-        border: var(--border);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .profile::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(120, 119, 255, 0.03) 0%, transparent 50%);
-        pointer-events: none;
-    }
-
-    .avatar {
-        width: 90px;
-        height: 90px;
-        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.2rem;
-        font-weight: 700;
-        box-shadow: var(--shadow-glow);
-        position: relative;
-        z-index: 1;
-    }
-
-    .user-status {
-        display: inline-block;
-        padding: 0.4rem 1rem;
-        border-radius: 50px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        margin-left: 0.8rem;
-    }
-
-    .status-active {
-        background: var(--success);
-        color: white;
-    }
-
-    .status-suspended {
-        background: var(--error);
-        color: white;
-    }
-
-    .balance-container {
-        display: flex;
-        gap: 2rem;
-        margin-top: 1.5rem;
-    }
-
-    .balance-item {
-        background: rgba(15, 15, 20, 0.7);
-        padding: 1.5rem 2rem;
-        border-radius: var(--border-radius-sm);
-        text-align: center;
-        flex: 1;
-        border: var(--border);
-        transition: var(--transition);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .balance-item::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(120, 119, 255, 0.05) 0%, transparent 50%);
-        pointer-events: none;
-    }
-
-    .balance-item:hover {
-        transform: translateY(-5px);
-        border: var(--border-accent);
-        box-shadow: var(--shadow-glow);
-    }
-
-    .balance-label {
-        font-size: 0.95rem;
-        color: var(--text-tertiary);
-        margin-bottom: 0.8rem;
-        font-weight: 500;
-    }
-
-    .balance-value {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--accent-primary);
-        font-family: 'JetBrains Mono', monospace;
-    }
-
-    .nav {
-        display: flex;
-        background: var(--bg-card);
-        backdrop-filter: var(--backdrop-blur);
-        border-radius: var(--border-radius-lg);
-        overflow: hidden;
-        margin: 1.5rem 0;
-        box-shadow: var(--shadow);
-        border: var(--border);
-        position: relative;
-    }
-
-    .nav::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(120, 119, 255, 0.03) 0%, transparent 50%);
-        pointer-events: none;
-    }
-
-    .nav button {
-        flex: 1;
-        padding: 1.5rem;
-        background: transparent;
-        border: none;
-        color: var(--text-tertiary);
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.7rem;
-    }
-
-    .nav button i {
-        font-size: 1.2rem;
-    }
-
-    .nav button:hover, .nav button.active {
-        background: linear-gradient(135deg, rgba(120, 119, 255, 0.1), rgba(255, 119, 198, 0.05));
-        color: var(--text-primary);
-    }
-
-    .nav button.active::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 3px;
-        background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-    }
-
-    .page {
-        background: var(--bg-card);
-        backdrop-filter: var(--backdrop-blur);
-        border-radius: var(--border-radius-lg);
-        padding: 3rem;
-        margin: 1.5rem 0;
-        box-shadow: var(--shadow);
-        min-height: 500px;
-        border: var(--border);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .page::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(120, 119, 255, 0.03) 0%, transparent 50%);
-        pointer-events: none;
-    }
-
-    .page h3 {
-        font-size: 2rem;
-        color: var(--text-primary);
-        margin-bottom: 2rem;
-        font-weight: 700;
-        position: relative;
-        display: inline-block;
-    }
-
-    .page h3::after {
-        content: '';
-        position: absolute;
-        bottom: -8px;
-        left: 0;
-        width: 50px;
-        height: 4px;
-        background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-        border-radius: 2px;
-    }
-
-    /* Work Page */
-    .work-info {
-        background: rgba(15, 15, 20, 0.7);
-        padding: 2rem;
-        border-radius: var(--border-radius);
-        margin-bottom: 2rem;
-        border-left: 4px solid var(--accent-primary);
-        border: var(--border);
-    }
-
-    .work-info h4 {
-        color: var(--accent-primary);
-        margin-bottom: 0.8rem;
-        font-size: 1.3rem;
-        font-weight: 600;
-    }
-
-    /* Offerwalls */
-    .offerwall-iframe {
-        width: 100%;
-        height: 650px;
-        border: none;
-        border-radius: var(--border-radius);
-        background: white;
-    }
-
-    .offerwall-item {
-        background: linear-gradient(135deg, rgba(20, 20, 30, 0.9), rgba(30, 30, 45, 0.9));
-        backdrop-filter: var(--backdrop-blur);
-        border-radius: var(--border-radius-lg);
-        padding: 2.5rem;
-        margin: 1.5rem 0;
-        border: var(--border);
-        box-shadow: var(--shadow);
-        transition: var(--transition);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .offerwall-item::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(120, 119, 255, 0.03) 0%, transparent 50%);
-        pointer-events: none;
-    }
-
-    .offerwall-item:hover {
-        transform: translateY(-8px);
-        border: var(--border-accent);
-        box-shadow: var(--shadow-glow);
-    }
-
-    .offerwall-requirements {
-        background: rgba(15, 15, 20, 0.7);
-        padding: 1.2rem;
-        border-radius: var(--border-radius-sm);
-        margin: 1.5rem 0;
-        text-align: center;
-        border: var(--border);
-    }
-
-    .offerwall-requirements.unlocked {
-        background: rgba(16, 185, 129, 0.15);
-        border: 1px solid var(--success);
-    }
-
-    .offerwall-requirements.locked {
-        background: rgba(239, 68, 68, 0.15);
-        border: 1px solid var(--error);
-    }
-
-    .offerwall-buttons {
-        display: flex;
-        gap: 1.5rem;
-        justify-content: center;
-        margin-top: 2rem;
-    }
-
-    .offerwall-buttons button {
-        padding: 1.2rem 2.5rem;
-        border: none;
-        border-radius: var(--border-radius-sm);
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        gap: 0.7rem;
-    }
-
-    .offerwall-buttons button:first-child {
-        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-        color: white;
-    }
-
-    .offerwall-buttons button:last-child {
-        background: rgba(15, 15, 20, 0.7);
-        border: var(--border);
-        color: var(--text-primary);
-    }
-
-    .offerwall-buttons button:disabled {
-        background: #4b5563;
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none !important;
-    }
-
-    .offerwall-buttons button:hover:not(:disabled) {
-        transform: translateY(-4px);
-        box-shadow: var(--shadow-glow);
-    }
-
-    .iframe-container {
-        position: relative;
-        margin: 2rem 0;
-        border-radius: var(--border-radius);
-        overflow: hidden;
-        box-shadow: var(--shadow-lg);
-        border: var(--border);
-    }
-
-    .close-iframe {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 45px;
-        height: 45px;
-        cursor: pointer;
-        z-index: 1000;
-        font-size: 1.3rem;
-        font-weight: bold;
-        box-shadow: var(--shadow);
-        transition: var(--transition);
-    }
-
-    .close-iframe:hover {
-        transform: scale(1.1);
-    }
-
-    /* Cashout Page */
-    .cashout-info {
-        background: rgba(15, 15, 20, 0.7);
-        padding: 2rem;
-        border-radius: var(--border-radius);
-        margin-bottom: 2rem;
-        border-left: 4px solid var(--accent-primary);
-        border: var(--border);
-    }
-
-    .cashout-info h4 {
-        color: var(--accent-primary);
-        margin-bottom: 0.8rem;
-        font-size: 1.3rem;
-        font-weight: 600;
-    }
-
-    .cashout-form {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-    }
-
-    /* Cashout History */
-    .cashout-history {
-        margin-top: 3rem;
-        background: rgba(15, 15, 20, 0.7);
-        border-radius: var(--border-radius-lg);
-        padding: 2.5rem;
-        border: var(--border);
-    }
-
-    .cashout-item {
-        background: rgba(20, 20, 30, 0.7);
-        border-radius: var(--border-radius);
-        padding: 1.8rem;
-        margin: 1.2rem 0;
-        border-left: 4px solid var(--accent-primary);
-        border: var(--border);
-        transition: var(--transition);
-    }
-
-    .cashout-item:hover {
-        transform: translateX(5px);
-        border: var(--border-accent);
-    }
-
-    .cashout-status {
-        display: inline-block;
-        padding: 0.4rem 1rem;
-        border-radius: 50px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        margin-left: 1rem;
-    }
-
-    .status-pending {
-        background: var(--warning);
-        color: black;
-    }
-
-    .status-approved {
-        background: var(--success);
-        color: white;
-    }
-
-    .status-rejected {
-        background: var(--error);
-        color: white;
-    }
-
-    .admin-notes {
-        background: rgba(15, 15, 20, 0.7);
-        padding: 1rem;
-        border-radius: var(--border-radius-sm);
-        margin-top: 1rem;
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        border: var(--border);
-    }
-
-    /* Chat System */
-    #chatToggle {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 70px;
-        height: 70px;
-        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-        border: none;
-        border-radius: 50%;
-        color: white;
-        font-size: 1.8rem;
-        cursor: pointer;
-        box-shadow: var(--shadow-glow);
-        z-index: 1000;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    #chatToggle:hover {
-        transform: scale(1.1) rotate(10deg);
-    }
-
-    #chatBox {
-        position: fixed;
-        bottom: 120px;
-        right: 30px;
-        width: 380px;
-        height: 550px;
-        background: var(--bg-card);
-        backdrop-filter: var(--backdrop-blur);
-        border-radius: var(--border-radius-lg);
-        box-shadow: var(--shadow-lg);
-        border: var(--border);
-        display: flex;
-        flex-direction: column;
-        z-index: 999;
-        transition: var(--transition);
-    }
-
-    .chat-header {
-        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-        padding: 1.5rem;
-        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
-        font-weight: 700;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .chat-close {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-    .chat-close:hover {
-        transform: scale(1.2);
-    }
-
-    .chat-messages {
-        flex: 1;
-        padding: 1.5rem;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .chat-message {
-        background: rgba(15, 15, 20, 0.7);
-        padding: 1rem 1.2rem;
-        border-radius: var(--border-radius);
-        max-width: 80%;
-        word-wrap: break-word;
-        border: var(--border);
-    }
-
-    .chat-message.own {
-        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-        align-self: flex-end;
-    }
-
-    .chat-message.other {
-        background: rgba(20, 20, 30, 0.7);
-        align-self: flex-start;
-    }
-
-    .message-sender {
-        font-size: 0.85rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        color: var(--accent-tertiary);
-    }
-
-    .chat-input-container {
-        padding: 1.5rem;
-        border-top: var(--border);
-        display: flex;
-        gap: 0.8rem;
-    }
-
-    .chat-input {
-        flex: 1;
-        padding: 1rem 1.2rem;
-        background: rgba(15, 15, 20, 0.7);
-        border: var(--border);
-        border-radius: var(--border-radius-sm);
-        color: var(--text-primary);
-        font-size: 0.95rem;
-        resize: none;
-        outline: none;
-        transition: var(--transition);
-    }
-
-    .chat-input:focus {
-        border-color: var(--accent-primary);
-    }
-
-    .chat-send {
-        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-        border: none;
-        border-radius: var(--border-radius-sm);
-        color: white;
-        width: 50px;
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .chat-send:hover {
-        transform: scale(1.05);
-    }
-
-    /* Alert Modal */
-    #alertModal {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(10px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-    }
-
-    #alertModal .modal {
-        background: var(--bg-card);
-        backdrop-filter: var(--backdrop-blur);
-        padding: 3.5rem;
-        border-radius: var(--border-radius-lg);
-        max-width: 500px;
-        text-align: center;
-        box-shadow: var(--shadow-lg);
-        border: var(--border);
-        position: relative;
-        overflow: hidden;
-    }
-
-    #alertModal .modal::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 5px;
-        background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-    }
-
-    #alertModal button {
-        margin-top: 2rem;
-        padding: 1.2rem 3rem;
-        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-        border: none;
-        border-radius: var(--border-radius-sm);
-        color: white;
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-    #alertModal button:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-glow);
-    }
-
-    /* Responsive */
-    @media (max-width: 1024px) {
-        .auth-container {
-            flex-direction: column;
-            gap: 1.5rem;
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="Earn crypto, PayPal funds, and gift cards by completing offers and surveys" />
+    <meta name="theme-color" content="#0a0a12" />
+    <title>Bux IQ - Premium Rewards Platform</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/wppiqAy.png" />
+    <link rel="apple-touch-icon" href="https://i.imgur.com/wppiqAy.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Bux iQ" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
         }
         
-        .auth-card {
-            padding: 2.5rem;
-        }
-        
-        .balance-container {
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-    }
-
-    @media (max-width: 768px) {
         body {
+            background: linear-gradient(135deg, #5d7ca6 0%, #3a5a8c 100%);
+            color: #000;
+            font-size: 14px;
+            line-height: 1.4;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        .wm-header {
+            background: linear-gradient(to bottom, #2c5aa0 0%, #1e3a6b 100%);
+            color: white;
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            border-bottom: 1px solid #0f1f3a;
+            font-weight: bold;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .wm-header .start { font-size: 16px; }
+        .wm-header .title { 
+            font-size: 18px; 
+            font-weight: bold; 
+            text-align: center; 
+            flex-grow: 1; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .wm-header .title img {
+            height: 24px;
+            margin-right: 8px;
+        }
+        .wm-header .time { font-size: 14px; }
+        
+        .wm-content {
+            margin-top: 50px;
+            margin-bottom: 60px;
+            padding: 12px;
+            min-height: calc(100vh - 110px);
+        }
+        
+        .wm-tabs {
+            display: flex;
+            background: #4a6a9c;
+            border-bottom: 1px solid #2c4163;
+            overflow-x: auto;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .wm-tab {
+            padding: 10px 16px;
+            background: #6b8cc0;
+            border: 1px solid #4a6a9c;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            margin-right: 2px;
+            color: white;
+            font-weight: bold;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .wm-tab.active {
+            background: #8faad6;
+            color: #000;
+        }
+        
+        .wm-section {
+            background: #d4dff2;
+            border: 1px solid #8faad6;
+            border-radius: 0 0 8px 8px;
             padding: 15px;
+            margin-top: 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         
-        .auth-card {
-            padding: 2rem;
+        .wm-section h2 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #1e3a6b;
+            border-bottom: 1px solid #8faad6;
+            padding-bottom: 8px;
         }
         
-        .auth-card h1 {
-            font-size: 2.2rem;
-        }
-        
-        .verification-code {
-            gap: 0.7rem;
-        }
-        
-        .code-input {
-            width: 55px;
-            height: 65px;
-            font-size: 1.5rem;
-        }
-
-        #chatBox {
-            width: 320px;
-            height: 450px;
-            right: 20px;
-            bottom: 100px;
-        }
-
-        .header-buttons {
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        #header button {
-            padding: 0.8rem 1.2rem;
-            font-size: 0.9rem;
-        }
-
-        .profile {
-            flex-direction: column;
+        .wm-button {
+            background: linear-gradient(to bottom, #f0f0f0 0%, #d4d4d4 100%);
+            border: 1px solid #808080;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 14px;
+            color: #000;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 4px 0;
+            display: inline-block;
             text-align: center;
-            gap: 1.5rem;
-        }
-
-        .nav {
-            flex-direction: column;
-        }
-
-        .page {
-            padding: 2rem;
+            transition: all 0.2s ease;
         }
         
-        .offerwall-buttons {
-            flex-direction: column;
+        .wm-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         
-        #chatToggle {
-            width: 60px;
+        .wm-button:active {
+            background: linear-gradient(to bottom, #d4d4d4 0%, #f0f0f0 100%);
+            transform: translateY(0);
+        }
+        
+        .wm-button.primary {
+            background: linear-gradient(to bottom, #4a6a9c 0%, #2c4163 100%);
+            color: white;
+            border-color: #1e3a6b;
+        }
+        
+        .hidden { display: none !important; }
+        
+        .wm-status-bar {
+            background: #4a6a9c;
+            color: white;
+            padding: 8px 12px;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            border-radius: 6px;
+            margin-top: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .wm-logs {
+            background: white;
+            border: 1px solid #8faad6;
+            border-radius: 6px;
+            height: 150px;
+            overflow-y: auto;
+            padding: 12px;
+            font-family: "Courier New", monospace;
+            font-size: 12px;
+            margin: 12px 0;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .wm-user-info {
+            background: white;
+            border: 1px solid #8faad6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .wm-user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            margin-right: 12px;
+            border: 2px solid #8faad6;
+        }
+        
+        .wm-user-details { flex-grow: 1; }
+        
+        .wm-user-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        
+        .wm-stat { 
+            text-align: center; 
+            flex: 1; 
+            padding: 5px;
+            background: #e8eef7;
+            border-radius: 6px;
+            margin: 0 3px;
+        }
+        .wm-stat-value { font-weight: bold; font-size: 18px; color: #1e3a6b; }
+        .wm-stat-label { font-size: 11px; color: #4a6a9c; }
+        
+        .wm-list {
+            background: white;
+            border: 1px solid #8faad6;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 12px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .wm-list-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #d4dff2;
+            display: flex;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+        
+        .wm-list-item:hover {
+            background: #f0f5ff;
+        }
+        
+        .wm-list-item:last-child { border-bottom: none; }
+        
+        .wm-list-item .icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #4a6a9c;
+            color: white;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .wm-footer {
+            background: linear-gradient(to bottom, #2c5aa0 0%, #1e3a6b 100%);
             height: 60px;
-            font-size: 1.5rem;
-            bottom: 20px;
-            right: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px;
+            border-top: 1px solid #0f1f3a;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
         }
-    }
-  </style>
+        
+        .wm-footer-button {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            width: 70px;
+            height: 50px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .wm-footer-button i { font-size: 18px; margin-bottom: 4px; }
+        .wm-footer-button.active { 
+            background: rgba(255, 255, 255, 0.2); 
+            transform: translateY(-3px);
+        }
+        
+        .wm-footer-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .wm-input {
+            background: white;
+            border: 1px solid #808080;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 14px;
+            width: 100%;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin: 6px 0;
+            transition: border 0.2s ease;
+        }
+        
+        .wm-input:focus {
+            border-color: #4a6a9c;
+            outline: none;
+        }
+        
+        .wm-captcha {
+            background: #e8eef7;
+            border: 1px solid #8faad6;
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+            font-family: "Courier New", monospace;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin: 10px 0;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .wm-offer-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 12px 0;
+        }
+        
+        .wm-offer-item {
+            background: white;
+            border: 1px solid #8faad6;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .wm-offer-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .wm-offer-item img {
+            max-width: 100%;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        
+        .wm-leaderboard {
+            background: white;
+            border: 1px solid #8faad6;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 12px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .wm-leaderboard table { width: 100%; border-collapse: collapse; }
+        .wm-leaderboard th {
+            background: #4a6a9c;
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: bold;
+            border-right: 1px solid #2c4163;
+        }
+        
+        .wm-leaderboard th:last-child { border-right: none; }
+        .wm-leaderboard td { padding: 10px 12px; border-bottom: 1px solid #d4dff2; }
+        .wm-leaderboard tr:last-child td { border-bottom: none; }
+        .wm-leaderboard tr:hover { background: #f0f5ff; }
+        
+        .bonus-code-section {
+            background: #d4dff2;
+            border: 1px solid #8faad6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 0;
+        }
+        
+        .info-box {
+            background: #fff9e6;
+            border: 1px solid #e6c200;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 12px 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .info-box i { color: #e6c200; margin-right: 10px; margin-top: 2px; }
+        
+        .bonus-form {
+            background: white;
+            border: 1px solid #8faad6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 12px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: bold; color: #1e3a6b; }
+        .form-row { display: flex; gap: 10px; }
+        .form-row .form-group { flex: 1; }
+        
+        .google-login-btn {
+            background: #4285f4;
+            color: white;
+            border: 1px solid #4285f4;
+            border-radius: 6px;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin: 10px 0;
+            transition: all 0.2s ease;
+        }
+        
+        .google-login-btn:hover {
+            background: #3367d6;
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 15px 0;
+            color: #4a6a9c;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #8faad6;
+            z-index: 1;
+        }
+        
+        .divider span {
+            background: #d4dff2;
+            padding: 0 12px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .error-message {
+            color: #d32f2f;
+            text-align: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #ffebee;
+            border: 1px solid #f44336;
+            border-radius: 6px;
+        }
+        
+        .success-message {
+            color: #388e3c;
+            text-align: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #e8f5e9;
+            border: 1px solid #4caf50;
+            border-radius: 6px;
+        }
+        
+        .wm-faq-item {
+            background: white;
+            border: 1px solid #8faad6;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .wm-faq-item h4 {
+            color: #1e3a6b;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        
+        .wm-faq-item p {
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4a6a9c, #2c5aa0);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .shop-item {
+            background: white;
+            border: 1px solid #8faad6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .shop-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-right: 15px;
+        }
+        
+        .shop-item-details {
+            flex-grow: 1;
+        }
+        
+        .shop-item-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #1e3a6b;
+        }
+        
+        .shop-item-price {
+            color: #4a6a9c;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 480px) {
+            .wm-offer-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .wm-footer-button {
+                width: 60px;
+                font-size: 10px;
+            }
+            
+            .wm-footer-button i {
+                font-size: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <!-- Loading -->
-  <div id="loadingScreen">
-    <h2>Loading Insignia</h2>
-    <p>Initializing premium experience...</p>
-  </div>
-
-  <!-- Main App -->
-  <div id="app" class="hidden">
-    <div class="main-container">
-      <!-- Header -->
-      <header id="header">
-        <img id="logo-img" src="https://i.postimg.cc/k4pN532x/unnamed-removebg-preview.png" alt="Insignia Logo">
-        <div class="header-buttons">
-          <button onclick="toggleChat()"><i class="fas fa-comments"></i> Support</button>
-          <button onclick="showAlert('Support: premium@insignia.com')"><i class="fas fa-question-circle"></i> Help</button>
-          <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    <div class="wm-header">
+        <div class="start"><i class="fas fa-bars"></i></div>
+        <div class="title">
+            <img src="https://i.imgur.com/wppiqAy.png" alt="Bux IQ Logo">
+            Bux IQ
         </div>
-      </header>
-
-      <!-- Auth Screens -->
-      <section id="authScreens">
-        <div class="auth-container">
-          <!-- Login Card -->
-          <div id="loginCard" class="auth-card">
-            <h1>Welcome Back</h1>
-            <p>Sign in to access your premium account</p>
-            <div class="auth-input-group">
-              <input type="text" id="loginUsername" class="auth-input" placeholder="Username" autocomplete="off">
-            </div>
-            <div class="auth-input-group">
-              <input type="password" id="loginPassword" class="auth-input" placeholder="Password" autocomplete="off">
-            </div>
-            <button class="auth-btn" onclick="login()">Access Account</button>
-            <div class="auth-switch">
-              New to Insignia? <a onclick="showSignup()">Create account</a>
-            </div>
-          </div>
-
-          <!-- Signup Card -->
-          <div id="signupCard" class="auth-card hidden">
-            <h1>Join Insignia</h1>
-            <p>Create your premium account today</p>
-            <div class="auth-input-group">
-              <input type="text" id="signupUsername" class="auth-input" placeholder="Choose Username" autocomplete="off">
-            </div>
-            <div class="auth-input-group">
-              <input type="email" id="signupEmail" class="auth-input" placeholder="Email Address" autocomplete="off">
-            </div>
-            <div class="auth-input-group">
-              <input type="password" id="signupPassword" class="auth-input" placeholder="Create Password" autocomplete="off">
-            </div>
-            <button class="auth-btn" onclick="signup()">Create Premium Account</button>
-            <div class="auth-switch">
-              Already have an account? <a onclick="showLogin()">Sign in</a>
-            </div>
-          </div>
-
-          <!-- Verification Card -->
-          <div id="verifyCard" class="auth-card hidden">
-            <h1>Verify Identity</h1>
-            <p>We sent a 6-digit code to your email</p>
-            <div class="verification-code">
-              <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 1)">
-              <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 2)">
-              <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 3)">
-              <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 4)">
-              <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 5)">
-              <input type="text" class="code-input" maxlength="1" oninput="moveToNext(this, 6)">
-            </div>
-            <button class="auth-btn" onclick="verifyEmail()">Verify & Continue</button>
-            <div class="auth-switch">
-              Didn't receive code? <a onclick="resendCode()">Resend</a>
-            </div>
-          </div>
+        <div class="time" id="headerTime">12:00 PM</div>
+    </div>
+    
+    <div class="wm-content">
+        <div class="wm-tabs">
+            <div class="wm-tab active" data-section="earn">Home</div>
+            <div class="wm-tab" data-section="shop">Shop</div>
+            <div class="wm-tab" data-section="leaders">Leaders</div>
+            <div class="wm-tab" data-section="profile">Earn</div>
+            <div class="wm-tab" data-section="bonus">Bonus</div>
+            <div class="wm-tab" data-section="help">Help</div>
         </div>
-      </section>
-
-      <!-- Dashboard -->
-      <section id="dashboard" class="hidden">
-        <div class="profile">
-          <div class="avatar" id="userAvatar">U</div>
-          <div>
-            <h2 id="displayUsername">User <span id="userStatus" class="user-status status-active">Premium</span></h2>
-            <div class="balance-container">
-              <div class="balance-item">
-                <div class="balance-label">Points Balance</div>
-                <div class="balance-value" id="balanceValue">0</div>
-              </div>
-              <div class="balance-item">
-                <div class="balance-label">USD Balance</div>
-                <div class="balance-value" id="usdBalanceValue">$0.0000</div>
-              </div>
-            </div>
-          </div>
+        
+        <div class="wm-status-bar">
+            <center><div id="conversionRate">$1.00 = 1 pts</div></center>
+            <div id="serverTime">Server Time: 00:00:00</div>
         </div>
-
-        <nav class="nav">
-          <button onclick="showPage('work')" class="active"><i class="fas fa-briefcase"></i> Tasks</button>
-          <button onclick="showPage('offerwalls')"><i class="fas fa-gem"></i> Offerwalls</button>
-          <button onclick="showPage('cashout')"><i class="fas fa-wallet"></i> Cashout</button>
-          <button onclick="showPage('terms')"><i class="fas fa-file-contract"></i> Terms</button>
-        </nav>
-
-        <div id="pages">
-          <!-- Work Page -->
-          <div id="work" class="page">
-            <h3>Complete Tasks</h3>
-            <div class="work-info">
-              <h4>How it works</h4>
-              <p>Each question you read and each answer you submit earns you rewards</p>
-              <p>5 Points + $0.005 USD for each approved submission</p>
-            </div>
-            <textarea id="workInput" class="auth-input" placeholder="Describe what questions you answered today..." style="height: 160px;"></textarea>
-            <button class="auth-btn" onclick="submitWork()"><i class="fas fa-paper-plane"></i> Submit Work</button>
-          </div>
-
-          <!-- Offerwalls Page -->
-          <div id="offerwalls" class="page hidden">
-            <h3>Offerwalls</h3>
-            <div id="offerwallList">
-              <p>Loading offerwalls...</p>
-            </div>
-            <div id="iframeContainer" class="iframe-container hidden">
-              <button class="close-iframe" onclick="closeIframe()">×</button>
-              <iframe id="offerwallFrame" class="offerwall-iframe" src="about:blank"></iframe>
-            </div>
-          </div>
-
-          <!-- Cashout Page -->
-          <div id="cashout" class="page hidden">
-            <h3>Request Cashout</h3>
-            <div class="cashout-info">
-              <h4>Cashout Information</h4>
-              <p>1 USD = 1000 PTS</p>
-              <p>You only need USD balance to cash out</p>
-            </div>
-            <div class="cashout-form">
-              <select id="rewardSelect" class="auth-input">
-                <option value="">Choose reward...</option>
-              </select>
-              <button id="cashoutBtn" class="auth-btn" onclick="submitCashout()" disabled><i class="fas fa-coins"></i> Request Cashout</button>
-            </div>
-
-            <!-- Cashout History -->
-            <div class="cashout-history">
-              <h4>Cashout History</h4>
-              <div id="cashoutHistory">
-                <p>Loading history...</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Terms Page -->
-          <div id="terms" class="page hidden">
-            <div id="termsContent" style="text-align: left;"></div>
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <!-- Chat System -->
-  <button id="chatToggle" class="hidden"><i class="fas fa-comment-dots"></i></button>
-  <div id="chatBox" class="hidden">
-    <div class="chat-header">
-      <span><i class="fas fa-headset"></i> Premium Support</span>
-      <button class="chat-close" onclick="toggleChat()">×</button>
-    </div>
-    <div class="chat-messages" id="chatMessages">
-      <div class="chat-message other">
-        <div class="message-sender">Insignia Support</div>
-        Welcome to Insignia Premium! How can we assist you today?
-      </div>
-    </div>
-    <div class="chat-input-container">
-      <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." onkeypress="handleChatInput(event)">
-      <button class="chat-send" onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
-    </div>
-  </div>
-
-  <!-- Alert Modal -->
-  <div id="alertModal" class="hidden">
-    <div class="modal">
-      <p id="alertMessage">Message</p>
-      <button onclick="closeAlert()">Continue</button>
-    </div>
-  </div>
-
-  <!-- MAIN SCRIPT -->
-  <script>
-    // ⚠️ REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT DEPLOYMENT URL
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTelvEYce1YEgw8-RDKth6xa_VJGRu2YOTxRMcgTGLuL6IXgO7tFG3xllYW4czAdbEEg/exec";
-
-    let currentUser = null;
-    let pendingUser = null;
-    let chatInterval = null;
-
-    // Initialize the app
-    async function init() {
-      console.log('🚀 Initializing Insignia...');
-      
-      try {
-        // Test connection first
-        const testResponse = await fetch(SCRIPT_URL + '?action=test');
-        const testData = await testResponse.json();
         
-        if (testData.status === 'success') {
-          console.log('✅ Connection test successful');
-          
-          // Load configuration
-          const configResponse = await fetch(SCRIPT_URL + '?action=getConfig');
-          const config = await configResponse.json();
-          
-          if (config.status === 'success') {
-            applyConfig(config);
-          }
-          
-          // Show app
-          document.getElementById('loadingScreen').classList.add('hidden');
-          document.getElementById('app').classList.remove('hidden');
-          
-          // Try auto-login - FIXED: Using quizbux_user to match your backend
-          const saved = localStorage.getItem('quizbux_user');
-          if (saved) {
-            const userData = JSON.parse(saved);
-            await restoreSession(userData.username);
-          }
-          
-        } else {
-          throw new Error('Connection test failed: ' + testData.message);
-        }
-        
-      } catch (error) {
-        console.error('❌ Initialization failed:', error);
-        showAlert('Failed to connect to server. Please check your internet connection and try again.');
-        document.getElementById('loadingScreen').classList.add('hidden');
-        document.getElementById('app').classList.remove('hidden');
-      }
-    }
-
-    // Apply configuration from Google Sheets
-    function applyConfig(config) {
-      console.log('Applying config:', config);
-      
-      // Update texts
-      if (config.texts) {
-        if (config.texts.welcome_message) {
-          document.querySelector('#loginCard p').textContent = config.texts.welcome_message;
-          document.querySelector('#signupCard p').textContent = config.texts.welcome_message;
-        }
-        
-        if (config.texts.terms) {
-          document.getElementById('termsContent').innerHTML = config.texts.terms;
-        }
-      }
-      
-      // Update app name
-      if (config.app_name) {
-        document.title = config.app_name + ' - Premium Rewards';
-      }
-      
-      // Update logo
-      if (config.logo) {
-        document.getElementById('logo-img').src = config.logo;
-      }
-      
-      // Update offers
-      const select = document.getElementById('rewardSelect');
-      select.innerHTML = '<option value="">Choose reward...</option>';
-      
-      if (config.offers && config.offers.length > 0) {
-        config.offers.forEach(offer => {
-          const option = document.createElement('option');
-          option.value = offer.amount;
-          option.textContent = `${offer.name} ($${offer.amount.toFixed(2)})`;
-          select.appendChild(option);
-        });
-      }
-      
-      // Apply custom styles
-      if (config.styles) {
-        const styleElement = document.createElement('style');
-        styleElement.textContent = config.styles;
-        document.head.appendChild(styleElement);
-      }
-      
-      // Apply custom scripts
-      if (config.scripts) {
-        const scriptElement = document.createElement('script');
-        scriptElement.textContent = config.scripts;
-        document.body.appendChild(scriptElement);
-      }
-    }
-
-    // Auth functions
-    function showLogin() {
-      document.getElementById('signupCard').classList.add('hidden');
-      document.getElementById('verifyCard').classList.add('hidden');
-      document.getElementById('loginCard').classList.remove('hidden');
-    }
-
-    function showSignup() {
-      document.getElementById('loginCard').classList.add('hidden');
-      document.getElementById('verifyCard').classList.add('hidden');
-      document.getElementById('signupCard').classList.remove('hidden');
-    }
-
-    function showVerification() {
-      document.getElementById('loginCard').classList.add('hidden');
-      document.getElementById('signupCard').classList.add('hidden');
-      document.getElementById('verifyCard').classList.remove('hidden');
-      document.querySelectorAll('.code-input').forEach(input => input.value = '');
-      document.querySelector('.code-input').focus();
-    }
-
-    function moveToNext(input, nextIndex) {
-      if (input.value.length === 1) {
-        const nextInput = document.querySelectorAll('.code-input')[nextIndex];
-        if (nextInput) nextInput.focus();
-      }
-    }
-
-    async function signup() {
-      const username = document.getElementById('signupUsername').value.trim();
-      const email = document.getElementById('signupEmail').value.trim();
-      const password = document.getElementById('signupPassword').value;
-
-      if (!username || !email || !password) {
-        return showAlert('Please fill all fields');
-      }
-
-      if (username.length < 3) {
-        return showAlert('Username must be at least 3 characters');
-      }
-
-      if (password.length < 6) {
-        return showAlert('Password must be at least 6 characters');
-      }
-
-      const formData = new FormData();
-      formData.append('action', 'signup');
-      formData.append('username', username);
-      formData.append('email', email);
-      formData.append('password', password);
-
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-
-        if (data.status === 'success') {
-          pendingUser = { username, email, password };
-          showVerification();
-          showAlert('Verification code sent to your email!');
-        } else {
-          showAlert(data.message || 'Signup failed');
-        }
-      } catch (error) {
-        console.error('Signup error:', error);
-        showAlert('Network error. Please try again.');
-      }
-    }
-
-    async function verifyEmail() {
-      const codeInputs = document.querySelectorAll('.code-input');
-      const code = Array.from(codeInputs).map(input => input.value).join('');
-
-      if (code.length !== 6) {
-        return showAlert('Please enter the 6-digit code');
-      }
-
-      const formData = new FormData();
-      formData.append('action', 'verifyEmail');
-      formData.append('username', pendingUser.username);
-      formData.append('email', pendingUser.email);
-      formData.append('password', pendingUser.password);
-      formData.append('code', code);
-
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-
-        if (data.status === 'success') {
-          showAlert('Account verified successfully! You can now login.');
-          showLogin();
-          pendingUser = null;
-        } else {
-          showAlert(data.message || 'Verification failed');
-        }
-      } catch (error) {
-        console.error('Verification error:', error);
-        showAlert('Network error. Please try again.');
-      }
-    }
-
-    async function resendCode() {
-      if (!pendingUser) return;
-
-      const formData = new FormData();
-      formData.append('action', 'resendCode');
-      formData.append('username', pendingUser.username);
-      formData.append('email', pendingUser.email);
-
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-
-        if (data.status === 'success') {
-          showAlert('New verification code sent!');
-        } else {
-          showAlert(data.message || 'Failed to resend code');
-        }
-      } catch (error) {
-        console.error('Resend code error:', error);
-        showAlert('Network error. Please try again.');
-      }
-    }
-
-    async function login() {
-      const username = document.getElementById('loginUsername').value.trim();
-      const password = document.getElementById('loginPassword').value;
-
-      if (!username || !password) {
-        return showAlert('Please fill all fields');
-      }
-
-      const formData = new FormData();
-      formData.append('action', 'login');
-      formData.append('username', username);
-      formData.append('password', password);
-
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-
-        if (data.status === 'success') {
-          currentUser = data.user;
-          // FIXED: Using quizbux_user to match your backend
-          localStorage.setItem('quizbux_user', JSON.stringify({ username }));
-          showDashboard();
-          loadOfferwalls();
-          loadCashoutHistory();
-          showAlert('Login successful! Welcome to Insignia.');
-        } else {
-          showAlert(data.message || 'Login failed');
-        }
-      } catch (error) {
-        console.error('Login error:', error);
-        showAlert('Network error. Please check your connection and try again.');
-      }
-    }
-
-    async function restoreSession(username) {
-      try {
-        const response = await fetch(SCRIPT_URL + '?action=getUserData&username=' + encodeURIComponent(username));
-        const data = await response.json();
-        
-        if (data.status === 'success') {
-          currentUser = data.user;
-          showDashboard();
-          loadOfferwalls();
-          loadCashoutHistory();
-        } else {
-          // FIXED: Using quizbux_user to match your backend
-          localStorage.removeItem('quizbux_user');
-        }
-      } catch (error) {
-        console.error('Restore session error:', error);
-        // FIXED: Using quizbux_user to match your backend
-        localStorage.removeItem('quizbux_user');
-      }
-    }
-
-    function showDashboard() {
-      document.getElementById('authScreens').classList.add('hidden');
-      document.getElementById('dashboard').classList.remove('hidden');
-      document.getElementById('chatToggle').classList.remove('hidden');
-
-      document.getElementById('displayUsername').textContent = currentUser.username;
-      document.getElementById('userAvatar').textContent = currentUser.username[0].toUpperCase();
-      document.getElementById('balanceValue').textContent = Number(currentUser.balance).toLocaleString();
-      document.getElementById('usdBalanceValue').textContent = '$' + Number(currentUser.balanceUSD).toFixed(4);
-
-      // Update user status
-      const statusElement = document.getElementById('userStatus');
-      statusElement.textContent = currentUser.status || 'Premium';
-      statusElement.className = `user-status status-${(currentUser.status || 'active').toLowerCase()}`;
-
-      showPage('work');
-    }
-
-    function showPage(id) {
-      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-      document.getElementById(id).classList.remove('hidden');
-      
-      // Update active nav button
-      document.querySelectorAll('.nav button').forEach(btn => btn.classList.remove('active'));
-      document.querySelector(`.nav button[onclick="showPage('${id}')"]`).classList.add('active');
-      
-      if (id === 'offerwalls') loadOfferwalls();
-      if (id === 'cashout') loadCashoutHistory();
-    }
-
-    async function loadOfferwalls() {
-      if (!currentUser) return;
-      
-      try {
-        const response = await fetch(SCRIPT_URL + '?action=getOfferwalls&username=' + currentUser.username);
-        const data = await response.json();
-        const container = document.getElementById('offerwallList');
-        
-        if (data.status === 'success' && data.offerwalls && data.offerwalls.length > 0) {
-          container.innerHTML = data.offerwalls.map(wall => {
-            const hasEnoughPoints = currentUser.balance >= (wall.pointsRequired || 0);
-            const isUnlocked = hasEnoughPoints && (wall.status === 'active');
+        <!-- Home Section -->
+        <div id="section-earn" class="wm-section">
+            <h2>Welcome to Bux IQ</h2>
             
-            return `
-              <div class="offerwall-item">
-                <h4>${wall.name}</h4>
-                <p>Complete offers to earn rewards</p>
-                <div class="offerwall-requirements ${isUnlocked ? 'unlocked' : 'locked'}">
-                  ${isUnlocked ? 
-                    '✅ Unlocked - Ready to earn!' : 
-                    `🔒 Requires ${wall.pointsRequired || 0} points to unlock (You have ${currentUser.balance})`
-                  }
+            <div class="wm-logs" id="logs">
+                <div class="wm-list-item">
+                    <div class="icon"><i class="fas fa-info-circle"></i></div>
+                    <div>Your activity log will appear here</div>
                 </div>
-                <div class="offerwall-buttons">
-                  <button onclick="openOfferwallInIframe('${wall.id}', '${wall.url}')" 
-                          ${!isUnlocked ? 'disabled' : ''}>
-                    <i class="fas fa-play-circle"></i> Start Earning
-                  </button>
-                  <button onclick="window.open('${wall.url}', '_blank')" 
-                          ${!isUnlocked ? 'disabled' : ''}>
-                    <i class="fas fa-external-link-alt"></i> Open Externally
-                  </button>
-                </div>
-              </div>
-            `;
-          }).join('');
-        } else {
-          container.innerHTML = '<p>No active offerwalls right now</p>';
-        }
-      } catch (error) {
-        console.error('Load offerwalls error:', error);
-        document.getElementById('offerwallList').innerHTML = '<p>Error loading offerwalls</p>';
-      }
-    }
-
-    function openOfferwallInIframe(offerwallId, url) {
-      const iframe = document.getElementById('offerwallFrame');
-      const iframeContainer = document.getElementById('iframeContainer');
-      const offerwallList = document.getElementById('offerwallList');
-      
-      iframe.src = url;
-      iframeContainer.classList.remove('hidden');
-      offerwallList.classList.add('hidden');
-    }
-
-    function closeIframe() {
-      const iframeContainer = document.getElementById('iframeContainer');
-      const offerwallList = document.getElementById('offerwallList');
-      const iframe = document.getElementById('offerwallFrame');
-      
-      iframeContainer.classList.add('hidden');
-      offerwallList.classList.remove('hidden');
-      iframe.src = 'about:blank';
-    }
-
-    async function submitWork() {
-      if (!currentUser) return;
-
-      const text = document.getElementById('workInput').value.trim();
-      if (!text) return showAlert('Please describe the questions you answered');
-
-      const formData = new FormData();
-      formData.append('action', 'submitWork');
-      formData.append('username', currentUser.username);
-      formData.append('submission', text);
-
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-        showAlert(data.message);
-        document.getElementById('workInput').value = '';
-      } catch (error) {
-        console.error('Submit work error:', error);
-        showAlert('Network error. Please try again.');
-      }
-    }
-
-    async function submitCashout() {
-      if (!currentUser) return;
-
-      const amount = document.getElementById('rewardSelect').value;
-      if (!amount) return showAlert('Please select a reward');
-
-      const reward = document.getElementById('rewardSelect').selectedOptions[0].text;
-
-      const formData = new FormData();
-      formData.append('action', 'submitCashout');
-      formData.append('username', currentUser.username);
-      formData.append('reward', reward);
-      formData.append('amount', amount);
-
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        const data = await response.json();
-        showAlert(data.message);
-
-        document.getElementById('rewardSelect').value = '';
-        document.getElementById('cashoutBtn').disabled = true;
-        loadCashoutHistory();
-      } catch (error) {
-        console.error('Submit cashout error:', error);
-        showAlert('Network error. Please try again.');
-      }
-    }
-
-    async function loadCashoutHistory() {
-      if (!currentUser) return;
-      
-      try {
-        const response = await fetch(SCRIPT_URL + '?action=getCashoutHistory&username=' + currentUser.username);
-        const data = await response.json();
-        const container = document.getElementById('cashoutHistory');
-        
-        if (data.status === 'success' && data.history && data.history.length > 0) {
-          container.innerHTML = data.history.map(item => `
-            <div class="cashout-item">
-              <strong>${item.reward}</strong> - $${item.amount} 
-              <span class="cashout-status status-${item.status.toLowerCase()}">${item.status}</span>
-              <div style="font-size: 0.9rem; color: var(--text-tertiary); margin-top: 0.5rem;">
-                ${new Date(item.date).toLocaleDateString()}
-              </div>
-              ${item.adminNotes ? `
-                <div class="admin-notes">
-                  <strong>Admin Notes:</strong> ${item.adminNotes}
-                </div>
-              ` : ''}
             </div>
-          `).join('');
-        } else {
-          container.innerHTML = '<p>No cashout history yet.</p>';
-        }
-      } catch (error) {
-        console.error('Load cashout history error:', error);
-        document.getElementById('cashoutHistory').innerHTML = '<p>Error loading history</p>';
-      }
-    }
-
-    // Chat system
-    function toggleChat() {
-      const chatBox = document.getElementById('chatBox');
-      const chatToggle = document.getElementById('chatToggle');
-      
-      if (chatBox.classList.contains('hidden')) {
-        chatBox.classList.remove('hidden');
-        chatToggle.innerHTML = '<i class="fas fa-times"></i>';
-        loadChatMessages();
-        startChatPolling();
-      } else {
-        chatBox.classList.add('hidden');
-        chatToggle.innerHTML = '<i class="fas fa-comment-dots"></i>';
-        stopChatPolling();
-      }
-    }
-
-    function handleChatInput(event) {
-      if (event.key === 'Enter') {
-        sendChatMessage();
-      }
-    }
-
-    async function sendChatMessage() {
-      if (!currentUser) return;
-
-      const input = document.getElementById('chatInput');
-      const message = input.value.trim();
-      
-      if (!message) return;
-      
-      const formData = new FormData();
-      formData.append('action', 'sendChatMessage');
-      formData.append('username', currentUser.username);
-      formData.append('message', message);
-
-      try {
-        await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-        input.value = '';
-        loadChatMessages();
-      } catch (error) {
-        console.error('Send chat message error:', error);
-        showAlert('Failed to send message');
-      }
-    }
-
-    async function loadChatMessages() {
-      if (!currentUser) return;
-      
-      try {
-        const response = await fetch(SCRIPT_URL + '?action=getChatMessages');
-        const data = await response.json();
-        const container = document.getElementById('chatMessages');
-        
-        if (data.status === 'success') {
-          container.innerHTML = data.messages.map(msg => `
-            <div class="chat-message ${msg.username === currentUser.username ? 'own' : 'other'}">
-              <div class="message-sender">${msg.username}</div>
-              ${msg.message}
+            
+            <div class="wm-user-info" id="userInfo">
+                <img src="https://ui-avatars.com/api/?background=2c5aa0&color=fff&name=Guest&bold=true" class="wm-user-avatar" id="userAvatar">
+                <div class="wm-user-details">
+                    <div id="userName">Guest User</div>
+                    <div class="wm-user-stats">
+                        <div class="wm-stat">
+                            <div class="wm-stat-value" id="userBalance">$0.00</div>
+                            <div class="wm-stat-label">Balance</div>
+                        </div>
+                        <div class="wm-stat">
+                            <div class="wm-stat-value" id="userLevel">0</div>
+                            <div class="wm-stat-label">Level</div>
+                        </div>
+                        <div class="wm-stat">
+                            <div class="wm-stat-value" id="userPoints">0</div>
+                            <div class="wm-stat-label">Points</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          `).join('');
-          container.scrollTop = container.scrollHeight;
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="levelProgress" style="width: 0%"></div>
+            </div>
+            <div style="text-align: center; font-size: 12px; color: #4a6a9c;">Level Progress: <span id="levelProgressText">0%</span></div>
+            
+            <div class="wm-button primary" style="width: 100%; margin-top: 15px;" id="loginButton">Login to Earn</div>
+            
+            <h2>How It Works</h2>
+            <div class="wm-list">
+                <div class="wm-list-item">
+                    <div class="icon"><i class="fas fa-tasks"></i></div>
+                    <div>Complete Surveys & Offers</div>
+                </div>
+                <div class="wm-list-item">
+                    <div class="icon"><i class="fas fa-star"></i></div>
+                    <div>Earn Points & Rewards</div>
+                </div>
+                <div class="wm-list-item">
+                    <div class="icon"><i class="fas fa-gift"></i></div>
+                    <div>Redeem for Cash & Prizes</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Shop Section -->
+        <div id="section-shop" class="wm-section hidden">
+            <h2>Shop Rewards</h2>
+            <p style="margin-bottom: 15px; text-align: center;">Redeem your points for amazing rewards</p>
+            
+            <div class="shop-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/179/179249.png" alt="PayPal">
+                <div class="shop-item-details">
+                    <div class="shop-item-title">PayPal Cash</div>
+                    <div class="shop-item-price">1000 points = $10.00</div>
+                </div>
+                <div class="wm-button primary">Redeem</div>
+            </div>
+            
+            <div class="shop-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/825/825454.png" alt="Amazon">
+                <div class="shop-item-details">
+                    <div class="shop-item-title">Amazon Gift Card</div>
+                    <div class="shop-item-price">500 points = $5.00</div>
+                </div>
+                <div class="wm-button primary">Redeem</div>
+            </div>
+            
+            <div class="shop-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/825/825545.png" alt="Steam">
+                <div class="shop-item-details">
+                    <div class="shop-item-title">Steam Wallet Code</div>
+                    <div class="shop-item-price">1000 points = $10.00</div>
+                </div>
+                <div class="wm-button primary">Redeem</div>
+            </div>
+            
+            <div class="shop-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/5968/5968260.png" alt="Bitcoin">
+                <div class="shop-item-details">
+                    <div class="shop-item-title">Bitcoin</div>
+                    <div class="shop-item-price">1000 points = $10.00</div>
+                </div>
+                <div class="wm-button primary">Redeem</div>
+            </div>
+        </div>
+        
+        <!-- Leaders Section -->
+        <div id="section-leaders" class="wm-section hidden">
+            <h2>Leaderboard</h2>
+            <p style="margin-bottom: 15px; text-align: center;">Top earners this week</p>
+            
+            <div class="wm-leaderboard">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Username</th>
+                            <th>Earnings</th>
+                            <th>Level</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <tr><td colspan="4" style="text-align: center;">Loading leaderboard...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Profile/Earn Section -->
+        <div id="section-profile" class="wm-section hidden">
+            <div id="login-container">
+                <h2>Login</h2>
+                
+                <div id="g_id_onload"
+                    data-client_id="387422659555-007kjhq0c41f2lq39e075ib5mtpf3q9o.apps.googleusercontent.com"
+                    data-context="signin"
+                    data-ux_mode="popup"
+                    data-callback="handleGoogleCredentialResponse"
+                    data-auto_prompt="false">
+                </div>
+
+                <div class="g_id_signin google-login-btn" 
+                     data-type="standard" 
+                     data-theme="filled_blue" 
+                     data-text="signin_with" 
+                     data-shape="rectangular" 
+                     data-logo_alignment="left">
+                     <i class="fab fa-google" style="margin-right: 8px;"></i> Sign in with Google
+                </div>
+                
+                <div class="divider"><span>OR</span></div>
+                
+                <div class="wm-login-form">
+                    <label for="login-account">Account #</label>
+                    <input type="text" id="login-account" class="wm-input" placeholder="Enter your account number">
+                    
+                    <label for="login-clientid">Client ID</label>
+                    <input type="text" id="login-clientid" class="wm-input" placeholder="Enter your client ID">
+                    
+                    <label>CAPTCHA</label>
+                    <div class="wm-captcha" id="captcha"></div>
+                    <input type="text" id="captchaInput" class="wm-input" placeholder="Enter CAPTCHA">
+                    
+                    <div class="wm-button primary" style="width: 100%;" id="loginFormButton">Login</div>
+                </div>
+                <div id="error-msg" class="error-message hidden"></div>
+            </div>
+            
+            <div id="dashboard" class="hidden">
+                <h2>Earning Portal</h2>
+                <p style="margin-bottom: 15px; text-align: center;">Complete offers and surveys to earn rewards</p>
+                
+                <div class="wm-offer-grid" id="offerwall-grid">
+                    <div class="wm-offer-item">
+                        <img src="https://www.cpx-research.com/main/en/assets/img/logo.svg" alt="CPX Research">
+                        <div class="wm-button primary" data-offer="cpx">Open OfferWall</div>
+                    </div>
+                    <div class="wm-offer-item">
+                        <img src="https://www.spark-wall.com/images/logo.png" alt="SparkWall">
+                        <div class="wm-button primary" data-offer="spark">Open OfferWall</div>
+                    </div>
+                    <div class="wm-offer-item">
+                        <img src="https://offerwallmedia.com/assets/cwdash/img/logo.png" alt="OfferWall Media">
+                        <div class="wm-button primary" data-offer="owm">Open OfferWall</div>
+                    </div>
+                    <div class="wm-offer-item">
+                        <img src="https://adgem.com/assets/img/adgem-logo.png" alt="AdGem">
+                        <div class="wm-button primary" data-offer="adgem">Open OfferWall</div>
+                    </div>
+                </div>
+                
+                <div class="wm-button" style="width: 100%; margin-top: 15px;" id="logoutBtn">Logout</div>
+            </div>
+        </div>
+        
+        <!-- Bonus Section -->
+        <div id="section-bonus" class="bonus-code-section hidden">
+            <h2>Redeem Bonus Code</h2>
+            
+            <div class="info-box">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>FIRST COME FIRST SERVED! Each bonus code can only be used once.</div>
+            </div>
+            
+            <form class="bonus-form" id="redeemForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="wm-input" required placeholder="Enter your username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="bonusCode">Bonus Code</label>
+                    <input type="text" id="bonusCode" class="wm-input" required placeholder="Enter bonus code">
+                </div>
+                
+                <button type="button" class="wm-button primary" id="redeemBonusButton">Redeem Bonus Code</button>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="amountLocal">Amount (Local)</label>
+                        <input type="text" id="amountLocal" class="wm-input" readonly placeholder="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amountUsd">Amount (USD)</label>
+                        <input type="text" id="amountUsd" class="wm-input" readonly placeholder="$0.00">
+                    </div>
+                </div>
+            </form>
+            <div id="bonus-message" class="hidden"></div>
+        </div>
+        
+        <!-- Help Section -->
+        <div id="section-help" class="wm-section hidden">
+            <h2>Help & Support</h2>
+            
+            <div class="wm-faq-item">
+                <h4>How do I earn points?</h4>
+                <p>1. Login to your account</p>
+                <p>2. Click on the Earn tab</p>
+                <p>3. Complete offers and surveys from our partner networks</p>
+            </div>
+            
+            <div class="wm-faq-item">
+                <h4>How can I redeem rewards?</h4>
+                <p>Go to the Shop section and choose your preferred redemption method.</p>
+            </div>
+            
+            <div class="wm-faq-item">
+                <h4>How to redeem bonus codes?</h4>
+                <p>Go to the Bonus section, enter your username and the bonus code, then click Redeem.</p>
+            </div>
+            
+            <div class="wm-faq-item">
+                <h4>When will I receive my rewards?</h4>
+                <p>Digital rewards are typically delivered within 24 hours. Physical items may take 7-14 business days.</p>
+            </div>
+            
+            <div class="wm-button primary" style="width: 100%;" id="contact-support-btn">Contact Support</div>
+        </div>
+    </div>
+    
+    <div class="wm-footer">
+        <div class="wm-footer-button active" data-section="earn">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </div>
+        <div class="wm-footer-button" data-section="shop">
+            <i class="fas fa-shopping-bag"></i>
+            <span>Shop</span>
+        </div>
+        <div class="wm-footer-button" data-section="leaders">
+            <i class="fas fa-trophy"></i>
+            <span>Leaders</span>
+        </div>
+        <div class="wm-footer-button" data-section="profile">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Earn</span>
+        </div>
+        <div class="wm-footer-button" data-section="bonus">
+            <i class="fas fa-star"></i>
+            <span>BONUS</span>
+        </div>
+        <div class="wm-footer-button" data-section="help">
+            <i class="fas fa-question-circle"></i>
+            <span>Help</span>
+        </div>
+    </div>
+
+<script>
+    // Configuration - REPLACE WITH YOUR ACTUAL DEPLOYED SCRIPT URL
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxBNbX9hhPPNSx9mIeRcyZP7nekOWxDHkzk4b_1QNgmwkiiO8PIvpr50di9ms8fNYCm/exec';
+
+    // Global variables
+    let captchaCode = '';
+    let currentUser = null;
+    let settings = {};
+
+    // Initialize everything when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeApp();
+    });
+
+    async function initializeApp() {
+        generateCaptcha();
+        initializeEventListeners();
+        updateServerTime();
+        setInterval(updateServerTime, 1000);
+        updateHeaderTime();
+        setInterval(updateHeaderTime, 60000);
+        
+        // Load settings and data
+        await loadSettings();
+        await loadLeaderboard();
+        await loadActivityLogs();
+        
+        checkExistingSession();
+    }
+
+    function initializeEventListeners() {
+        // Tab navigation
+        document.querySelectorAll('.wm-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                showSection(tab.dataset.section);
+                document.querySelectorAll('.wm-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+
+        // Footer navigation
+        document.querySelectorAll('.wm-footer-button').forEach(button => {
+            button.addEventListener('click', () => {
+                showSection(button.dataset.section);
+                document.querySelectorAll('.wm-footer-button').forEach(b => b.classList.remove('active'));
+                button.classList.add('active');
+            });
+        });
+
+        // Login buttons
+        document.getElementById('loginButton').addEventListener('click', () => showSection('profile'));
+        document.getElementById('loginFormButton').addEventListener('click', handleLogin);
+        document.getElementById('logoutBtn').addEventListener('click', logout);
+        document.getElementById('redeemBonusButton').addEventListener('click', redeemBonusCode);
+        document.getElementById('contact-support-btn').addEventListener('click', () => {
+            alert('Contact support at: support@buxiq.com');
+        });
+
+        // Offerwall buttons
+        document.querySelectorAll('[data-offer]').forEach(button => {
+            button.addEventListener('click', function() {
+                if (!currentUser) {
+                    alert('Please login first');
+                    showSection('profile');
+                    return;
+                }
+                const offerType = this.dataset.offer;
+                openOfferWall(offerType);
+            });
+        });
+
+        // Shop item buttons
+        document.querySelectorAll('.shop-item .wm-button').forEach(button => {
+            button.addEventListener('click', function() {
+                if (!currentUser) {
+                    alert('Please login first');
+                    showSection('profile');
+                    return;
+                }
+                const item = this.closest('.shop-item');
+                const title = item.querySelector('.shop-item-title').textContent;
+                alert(`You've selected: ${title}. This feature will be available soon!`);
+            });
+        });
+    }
+
+    function showSection(section) {
+        document.querySelectorAll('[id^="section-"]').forEach(sec => {
+            sec.classList.add('hidden');
+        });
+        document.getElementById('section-' + section).classList.remove('hidden');
+        
+        // Load section-specific data
+        if (section === 'leaders') loadLeaderboard();
+        if (section === 'earn') loadActivityLogs();
+    }
+
+    async function loadSettings() {
+        try {
+            console.log('Loading settings from:', GOOGLE_SCRIPT_URL);
+            const response = await fetch(GOOGLE_SCRIPT_URL + '?action=getSettings&timestamp=' + Date.now());
+            
+            if (!response.ok) {
+                throw new Error('HTTP error: ' + response.status);
+            }
+            
+            const data = await response.json();
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            settings = data;
+            
+            // Update UI with settings
+            if (settings.site_name) {
+                document.getElementById('siteTitle').textContent = settings.site_name;
+                document.title = settings.site_name + ' - Premium Rewards Platform';
+            }
+            if (settings.conversion_rate) {
+                document.getElementById('conversionRate').textContent = '$' + settings.conversion_rate + ' = 1 pts';
+            }
+            
+            console.log('Settings loaded successfully');
+        } catch (error) {
+            console.error('Error loading settings:', error);
+            // Fallback to default settings
+            settings = {
+                site_name: "Bux IQ",
+                conversion_rate: "1.00"
+            };
+            showNotification('Using demo settings', 'warning');
         }
-      } catch (error) {
-        console.error('Load chat messages error:', error);
-      }
     }
 
-    function startChatPolling() {
-      chatInterval = setInterval(loadChatMessages, 3000);
+    async function loadLeaderboard() {
+        try {
+            const response = await fetch(GOOGLE_SCRIPT_URL + '?action=getLeaderboard&timestamp=' + Date.now());
+            
+            if (!response.ok) {
+                throw new Error('HTTP error: ' + response.status);
+            }
+            
+            const leaderboard = await response.json();
+            
+            if (leaderboard.error) {
+                throw new Error(leaderboard.error);
+            }
+            
+            const tbody = document.getElementById('leaderboardBody');
+            tbody.innerHTML = '';
+            
+            if (leaderboard.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No data available</td></tr>';
+                return;
+            }
+            
+            leaderboard.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${user.username}</td>
+                    <td>$${user.balance ? user.balance.toFixed(2) : '0.00'}</td>
+                    <td>${user.level || 1}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+        } catch (error) {
+            console.error('Error loading leaderboard:', error);
+            // Fallback to demo data
+            const leaderboard = [
+                { username: "EarnMaster", balance: 245.67, level: 15 },
+                { username: "SurveyKing", balance: 198.43, level: 14 },
+                { username: "DemoUser", balance: 25.50, level: 5 }
+            ];
+            
+            const tbody = document.getElementById('leaderboardBody');
+            tbody.innerHTML = '';
+            
+            leaderboard.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${user.username}</td>
+                    <td>$${user.balance.toFixed(2)}</td>
+                    <td>${user.level}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            showNotification('Using demo leaderboard data', 'warning');
+        }
     }
 
-    function stopChatPolling() {
-      if (chatInterval) {
-        clearInterval(chatInterval);
-        chatInterval = null;
-      }
+    async function loadActivityLogs() {
+        try {
+            const response = await fetch(GOOGLE_SCRIPT_URL + '?action=getActivityLogs&timestamp=' + Date.now());
+            
+            if (!response.ok) {
+                throw new Error('HTTP error: ' + response.status);
+            }
+            
+            const logs = await response.json();
+            
+            if (logs.error) {
+                throw new Error(logs.error);
+            }
+            
+            const logsContainer = document.getElementById('logs');
+            logsContainer.innerHTML = '';
+            
+            if (logs.length === 0) {
+                logsContainer.innerHTML = '<div class="wm-list-item"><div class="icon"><i class="fas fa-info-circle"></i></div><div>No activity yet</div></div>';
+                return;
+            }
+            
+            // Show latest logs
+            logs.forEach(log => {
+                const logItem = document.createElement('div');
+                logItem.className = 'wm-list-item';
+                logItem.innerHTML = `
+                    <div class="icon"><i class="fas fa-user"></i></div>
+                    <div>${log.Account} ${log.Activity} $${parseFloat(log.Amount || 0).toFixed(2)}</div>
+                `;
+                logsContainer.appendChild(logItem);
+            });
+            
+        } catch (error) {
+            console.error('Error loading activity logs:', error);
+            // Fallback to demo logs
+            const logs = [
+                { Account: "Guest", Activity: "visited the platform", Amount: "0" },
+                { Account: "DemoUser", Activity: "completed a survey", Amount: "2.50" }
+            ];
+            
+            const logsContainer = document.getElementById('logs');
+            logsContainer.innerHTML = '';
+            
+            logs.forEach(log => {
+                const logItem = document.createElement('div');
+                logItem.className = 'wm-list-item';
+                logItem.innerHTML = `
+                    <div class="icon"><i class="fas fa-user"></i></div>
+                    <div>${log.Account} ${log.Activity} $${parseFloat(log.Amount || 0).toFixed(2)}</div>
+                `;
+                logsContainer.appendChild(logItem);
+            });
+        }
+    }
+
+    function generateCaptcha() {
+        captchaCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        document.getElementById('captcha').textContent = captchaCode;
+    }
+
+    function updateServerTime() {
+        const now = new Date();
+        const pstTime = new Date(now.getTime() - (8 * 60 * 60 * 1000));
+        const timeString = pstTime.toISOString().substr(11, 8);
+        document.getElementById('serverTime').textContent = 'Server Time: ' + timeString + ' PST';
+    }
+
+    function updateHeaderTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        document.getElementById('headerTime').textContent = timeString;
+    }
+
+    function checkExistingSession() {
+        const savedAccount = localStorage.getItem('buxiq_account');
+        if (savedAccount) {
+            document.getElementById('login-account').value = savedAccount;
+        }
+    }
+
+    async function handleLogin() {
+        const account = document.getElementById('login-account').value.trim();
+        const clientid = document.getElementById('login-clientid').value.trim();
+        const captchaInput = document.getElementById('captchaInput').value.trim();
+        const errorMsg = document.getElementById('error-msg');
+        
+        if (!account || !clientid || !captchaInput) {
+            showMessage(errorMsg, 'Please fill all fields', 'error');
+            return;
+        }
+        
+        if (captchaInput !== captchaCode) {
+            showMessage(errorMsg, 'Invalid CAPTCHA', 'error');
+            generateCaptcha();
+            document.getElementById('captchaInput').value = '';
+            return;
+        }
+        
+        // Show loading state
+        const button = document.getElementById('loginFormButton');
+        const originalText = button.textContent;
+        button.textContent = 'Logging in...';
+        button.disabled = true;
+        
+        try {
+            const response = await fetch(GOOGLE_SCRIPT_URL + '?action=login&account=' + encodeURIComponent(account) + '&clientid=' + encodeURIComponent(clientid) + '&timestamp=' + Date.now());
+            
+            if (!response.ok) {
+                throw new Error('HTTP error: ' + response.status);
+            }
+            
+            const result = await response.json();
+            
+            if (result.error) {
+                throw new Error(result.error);
+            }
+            
+            if (result.success && result.user) {
+                // Login successful
+                currentUser = result.user;
+                localStorage.setItem('buxiq_account', account);
+                
+                // Update UI
+                updateUserUI(currentUser);
+                
+                document.getElementById('login-container').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                errorMsg.classList.add('hidden');
+                
+                addToLogs('Welcome back ' + currentUser.Username + '!');
+                
+            } else {
+                throw new Error('Login failed');
+            }
+            
+        } catch (error) {
+            console.error('Login error:', error);
+            showMessage(errorMsg, error.message || 'Login failed. Please try again.', 'error');
+            generateCaptcha();
+        } finally {
+            // Restore button state
+            button.textContent = originalText;
+            button.disabled = false;
+        }
+    }
+
+    function updateUserUI(userData) {
+        document.getElementById('userAvatar').src = userData.Avatar;
+        document.getElementById('userName').textContent = userData.Username;
+        document.getElementById('userBalance').textContent = '$' + parseFloat(userData.Balance).toFixed(2);
+        document.getElementById('userLevel').textContent = userData.Level;
+        document.getElementById('userPoints').textContent = userData.Points;
+        
+        // Update progress bar
+        const progress = (userData.Level / 10) * 100;
+        document.getElementById('levelProgress').style.width = progress + '%';
+        document.getElementById('levelProgressText').textContent = progress + '%';
+        
+        // Update username field in bonus section
+        document.getElementById('username').value = userData.Username;
+    }
+
+    function handleGoogleCredentialResponse(response) {
+        console.log('Google login response:', response);
+        alert('Google authentication would be implemented here.');
     }
 
     function logout() {
-      // FIXED: Using quizbux_user to match your backend
-      localStorage.removeItem('quizbux_user');
-      if (chatInterval) clearInterval(chatInterval);
-      location.reload();
+        currentUser = null;
+        localStorage.removeItem('buxiq_account');
+        
+        document.getElementById('dashboard').classList.add('hidden');
+        document.getElementById('login-container').classList.remove('hidden');
+        document.getElementById('login-account').value = '';
+        document.getElementById('login-clientid').value = '';
+        document.getElementById('captchaInput').value = '';
+        
+        // Reset user info
+        document.getElementById('userAvatar').src = 'https://ui-avatars.com/api/?background=2c5aa0&color=fff&name=Guest&bold=true';
+        document.getElementById('userName').textContent = 'Guest User';
+        document.getElementById('userBalance').textContent = '$0.00';
+        document.getElementById('userLevel').textContent = '0';
+        document.getElementById('userPoints').textContent = '0';
+        document.getElementById('levelProgress').style.width = '0%';
+        document.getElementById('levelProgressText').textContent = '0%';
+        
+        showSection('earn');
+        addToLogs('You have been logged out.');
     }
 
-    function showAlert(msg) {
-      document.getElementById('alertMessage').textContent = msg;
-      document.getElementById('alertModal').classList.remove('hidden');
+    async function redeemBonusCode() {
+        const username = document.getElementById('username').value.trim();
+        const bonusCode = document.getElementById('bonusCode').value.trim().toUpperCase();
+        const messageDiv = document.getElementById('bonus-message');
+        
+        if (!username || !bonusCode) {
+            showMessage(messageDiv, 'Please enter both username and bonus code', 'error');
+            return;
+        }
+        
+        // Show loading state
+        const button = document.getElementById('redeemBonusButton');
+        const originalText = button.textContent;
+        button.textContent = 'Processing...';
+        button.disabled = true;
+        
+        try {
+            const response = await fetch(GOOGLE_SCRIPT_URL + '?action=redeemBonus&username=' + encodeURIComponent(username) + '&bonusCode=' + encodeURIComponent(bonusCode) + '&timestamp=' + Date.now());
+            
+            if (!response.ok) {
+                throw new Error('HTTP error: ' + response.status);
+            }
+            
+            const result = await response.json();
+            
+            if (result.error) {
+                throw new Error(result.error);
+            }
+            
+            if (result.success) {
+                // Success
+                document.getElementById('amountLocal').value = result.amountLocal;
+                document.getElementById('amountUsd').value = '$' + result.amountUSD;
+                
+                showMessage(messageDiv, result.message, 'success');
+                
+                // Update balance if current user redeemed the code
+                if (currentUser && (currentUser.Username === username || currentUser.Account === username)) {
+                    const newBalance = (parseFloat(currentUser.Balance) + parseFloat(result.amountUSD)).toFixed(2);
+                    document.getElementById('userBalance').textContent = '$' + newBalance;
+                    currentUser.Balance = newBalance;
+                    
+                    // Also update points
+                    const newPoints = parseInt(currentUser.Points) + parseInt(result.amountLocal) * 100;
+                    document.getElementById('userPoints').textContent = newPoints;
+                    currentUser.Points = newPoints;
+                }
+                
+                // Clear form after successful redemption
+                setTimeout(() => {
+                    document.getElementById('bonusCode').value = '';
+                    messageDiv.classList.add('hidden');
+                }, 5000);
+                
+            } else {
+                throw new Error('Redemption failed');
+            }
+            
+        } catch (error) {
+            console.error('Error redeeming bonus code:', error);
+            showMessage(messageDiv, error.message || 'Network error. Please try again.', 'error');
+        } finally {
+            // Restore button state
+            button.textContent = originalText;
+            button.disabled = false;
+        }
     }
 
-    function closeAlert() {
-      document.getElementById('alertModal').classList.add('hidden');
+    function openOfferWall(type) {
+        const templates = {
+            cpx: 'https://offers.cpx-research.com/',
+            spark: 'https://spark-wall.com/',
+            owm: 'https://offerwallmedia.com/',
+            adgem: 'https://adgem.com/'
+        };
+        
+        const username = currentUser.Username || currentUser.Account;
+        const url = templates[type];
+        
+        window.open(url, '_blank');
+        addToLogs('Opened ' + type + ' offerwall');
     }
 
-    // Initialize cashout button
-    document.getElementById('rewardSelect').onchange = function() {
-      document.getElementById('cashoutBtn').disabled = !this.value;
-    };
+    function showMessage(element, message, type) {
+        element.textContent = message;
+        element.className = type + '-message';
+        element.classList.remove('hidden');
+    }
 
-    // Start the app
-    window.onload = init;
-  </script>
+    function showNotification(message, type = 'info') {
+        // Create a temporary notification
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 6px;
+            color: white;
+            z-index: 10000;
+            font-weight: bold;
+            max-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        `;
+        
+        if (type === 'error') {
+            notification.style.background = '#f44336';
+        } else if (type === 'warning') {
+            notification.style.background = '#ff9800';
+        } else if (type === 'success') {
+            notification.style.background = '#4caf50';
+        } else {
+            notification.style.background = '#2196f3';
+        }
+        
+        document.body.appendChild(notification);
+        
+        // Remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 5000);
+    }
+
+    function addToLogs(message) {
+        const logsContainer = document.getElementById('logs');
+        const logItem = document.createElement('div');
+        logItem.className = 'wm-list-item';
+        logItem.innerHTML = `
+            <div class="icon"><i class="fas fa-info-circle"></i></div>
+            <div>${new Date().toLocaleTimeString()} - ${message}</div>
+        `;
+        logsContainer.insertBefore(logItem, logsContainer.firstChild);
+        
+        // Keep only last 5 logs
+        while (logsContainer.children.length > 5) {
+            logsContainer.removeChild(logsContainer.lastChild);
+        }
+    }
+
+    // Test the connection
+    async function testConnection() {
+        try {
+            const response = await fetch(GOOGLE_SCRIPT_URL + '?action=getSettings&timestamp=' + Date.now());
+            if (response.ok) {
+                const data = await response.json();
+                console.log('✅ Connected to Google Apps Script successfully!', data);
+                return true;
+            } else {
+                console.log('❌ Connection failed:', response.status);
+                return false;
+            }
+        } catch (error) {
+            console.log('❌ Connection failed:', error.message);
+            return false;
+        }
+    }
+
+    // Run connection test
+    setTimeout(() => {
+        testConnection();
+    }, 2000);
+</script>
 </body>
 </html>
